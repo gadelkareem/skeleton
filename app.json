@@ -15,8 +15,8 @@
   },
   "image": "gadelkareem/skeleton",
   "env": {
-    "PROD_CONFIG": {
-      "description": "app.prod.ini.secret file contents."
+    "PROD_CONFIG_SECRET_FILE": {
+      "description": "base64 encoded app.prod.ini.secret file contents."
     }
   },
   "formation": {

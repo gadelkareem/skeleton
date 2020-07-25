@@ -35,25 +35,22 @@ docker exec -it skeleton_backend_1 /bin/bash -c "go test -v ./... -count=1 | sor
 ```
 
 
-## Gitlab CI
-Check [.gitlab-ci.yml](.gitlab-ci.yml) to review how the production container is being generated in the pipelines.
-
-
-
-
-
-
-
-
-
-
-
-
-
+## Deploy to Heroku
+- [Fork the Skeleton repository on Gitlab](https://gitlab.com/gadelkareem/skeleton/-/forks/new)
+- Add the following CI/CD environment variables in [your Gitlab's CI/CD settings section](https://gitlab.com/help/ci/variables/README#custom-environment-variables):
+    - HEROKU_API_KEY: Your free [Heroku API KEY](https://dashboard.heroku.com/account)
+    - PROD_CONFIG_SECRET_FILE: Base64 encoded string of the `./src/backend/conf/app.prod.ini.secret` file. Use the [./src/backend/conf/app.dev.ini.secret.example](./src/backend/conf/app.dev.ini.secret.example) as an example. 
+    ```bash 
+    echo "$PROD_SECRET_FILE_CONTENTS" | base64
+    ```
+- [Run Gitlab pipeline](https://docs.gitlab.com/ee/ci/pipelines/#run-a-pipeline-manually).
+- Navigate to [your Heroku apps](https://dashboard.heroku.com/apps) to open your app URL.
+- For more information, check [.gitlab-ci.yml](.gitlab-ci.yml) to review how the production container is being generated in the pipelines.
 
 # Services
-## [Mailhog](https://github.com/mailhog/MailHog) 
-[http://localhost:8025/](http://localhost:8025/)
+## Mail service
+Skeleton works in development with [MailHog](https://github.com/mailhog/MailHog) in docker which you can access via [http://localhost:8025/](http://localhost:8025/). To use [MailTrap](https://mailtrap.io/) instead, change [./src/backend/conf/app.dev.ini](./src/backend/conf/app.dev.ini) SMTP config to match MailTrap settings.
+
 
 
 
@@ -72,6 +69,3 @@ yarn test
 ```
 
 
-
-## Heroku
-https://devcenter.heroku.com/articles/build-docker-images-heroku-yml#creating-your-app-from-setup
