@@ -1,0 +1,21 @@
+FROM golang:1.14
+
+RUN mkdir -p /app/src/backend
+WORKDIR /app/src/backend
+
+ENV PATH=/app/bin:/go/bin:$PATH
+ENV GOPATH=/app:$GOPATH
+ENV GO111MODULE=on
+
+
+RUN go get -u github.com/beego/bee
+
+
+EXPOSE ${HTTP_PORT}
+
+ENV BEEGO_RUNMODE=dev
+CMD go mod vendor && \
+    go build -o skeleton && \
+    chmod +x skeleton && \
+    ./skeleton migrate up && \
+    bee run

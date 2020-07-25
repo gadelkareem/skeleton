@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Alert.vue should have a custom error and match snapshot 1`] = `
+<span><div role="alert" class="v-alert v-sheet theme--dark error"><div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon material-icons theme--dark">$error</i><div class="v-alert__content"><div>
+      test error
+    </div> <!----></div></div></div> <!----> <!----></span>
+`;

@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`index.vue should match snapshot 1`] = `
+<span><div class="v-window v-item-group theme--dark v-carousel" style="height: 30vh;"><div class="v-window__container" style="height: 30vh;"><transition-stub name="fade-transition" style="background-blend-mode: darken;"><div class="v-window-item"><div class="v-image v-responsive v-carousel__item theme--dark" style="height: 30vh;"><div class="v-responsive__content"><div class="row fill-height align-center justify-center"><div class="display-4 white--text px-4 rounded" style="background-color: rgba(0, 0, 0, 0.1); font-size: 2vw;">
+          Beautiful and tested Golang and NodeJS code
+        </div></div></div></div></div></transition-stub><transition-stub name="fade-transition" style="background-blend-mode: darken;"><!----></transition-stub><transition-stub name="fade-transition" style="background-blend-mode: darken;"><!----></transition-stub><transition-stub name="fade-transition" style="background-blend-mode: darken;"><!----></transition-stub><transition-stub name="fade-transition" style="background-blend-mode: darken;"><!----></transition-stub><div class="v-window__prev"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--dark v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate material-icons theme--dark" style="font-size: 36px;">$prev</i></span></button></div>
+<div class="v-window__next"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--dark v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate material-icons theme--dark" style="font-size: 36px;">$next</i></span></button></div>
+</div>
+</div>
+<section style="padding: 48px 0px;">
+  <div class="container">
+    <div class="row align-center justify-center">
+      <div class="col col-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-image-multiple theme--light" style="font-size: 100px; color: rgb(224, 224, 224); caret-color: #e0e0e0;"></i>
+        <div class="display-1 ml-2" style="color: rgb(78, 101, 109);">Screenshots</div>
+      </div>
+      <div class="col col-8">
+        <div class="mx-auto v-card v-sheet v-sheet--shaped theme--light elevation-24">
+          <div class="v-window v-item-group theme--dark v-carousel" style="height: 800px;">
+            <div class="v-window__container" style="height: 800px;">
+              <transition-stub name="fade-transition">
+                <div class="v-window-item">
+                  <div class="v-image v-responsive v-carousel__item theme--dark" style="height: 800px;">
+                    <div class="v-responsive__content"></div>
+                  </div>
+                </div>
+              </transition-stub>
+              <transition-stub name="fade-transition">
+                <!---->
+              </transition-stub>
+              <transition-stub name="fade-transition">
+                <!---->
+              </transition-stub>
+              <transition-stub name="fade-transition">
+                <!---->
+              </transition-stub>
+              <transition-stub name="fade-transition">
+                <!---->
+              </transition-stub>
+              <transition-stub name="fade-transition">
+                <!---->
+              </transition-stub>
+              <transition-stub name="fade-transition">
+                <!---->
+              </transition-stub>
+              <transition-stub name="fade-transition">
+                <!---->
+              </transition-stub>
+              <transition-stub name="fade-transition">
+                <!---->
+              </transition-stub>
+              <transition-stub name="fade-transition">
+                <!---->
+              </transition-stub>
+              <transition-stub name="fade-transition">
+                <!---->
+              </transition-stub>
+              <transition-stub name="fade-transition">
+                <!---->
+              </transition-stub>
+              <transition-stub name="fade-transition">
+                <!---->
+              </transition-stub>
+              <transition-stub name="fade-transition">
+                <!---->
+              </transition-stub>
+              <transition-stub name="fade-transition">
+                <!---->
+              </transition-stub>
+              <div class="v-window__prev"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--dark v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate material-icons theme--dark" style="font-size: 36px;">$prev</i></span></button></div>
+              <div class="v-window__next"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--dark v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate material-icons theme--dark" style="font-size: 36px;">$next</i></span></button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</span>
+`;

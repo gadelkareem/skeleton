@@ -1,0 +1,22 @@
+# testing new heroku.yml pipelines feature
+# https://devcenter.heroku.com/articles/build-docker-images-heroku-yml#creating-your-app-from-setup
+
+setup:
+  addons:
+    - plan: heroku-postgresql
+      as: DATABASE
+    - plan: heroku-redis
+      as: REDIS
+build:
+  docker:
+    web: Dockerfile.heroku
+  config:
+    DATABASE_URL: $DATABASE_URL
+    REDIS_URL: $REDIS_URL
+release:
+  image: web
+  command:
+    - /app/skeleton migrate up
+run:
+  web: /app/skeleton
+

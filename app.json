@@ -1,0 +1,37 @@
+{
+  "name": "Skeleton",
+  "description": "Complete Golang and Nuxt boilerplate.",
+  "keywords": [
+    "golang",
+    "nuxt",
+    "vue",
+    "boilerplate"
+  ],
+  "repository": "https://gitlab.com/gadelkareem/skeleton",
+  "logo": "http://gadelkareem.github.io/images/skeleton.png",
+  "success_url": "/",
+  "scripts": {
+    "postdeploy": "/app/skeleton"
+  },
+  "image": "gadelkareem/skeleton",
+  "env": {
+    "PROD_CONFIG": {
+      "description": "app.prod.ini.secret file contents."
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "standard-1x"
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql"
+    },
+    {
+      "plan": "heroku-redis"
+    }
+  ],
+  "stack": "container"
+}

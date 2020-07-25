@@ -1,0 +1,10 @@
+vendor
+docker/containers
+pkg
+*.secret
+.nuxt
+dist
+nohup.out
+1
+src/frontend/coverage
+build

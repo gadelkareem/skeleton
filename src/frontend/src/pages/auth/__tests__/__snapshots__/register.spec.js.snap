@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`register.vue should match snapshot 1`] = `
+<section class="container container--fluid">
+  <div class="row justify-center">
+    <div class="v-card--material pa-3 pa-6 v-card v-sheet theme--light v-card--material--has-heading" style="min-width: 40%;" min-width="40%">
+      <div class="d-flex grow flex-wrap">
+        <div class="text-start v-card--material__heading mb-n6 v-sheet theme--dark elevation-6 info pa-7" style="width: 100%;">
+          <div class="display-2 font-weight-light">
+            Register
+          </div>
+          <div class="subtitle-1 font-weight-light">
+            Fill in your details
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div> <span> <!----> <!----></span>
+      <form novalidate="novalidate" method="post" class="v-form pt-8">
+        <div class="container py-0">
+          <div class="row">
+            <div class="v-input theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span>​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-9" class="v-label theme--light" style="right: 0px; position: absolute;">Username*</label><input id="input-9" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="v-input theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span>​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="right: 0px; position: absolute;">Password*</label><input id="input-12" type="password"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="v-input theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span>​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-15" class="v-label theme--light" style="right: 0px; position: absolute;">Repeat Password*</label><input id="input-15" type="password"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="v-input theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span>​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-18" class="v-label theme--light" style="right: 0px; position: absolute;">Email*</label><input id="input-18" type="email"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-right col"><button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default blue--text text--darken-1"><span class="v-btn__content">
+              Reset
+            </span></button> <button type="submit" class="mr-0 v-btn v-btn--contained theme--light v-size--default info"><span class="v-btn__content">
+              Register
+            </span></button></div>
+        </div>
+      </form>
+      <!---->
+    </div>
+  </div>
+</section>
+`;

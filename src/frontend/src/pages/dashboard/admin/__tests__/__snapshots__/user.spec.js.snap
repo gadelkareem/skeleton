@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`user.vue should match snapshot 1`] = `
+<section class="container container--fluid">
+  <div class="row justify-center">
+    <div class="v-card--material pa-3 v-card v-sheet theme--light v-card--material--has-heading">
+      <div class="d-flex grow flex-wrap">
+        <div class="text-start v-card--material__heading mb-n6 v-sheet theme--dark elevation-6 info pa-7" style="width: 100%;">
+          <div class="display-2 font-weight-light">
+            Edit User
+          </div>
+          <div class="subtitle-1 font-weight-light">
+            Complete your User
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div> <span> <!----> <!----></span>
+      <!---->
+      <!---->
+    </div>
+  </div>
+  <div role="dialog" class="v-dialog__container" style="z-index: 200;">
+    <!---->
+  </div>
+</section>
+`;

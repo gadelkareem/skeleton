@@ -1,0 +1,24 @@
+FROM node:14
+
+WORKDIR /app
+
+ENV PATH /app/node_modules/.bin:$PATH
+
+RUN apt-get update \
+	&& apt-get install git make g++ python -y
+
+RUN yarn config set progress true
+RUN yarn global add nuxt -g
+
+EXPOSE ${HTTP_PORT}
+
+USER node
+
+ENV NODE_ENV=development
+ENV NUXT_HOST=0.0.0.0
+
+# one way for hot reloading
+ENV CHOKIDAR_USEPOLLING=true
+ENV CHOKIDAR_INTERVAL=100
+
+CMD ["yarn", "docker-start"]

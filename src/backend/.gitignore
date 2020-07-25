@@ -1,0 +1,10 @@
+lastupdate.tmp
+tmp
+backend
+*.dump
+*.retry
+bin
+pkg
+vendor
+tmp.json
+skeleton

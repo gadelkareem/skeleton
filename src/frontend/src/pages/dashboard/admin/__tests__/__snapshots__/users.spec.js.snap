@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`users.vue should match snapshot 1`] = `
+<section class="container container--fluid" id="regular-tables">
+  <div class="v-card--material pa-3 px-5 py-3 v-card v-sheet theme--light v-card--material--has-heading">
+    <div class="d-flex grow flex-wrap">
+      <div class="text-start v-card--material__heading mb-n6 v-sheet theme--dark elevation-6 info pa-7" style="max-height: 90px; width: auto;"><i aria-hidden="true" class="v-icon notranslate mdi mdi-account-group theme--dark" style="font-size: 32px;"></i>
+        <!---->
+        <!---->
+      </div>
+      <div class="ml-4">
+        <div class="card-title font-weight-light">Users</div>
+      </div>
+    </div>
+    <div class="v-card__title">
+      <div class="spacer"></div>
+      <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--single-line">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <div class="v-text-field__slot"><label for="input-9" class="v-label theme--light" style="right: 0px; position: absolute;">Search</label><input id="input-9" type="text"></div>
+            <div class="v-input__append-inner">
+              <div class="v-input__icon v-input__icon--clear"><button disabled="disabled" type="button" aria-label="clear icon" class="v-icon notranslate v-icon--disabled v-icon--link material-icons theme--light">$clear</button></div>
+            </div>
+            <div class="v-input__append-inner">
+              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-magnify theme--light"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <span> <!----> <!----></span>
+    <div class="v-data-table theme--light">
+      <div class="v-data-table__wrapper">
+        <table>
+          <colgroup>
+            <col class="">
+            <col class="">
+            <col class="">
+            <col class="">
+            <col class="">
+            <col class="">
+          </colgroup>
+          <thead class="v-data-table-header v-data-table-header-mobile">
+            <tr>
+              <th>
+                <div class="v-data-table-header-mobile__wrapper">
+                  <div class="v-input v-input--hide-details theme--light v-text-field v-select">
+                    <div class="v-input__control">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-17" class="v-input__slot">
+                        <div class="v-select__slot">
+                          <div class="v-select__selections"><input id="input-17" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                          <div class="v-input__append-inner">
+                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate material-icons theme--light">$dropdown</i></div>
+                          </div><input type="hidden">
+                        </div>
+                        <div class="v-menu">
+                          <!---->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="v-data-table__empty-wrapper">
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="v-data-footer">
+        <div class="v-data-footer__select">
+          <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
+            <div class="v-input__control">
+              <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-21" class="v-input__slot">
+                <div class="v-select__slot">
+                  <div class="v-select__selections">
+                    <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="$vuetify.dataTable.itemsPerPageText" id="input-21" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  </div>
+                  <div class="v-input__append-inner">
+                    <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate material-icons theme--light">$dropdown</i></div>
+                  </div><input type="hidden" value="10">
+                </div>
+                <div class="v-menu">
+                  <!---->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="v-data-footer__pagination">–</div>
+        <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate material-icons theme--light">$prev</i></span></button></div>
+        <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate material-icons theme--light">$next</i></span></button></div>
+      </div>
+    </div>
+    <!---->
+  </div>
+  <div class="py-3"></div>
+</section>
+`;

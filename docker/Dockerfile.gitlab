@@ -1,0 +1,14 @@
+FROM alpine:latest as build
+
+COPY . /app/
+WORKDIR /app
+RUN apk --no-cache add ca-certificates
+
+
+FROM scratch
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=build /app /app
+
+WORKDIR /app
+
+ENTRYPOINT ["/app/skeleton"]

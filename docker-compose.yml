@@ -1,0 +1,88 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:11.5
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+    # Run init script
+      - ./docker/db:/docker-entrypoint-initdb.d
+    # uncomment to save db locally
+#      - ./docker/containers/postgresql/data:/var/lib/postgresql/data
+    # uncomment this to enable custom config file
+#      - ./docker/containers/postgresql/config/postgresql.conf:/etc/postgresql.conf
+#    command: postgres -c config_file=/etc/postgresql.conf
+    ports:
+      - "5432:5432"
+
+  cache:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+
+  mail:
+    image: mailhog/mailhog:latest
+    restart: always
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  frontend:
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile.dev
+      args:
+        - HTTP_PORT=8080
+    volumes:
+      - ./src/frontend:/app:cached
+      - ./src/frontend/node_modules:/app/node_modules:cached
+    ports:
+      - "8080:8080"
+    stdin_open: true
+    tty: true
+    # uncomment this for development
+#    command: /bin/bash
+
+  backend:
+    build:
+      context: ./src/backend
+      dockerfile: Dockerfile.dev
+      args:
+        - HTTP_PORT=8081
+    depends_on:
+      - db
+      - cache
+    volumes:
+      - ./src/backend:/app/src/backend
+    ports:
+      - "8081:8081"
+    stdin_open: true
+    tty: true
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db/postgres
+      REDIS_URL: redis://cache:6379
+      HTTP_ADDR: 0.0.0.0
+      # comment this for mailtrap
+      MAIL_HOST: mail
+    # uncomment this for development
+#    command: /bin/bash
+
+#  # test final container
+#  final_image:
+#    image: gadelkareem/skeleton:latest
+#    volumes:
+#      - ./src/backend/conf/app.prod.ini.secret:/app/conf/app.prod.ini.secret
+#    depends_on:
+#      - db
+#      - cache
+#    ports:
+#      - "80:80"
+#    stdin_open: true
+#    tty: true
+#    environment:
+#      BEEGO_RUNMODE: prod
+#      DATABASE_URL: postgres://postgres:postgres@db/postgres
+#      REDIS_URL: redis://cache:6379
+#      HTTP_ADDR: 0.0.0.0

@@ -1,0 +1,55 @@
+# testing new heroku.yml pipelines feature
+# https://devcenter.heroku.com/articles/build-docker-images-heroku-yml#creating-your-app-from-setup
+
+FROM gadelkareem/golang-nodejs:2d9f02dd55e8f6ad55c56021ba4c677efc299abc AS builder
+
+COPY . /app/
+COPY ./docker/db/db.sh /docker-entrypoint-initdb.d/db.sh
+RUN ls -al /app/ && chmod +x /docker-entrypoint-initdb.d/db.sh
+
+ENV APP_DIR="/app"
+ENV BACKEND_DIR="/app/src/backend"
+ENV FRONTEND_DIR="/app/src/frontend"
+ENV BUILD_DIR="/app/build"
+
+RUN mkdir -p $BUILD_DIR
+
+# Build backend
+WORKDIR $BACKEND_DIR
+
+ENV BEEGO_RUNMODE=test
+
+RUN set -eux; \
+        \
+        env; \
+        redis-server --daemonize yes; \
+        /docker-entrypoint.sh postgres; \
+        go mod tidy; \
+        go get ./...; \
+        CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o skeleton; \
+        # migration for tests; \
+        chmod +x skeleton && ./skeleton migrate up; \
+        go test -v ./... -count=1; \
+        mv skeleton "$BUILD_DIR/"; \
+        cp -r migrations "$BUILD_DIR/"; \
+        cp -r conf "$BUILD_DIR/"
+
+# Build frontend
+WORKDIR $FRONTEND_DIR
+
+ENV API_URL=/api/v1
+
+RUN set -eux; \
+        \
+        yarn install; \
+        yarn test; \
+        yarn generate; \
+        mv src/dist "$BUILD_DIR/"
+
+FROM scratch
+
+COPY --from=builder /app/build/. /app/
+
+WORKDIR /app
+
+ENTRYPOINT ["/app/skeleton"]

@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`recovery-questions.vue should match snapshot 1`] = `
+<section class="container container--fluid" id="user-profile">
+  <div class="row justify-center">
+    <div class="v-card--material pa-3 v-card v-sheet theme--light v-card--material--has-heading">
+      <div class="d-flex grow flex-wrap">
+        <div class="text-start v-card--material__heading mb-n6 v-sheet theme--dark elevation-6 info pa-7" style="width: 100%;">
+          <div class="display-2 font-weight-light">
+            Recovery Questions
+          </div>
+          <div class="subtitle-1 font-weight-light">
+            Fill in your answers to be able to recover your account in case you do not have access to your mobile.
+          </div>
+          <!---->
+          <!---->
+        </div>
+        <!---->
+      </div> <span> <!----> <!----></span>
+      <form novalidate="novalidate" method="post" class="v-form">
+        <div class="container py-0">
+          <!---->
+          <div class="row">
+            <div class="text-right col col-12"><button type="submit" class="mr-0 v-btn v-btn--contained theme--light v-size--default info"><span class="v-btn__content">
+                Save
+              </span></button></div>
+          </div>
+        </div>
+      </form>
+      <!---->
+    </div>
+  </div>
+</section>
+`;
