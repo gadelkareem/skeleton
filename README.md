@@ -5,6 +5,8 @@
 </p>
 
 # [Skeleton](https://skeleton-gadelkareem.herokuapp.com/)
+[![pipeline status](https://gitlab.com/gadelkareem/skeleton/badges/master/pipeline.svg)](https://gitlab.com/gadelkareem/skeleton/commits/master)
+
 
 ## Build & Run
 
