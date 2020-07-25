@@ -48,6 +48,9 @@ docker exec -it skeleton_backend_1 /bin/bash -c "go test -v ./... -count=1 | sor
 - [Run Gitlab pipeline](https://docs.gitlab.com/ee/ci/pipelines/#run-a-pipeline-manually).
 - Navigate to [your Heroku apps](https://dashboard.heroku.com/apps) to open your app URL.
 - For more information, check [.gitlab-ci.yml](.gitlab-ci.yml) to review how the production container is being generated in the pipelines.
+- Optionally you can also push your final image to Docker Hub by adding your username and password as CI/CD environment variables:
+    - DOCKER_HUB_USER: docker hub username
+    - DOCKER_HUB_PASSWORD: docker hub password
 
 # Services
 ## Mail service
