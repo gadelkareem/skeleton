@@ -117,7 +117,7 @@ docker:push:
     - docker pull $DOCKER_HUB_IMAGE_URL:latest || true
     - docker build --cache-from $DOCKER_HUB_IMAGE_URL:latest --tag $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA --tag $DOCKER_HUB_IMAGE_URL:latest --tag "${HEROKU_REGISTRY}/${HEROKU_APP}/web" .
     - docker push $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA || true
-    - docker push $DOCKER_HUB_IMAGE_URL:latest || || true
+    - docker push $DOCKER_HUB_IMAGE_URL:latest || true
     - docker login -u _ -p $(cat $HEROKU_FILE) $HEROKU_REGISTRY
     - docker push "${HEROKU_REGISTRY}/${HEROKU_APP}/web"
 
