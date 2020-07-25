@@ -7,6 +7,7 @@
 # [Skeleton](https://skeleton-gadelkareem.herokuapp.com/)
 [![pipeline status](https://gitlab.com/gadelkareem/skeleton/badges/master/pipeline.svg)](https://gitlab.com/gadelkareem/skeleton/commits/master)
 
+A complete Golang and Nuxt boilerplate for your project with backend API, frontend, tests and CI/CD pipelines.
 
 ## Build & Run
 
