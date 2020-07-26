@@ -85,12 +85,10 @@ heruko:create:
     - >
       heroku create $HEROKU_APP &&
       heroku addons:create heroku-postgresql:hobby-dev --app $HEROKU_APP &&
-      heroku pg:psql --command='CREATE EXTENSION pg_trgm;' &&
-      heroku addons:create heroku-redis:hobby-dev --app $HEROKU_APP || echo "App already exists"
+      heroku pg:psql --command='CREATE EXTENSION pg_trgm;' || echo "App already exists"
     - heroku config:set SKELETON_HOST=$HEROKU_APP.herokuapp.com
     - heroku config:set SKELETON_FRONTEND=https://$HEROKU_APP.herokuapp.com
     - heroku config:set PROD_CONFIG_SECRET_FILE=$PROD_CONFIG_SECRET_FILE
-#    - heroku config:set CACHE_TYPE=memory
   needs: []
   artifacts:
     paths:
