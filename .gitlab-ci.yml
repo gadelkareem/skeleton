@@ -39,6 +39,7 @@ backend:build:
     POSTGRES_HOST_AUTH_METHOD: trust
     DATABASE_URL: postgres://skeleton_backend:dev_awTf9d2GceKRNzhkCb4H5B8nfmq@postgres/skeleton_backend?sslmode=disable
     BEEGO_RUNMODE: test
+    CACHE_TYPE: memory
   script:
     - export GOPATH="$CACHE_DIR"
     # init postgres
