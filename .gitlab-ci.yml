@@ -113,13 +113,15 @@ docker:push:
     - cp docker/Dockerfile.gitlab "$BUILD_DIR/Dockerfile"
     - cd $BUILD_DIR
     - ls -al
+    - docker login -u _ -p $(cat $HEROKU_FILE) $HEROKU_REGISTRY
+    - docker pull "${HEROKU_REGISTRY}/${HEROKU_APP}/web" || true
+    - docker build --cache-from "${HEROKU_REGISTRY}/${HEROKU_APP}/web"  --tag "${HEROKU_REGISTRY}/${HEROKU_APP}/web" .
+    - docker push "${HEROKU_REGISTRY}/${HEROKU_APP}/web"
     - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD $DOCKER_HUB || true
-    - docker pull $DOCKER_HUB_IMAGE_URL:latest || true
-    - docker build --cache-from $DOCKER_HUB_IMAGE_URL:latest --tag $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA --tag $DOCKER_HUB_IMAGE_URL:latest --tag "${HEROKU_REGISTRY}/${HEROKU_APP}/web" .
+    - docker tag "${HEROKU_REGISTRY}/${HEROKU_APP}/web" $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA || true
+    - docker tag "${HEROKU_REGISTRY}/${HEROKU_APP}/web" $DOCKER_HUB_IMAGE_URL:latest || true
     - docker push $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA || true
     - docker push $DOCKER_HUB_IMAGE_URL:latest || true
-    - docker login -u _ -p $(cat $HEROKU_FILE) $HEROKU_REGISTRY
-    - docker push "${HEROKU_REGISTRY}/${HEROKU_APP}/web"
 
 
 heruko:push:
@@ -129,4 +131,3 @@ heruko:push:
     - cd $BUILD_DIR
     - BEEGO_RUNMODE=prod CACHE_TYPE=memory DATABASE_URL=$(heroku config:get DATABASE_URL) ./skeleton migrate up
     - heroku container:release web --app $HEROKU_APP
-#    - heroku run /app/skeleton migrate up --app $HEROKU_APP
