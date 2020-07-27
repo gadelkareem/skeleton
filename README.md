@@ -68,7 +68,7 @@ docker exec -it skeleton_backend_1 /bin/bash -c "go test -v ./... -count=1 | sor
 - [Fork the Skeleton repository on Gitlab](https://gitlab.com/gadelkareem/skeleton/-/forks/new)
 - Add the following CI/CD environment variables in [your Gitlab's CI/CD settings section](https://gitlab.com/help/ci/variables/README#custom-environment-variables):
     - HEROKU_API_KEY: Your free [Heroku API KEY](https://dashboard.heroku.com/account)
-    - PROD_CONFIG_SECRET_FILE: Base64 encoded string of the `./src/backend/conf/app.prod.ini.secret` file. Use the [./src/backend/conf/app.dev.ini.secret.example](./src/backend/conf/app.dev.ini.secret.example) as an example. 
+    - PROD_CONFIG_SECRET_FILE (optional): Base64 encoded string of the `./src/backend/conf/app.prod.ini.secret` file. Use the [./src/backend/conf/app.dev.ini.secret.example](./src/backend/conf/app.dev.ini.secret.example) as an example. 
     ```bash 
     echo "$PROD_SECRET_FILE_CONTENTS" | base64
     ```
