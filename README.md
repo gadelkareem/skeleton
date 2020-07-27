@@ -9,9 +9,33 @@
 
 A complete Golang and Nuxt boilerplate for your project with backend API, frontend, tests and CI/CD pipelines.
 
-## Build & Run
+## Features
+- Backend written in [Golang](https://golang.org/) using [Beego framework](https://beego.me/).
+- Frontend written in [NodeJS](https://nodejs.org/en/) using [NUXT](https://nuxtjs.org/) and [Vue.js](https://vuejs.org/) frameworks.
+- Material design using [Vuetify](https://vuetifyjs.com/).
+- JSON REST API based on [jsonapi.org](https://jsonapi.org/) standard.
+- Fully featured user registration, login, password reminder, profile update, 2FA authentication, SMS based mobile confirmation, ... etc.
+- [JSON Web Tokens (JWT)](https://jwt.io/) based authentication.
+- [Social login](./src/backend/services/SocialAuthService.go) using Facebook, LinkedIn, Google, Github.
+- [SEO friendly](https://en.wikipedia.org/wiki/Search_engine_optimization) thanks to [the NUXT Static Generated (Pre Rendering)](https://nuxtjs.org/guide/#static-generated-pre-rendering-).
+- [SQL migration](./src/backend/migrations/sql) using [sql-migrate](https://github.com/rubenv/sql-migrate).
+- [Rate limiter](./src/backend/limiter) for API routes to easily set a rate limit per IP for one or more routes.
+- [Role-based access control (RBAC)](./src/backend/rbac) for API routes and permissions.
+- [Pagination](./src/backend/utils/paginator) implementation for API and frontend with caching.
+- [Multi-factor authentication](./src/backend/services/AuthenticatorService.go) using [One Time Passwords](https://github.com/pquerna/otp) and mobile SMS code.
+- [Nice Email templates](./src/backend/services/EmailService.go) using [Hermes](https://github.com/matcornic/hermes).
+- [Fully featured admin dashboard](./src/frontend/src/pages/dashboard) based on [Vuetify Material Dashboard](https://demos.creative-tim.com/vuetify-material-dashboard/?partner=116160&ref=vuetifyjs.com#/).
+- [Complete CI/CD pipelines](https://gitlab.com/gadelkareem/skeleton/-/pipelines) including tests using [GitLab .gitlab-ci.yml](.gitlab-ci.yml) file.
+- [Deploy to Heroku](#deploy-to-heroku) using few easy steps.
+- Automated development initialization using [Docker compose](./docker-compose.yml) and [init file](./init.sh).
+- Application Cache using [Cachita](https://github.com/gadelkareem/cachita) with support for memory, Redis, database and file cache.
+- [Dependency injection](./src/backend/di/Container.go).
+- Backend API integration and unit tests.
+- Frontend [Jest](https://github.com/facebook/jest) tests.
 
-There are 2 methods of running Skeleton locally
+## Development
+
+There are 2 methods to run Skeleton locally
 
 - Install required libs locally on OSX:
 ```bash
