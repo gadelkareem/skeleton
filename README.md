@@ -17,7 +17,7 @@ A complete Golang and Nuxt boilerplate for your project with backend API, fronte
 - Fully featured user registration, login, password reminder, profile update, 2FA authentication, SMS based mobile confirmation, ... etc.
 - [JSON Web Tokens (JWT)](https://jwt.io/) based authentication.
 - [Social login](./src/backend/services/SocialAuthService.go) using Facebook, LinkedIn, Google, Github.
-- [SEO friendly](https://en.wikipedia.org/wiki/Search_engine_optimization) thanks to [the NUXT Static Generated (Pre Rendering)](https://nuxtjs.org/guide/#static-generated-pre-rendering-).
+- [SEO friendly](https://en.wikipedia.org/wiki/Search_engine_optimization) thanks to [the NUXT Static Generated (Pre Rendering)](https://nuxtjs.org/guide/#static-generated-pre-rendering).
 - [SQL migration](./src/backend/migrations/sql) using [sql-migrate](https://github.com/rubenv/sql-migrate).
 - [Rate limiter](./src/backend/limiter) for API routes to easily set a rate limit per IP for one or more routes.
 - [Role-based access control (RBAC)](./src/backend/rbac) for API routes and permissions.
