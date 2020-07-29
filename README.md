@@ -14,7 +14,7 @@ A complete Golang and Nuxt boilerplate for your project with backend API, fronte
 - Frontend written in [NodeJS](https://nodejs.org/en/) using [NUXT](https://nuxtjs.org/) and [Vue.js](https://vuejs.org/) frameworks.
 - Material design using [Vuetify](https://vuetifyjs.com/).
 - JSON REST API based on [jsonapi.org](https://jsonapi.org/) standard.
-- Fully featured user registration, login, password reminder, profile update, 2FA authentication, SMS based mobile confirmation, ... etc.
+- Fully featured user registration, login, password reminder, profile update, 2FA authentication, SMS based mobile confirmation, audit logs ... etc.
 - [JSON Web Tokens (JWT)](https://jwt.io/) based authentication.
 - [Social login](./src/backend/services/SocialAuthService.go) using Facebook, LinkedIn, Google, Github.
 - [SEO friendly](https://en.wikipedia.org/wiki/Search_engine_optimization) thanks to [the NUXT Static Generated (Pre Rendering)](https://nuxtjs.org/guide/#static-generated-pre-rendering).

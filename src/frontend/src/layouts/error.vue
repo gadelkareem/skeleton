@@ -17,7 +17,7 @@
             <v-btn
               text
               class="red darken-3 white--text"
-              to="/dashboard/home/"
+              to="/"
             >
               Back
             </v-btn>
