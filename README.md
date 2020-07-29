@@ -5,7 +5,8 @@
 </p>
 
 # [Skeleton](https://skeleton-gadelkareem.herokuapp.com/)
-[![pipeline status](https://gitlab.com/gadelkareem/skeleton/badges/master/pipeline.svg)](https://gitlab.com/gadelkareem/skeleton/commits/master)
+[![pipeline status](https://gitlab.com/gadelkareem/skeleton/badges/master/pipeline.svg)](https://gitlab.com/gadelkareem/skeleton/commits/master) <a href="https://github.com/gadelkareem/skeleton"><img src="https://github.githubassets.com/images/modules/logos_page/Octocat.png" width="25" height="25" alt="Github Mirror"></a>
+
 
 A complete Golang and Nuxt boilerplate for your project with backend API, frontend, tests and CI/CD pipelines.
 
