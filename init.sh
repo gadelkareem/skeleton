@@ -23,6 +23,7 @@ function prerequisites() {
 }
 
 function run() {
+  export BEEGO_RUNMODE=dev
   docker-compose up -d db cache mail
   cd "${CUR_DIR}"/src/backend
   cp conf/app.dev.ini.secret.example conf/app.dev.ini.secret
