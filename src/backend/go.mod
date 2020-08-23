@@ -14,6 +14,8 @@ require (
 	github.com/danilopolani/gocialite v1.0.2
 	github.com/gadelkareem/cachita v0.2.1
 	github.com/gadelkareem/go-helpers v0.0.0-20200725110331-77a434fc0423
+	github.com/gadelkareem/que v1.0.3
+	github.com/gadelkareem/que-go v1.0.1 // indirect
 	github.com/gbrlsnchs/jwt/v3 v3.0.0-rc.2
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
 	github.com/go-pg/pg/v9 v9.1.6
@@ -22,6 +24,8 @@ require (
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.10 // indirect
+	github.com/jackc/pgx v3.6.2+incompatible // indirect
+	github.com/jackc/pgx/v4 v4.8.1
 	github.com/jaytaylor/html2text v0.0.0-20200412013138-3577fbdbcff7 // indirect
 	github.com/lib/pq v1.8.0
 	github.com/magefile/mage v1.10.0 // indirect
@@ -33,6 +37,7 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/oleiade/reflections v1.0.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.4 // indirect
+	github.com/pkg/errors v0.8.1 // indirect
 	github.com/pquerna/otp v1.2.0
 	github.com/prometheus/client_golang v1.7.1 // indirect
 	github.com/rubenv/sql-migrate v0.0.0-20200616145509-8d140a17f351
@@ -41,7 +46,7 @@ require (
 	github.com/ttacon/libphonenumber v1.1.0
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	github.com/vmihailenco/msgpack/v4 v4.3.12 // indirect
-	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899
+	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/sys v0.0.0-20200728102440-3e129f6d46b1 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect

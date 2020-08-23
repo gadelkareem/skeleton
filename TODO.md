@@ -7,4 +7,5 @@
     - validate jsonapi models
     - check memory leak in nuxt https://github.com/nuxt/nuxt.js/issues/1984
     - better 404 errors, ex /api/v1/login-requests
+    - audit logs createdAt is wrong
 

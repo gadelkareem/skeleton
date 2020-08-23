@@ -130,7 +130,7 @@ func handleProdConfig(m string) {
     if s == "" {
         s, err = h.ReadFile("conf/app.dev.ini.secret.example")
         h.PanicOnError(err)
-    }else {
+    } else {
         s, err = h.Base64Decode(s)
         h.PanicOnError(err)
     }
@@ -211,7 +211,11 @@ func (a app) logging() {
 }
 
 func (a app) Run(params ...string) {
+    startWorkers()
     beego.Run(params...)
+    if quePool != nil {
+        quePool.Close()
+    }
 }
 
 func (a app) RunCommand() {
