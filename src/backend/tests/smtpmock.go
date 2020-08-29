@@ -28,9 +28,9 @@ var (
 
 func initEmailService(c *di.Container) {
     if *mailbox {
-        c.EmailService = services.NewEmailService(kernel.SMTPDialer(), nil)
+        c.EmailService = services.NewEmailService(kernel.SMTPDialer(), nil, nil)
     } else {
-        c.EmailService = services.NewEmailService(nil, newMockSenderCloser())
+        c.EmailService = services.NewEmailService(nil, newMockSenderCloser(), nil)
     }
 }
 

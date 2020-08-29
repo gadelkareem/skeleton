@@ -1,4 +1,6 @@
 - Queue management system
+    - Enqueue emails
+    - Enqueue SMS
 
 - Quickies
     - after signup "active" is NULL instead of false

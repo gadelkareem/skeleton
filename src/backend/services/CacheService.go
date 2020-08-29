@@ -150,6 +150,9 @@ func (s *CacheService) InvalidateModel(m models.BaseInterface) (err error) {
 }
 
 func (s *CacheService) Invalidate(tags ...string) (err error) {
+    if len(tags) == 0 {
+        return nil
+    }
     err = s.c.InvalidateTags(tags...)
     if err != nil {
         s.log("Error invalidating cache tags: %v", err)

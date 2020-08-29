@@ -7,6 +7,8 @@ import (
 
     "backend/kernel"
     "backend/models"
+    "backend/queue"
+    "backend/queue/workers"
     "github.com/go-gomail/gomail"
     "github.com/matcornic/hermes/v2"
 )
@@ -16,18 +18,21 @@ type (
         Dialer                *gomail.Dialer
         SenderCloser          gomail.SendCloser
         smtpUser, senderEmail string
+        q                     *queue.QueManager
     }
 )
 
-func NewEmailService(d *gomail.Dialer, sc gomail.SendCloser) *EmailService {
+func NewEmailService(d *gomail.Dialer, sc gomail.SendCloser, q *queue.QueManager) *EmailService {
     return &EmailService{Dialer: d,
         SenderCloser: sc,
         smtpUser:     kernel.App.Config.String("smtp::smtpUser"),
-        senderEmail:  kernel.App.Config.String("smtp::senderEmail")}
+        senderEmail:  kernel.App.Config.String("smtp::senderEmail"),
+        q:            q,
+    }
 }
 
 // send sends the email
-func (s *EmailService) Send(recipientEmail, subject, htmlBody string, txtBody string) error {
+func (s *EmailService) Send(recipientEmail, subject, htmlBody, txtBody string) error {
 
     if recipientEmail == "" {
         return errors.New("no receiver emails configured")
@@ -170,5 +175,18 @@ func (s *EmailService) generate(email hermes.Email, recipientEmail, subject stri
     // 	return err
     // }
 
+    if s.q != nil {
+        return s.enqueue(recipientEmail, subject, html, txt)
+    }
+
     return s.Send(recipientEmail, subject, html, txt)
+}
+
+func (s *EmailService) enqueue(recipientEmail, subject, htmlBody, txtBody string) error {
+    return s.q.Enqueue(workers.SendMailType, workers.SendMailReq{
+        RecipientEmail: recipientEmail,
+        Subject:        subject,
+        HTML:           htmlBody,
+        Text:           txtBody,
+    })
 }

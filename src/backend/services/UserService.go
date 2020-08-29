@@ -8,7 +8,6 @@ import (
     "backend/models"
     "backend/rbac"
     "backend/utils/paginator"
-    "github.com/astaxie/beego/logs"
     h "github.com/gadelkareem/go-helpers"
 )
 
@@ -191,15 +190,10 @@ func (s *UserService) VerifyEmail(email, verificationHash string) error {
         return err
     }
 
-    go func() {
-        // send verify email link
-        e := s.es.WelcomeEmail(m.GetFullName(), m.Email)
-        if e != nil {
-            logs.Error("Unable to send verify email: %s", e)
-        }
-    }()
+    // send verify email link
+    err = s.es.WelcomeEmail(m.GetFullName(), m.Email)
 
-    return nil
+    return err
 }
 
 func (s *UserService) SendVerifySMS(m *models.User) (err error) {

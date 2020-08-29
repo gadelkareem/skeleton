@@ -3,8 +3,6 @@ package kernel
 import (
     "context"
     "database/sql"
-    "encoding/json"
-    "fmt"
     "time"
 
     "github.com/gadelkareem/go-helpers"
@@ -21,8 +19,7 @@ type PgDb struct {
 }
 
 var (
-    dbURL   string
-    quePool *pgxpool.Pool
+    dbURL string
 )
 
 func initDBConfig() {
@@ -115,52 +112,8 @@ func Que(maxConnections int32) (*que.Client, *pgxpool.Pool) {
     h.PanicOnError(err)
     connPoolConfig.MaxConns = maxConnections
     connPoolConfig.AfterConnect = que.PrepareStatements
-    quePool, err = pgxpool.ConnectConfig(context.Background(), connPoolConfig)
+    p, err := pgxpool.ConnectConfig(context.Background(), connPoolConfig)
     h.PanicOnError(err)
 
-    return que.NewClient(quePool), quePool
-}
-
-func startWorkers() {
-    qc, _ := Que(10)
-    enqueue(qc)
-    wm := que.WorkMap{
-        "sayHi": sayHi,
-    }
-
-    workers := que.NewWorkerPool(qc, wm, 5)
-
-    go workers.Start()
-
-    // workers.Shutdown()
-    // p.Close()
-}
-
-func enqueue(qc *que.Client) {
-    enc, err := json.Marshal(IndexRequest{
-        URL: "http://example.com",
-    })
-    h.PanicOnError(err)
-
-    err = qc.Enqueue(&que.Job{
-        Type: "sayHi",
-        Args: enc,
-    })
-    h.PanicOnError(err)
-}
-
-type IndexRequest struct {
-    URL string `json:"url"`
-}
-
-func sayHi(j *que.Job) error {
-    var ir IndexRequest
-    if err := json.Unmarshal(j.Args, &ir); err != nil {
-        return fmt.Errorf("Unable to unmarshal job arguments into IndexRequest: %s, err: %s ", j.Args, err)
-    }
-
-    logs.Debug("processing sayhi")
-    logs.Debug(ir)
-
-    return nil
+    return que.NewClient(p), p
 }

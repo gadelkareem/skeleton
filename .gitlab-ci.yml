@@ -96,6 +96,8 @@ heruko:create:
 
 docker:push:
   stage: push-docker
+  only:
+    - master
   cache: {}
   image: docker:19.03.11
   services:
@@ -124,6 +126,8 @@ docker:push:
 
 heruko:push:
   stage: push-heroku
+  only:
+    - master
   cache: {}
   script:
     - cd $BUILD_DIR

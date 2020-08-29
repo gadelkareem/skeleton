@@ -3,10 +3,12 @@ package di
 import (
     "net/http"
 
+    "backend/commands"
     "backend/kernel"
     "backend/limiter"
-    "backend/commands"
     "backend/models"
+    "backend/queue"
+    "backend/queue/workers"
     "backend/rbac"
     "backend/services"
     "github.com/gadelkareem/cachita"
@@ -28,12 +30,14 @@ type Container struct {
     CacheService         *services.CacheService
     RateLimiter          *limiter.RateLimiter
     RBAC                 *rbac.RBAC
+    QueManager           *queue.QueManager
 }
 
 func InitContainer() *Container {
     c := new(Container)
     c.Init()
     c.InitCommands()
+    c.InitWorkers()
 
     return c
 }
@@ -50,12 +54,13 @@ func (c *Container) commonInit() {
 
     c.AuditLogRepository = models.NewAuditLogRepository(c.DB, 0)
     c.AuditLogService = services.NewAuditLogService(c.AuditLogRepository)
-
 }
 
 func (c *Container) Init() {
     c.Cache = kernel.Cache()
-    c.EmailService = services.NewEmailService(kernel.SMTPDialer(), nil)
+    qc, _ := kernel.Que(10)
+    c.QueManager = queue.NewQueManager(qc)
+    c.EmailService = services.NewEmailService(kernel.SMTPDialer(), nil, c.QueManager)
     c.SMSService = services.NewSMSService(&http.Client{})
     c.RateLimiter = limiter.NewRateLimiter(cachita.Memory(), nil)
     c.RBAC = rbac.New(kernel.IsDev())
@@ -66,10 +71,17 @@ func (c *Container) Init() {
 func (c *Container) InitCommands() {
     kernel.Commands = map[string]kernel.Command{
         "migrate": commands.NewMigrator(kernel.DB()),
-        "admin": commands.NewAdmin(c.UserService),
+        "admin":   commands.NewAdmin(c.UserService),
     }
 }
 
 func (c *Container) InitTest() {
     c.commonInit()
+}
+
+func (c *Container) InitWorkers() {
+    c.QueManager.AddWorker(
+        workers.NewSendMail(c.EmailService),
+    )
+    c.QueManager.StartWorkers()
 }

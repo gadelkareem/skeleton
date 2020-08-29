@@ -8,10 +8,9 @@ import (
     "strconv"
     "strings"
 
-    "github.com/astaxie/beego/context"
-
     "github.com/astaxie/beego"
     "github.com/astaxie/beego/config"
+    "github.com/astaxie/beego/context"
     "github.com/astaxie/beego/logs"
     "github.com/gadelkareem/go-helpers"
 )
@@ -211,11 +210,7 @@ func (a app) logging() {
 }
 
 func (a app) Run(params ...string) {
-    startWorkers()
     beego.Run(params...)
-    if quePool != nil {
-        quePool.Close()
-    }
 }
 
 func (a app) RunCommand() {
