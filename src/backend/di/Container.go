@@ -90,6 +90,9 @@ func (c *Container) initQue() {
 }
 
 func (c *Container) initWorkers() {
+    if c.QueManager == nil {
+        return
+    }
     c.QueManager.AddWorker(
         workers.NewSendMail(c.EmailService),
         workers.NewSendSMS(c.SMSService),
