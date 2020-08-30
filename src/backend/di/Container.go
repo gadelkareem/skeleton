@@ -2,7 +2,6 @@ package di
 
 import (
     "net/http"
-    "os"
 
     "backend/commands"
     "backend/kernel"
@@ -81,11 +80,12 @@ func (c *Container) InitTest() {
 }
 
 func (c *Container) initQue() {
-    if len(os.Args) > 1 {
-        logs.Debug("Running command %+v", os.Args)
+    qc, _, err := kernel.Que(10)
+    if err != nil {
+        logs.Error("Could not start Que: %+v", err)
+        c.QueManager = nil
         return
     }
-    qc, _ := kernel.Que(10)
     c.QueManager = queue.NewQueManager(qc)
 }
 

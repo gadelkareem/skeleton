@@ -10,10 +10,9 @@ import (
 func main() {
     kernel.Bootstrap()
     c := di.InitContainer()
-    routers.InitRouters(c)
-
-    kernel.App.SetupServer(&controllers.ErrorController{})
-
     kernel.App.RunCommand()
+
+    routers.InitRouters(c)
+    kernel.App.SetupServer(&controllers.ErrorController{})
     kernel.App.Run(c.QueManager)
 }
