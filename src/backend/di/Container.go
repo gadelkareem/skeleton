@@ -12,6 +12,7 @@ import (
     "backend/queue/workers"
     "backend/rbac"
     "backend/services"
+    "github.com/astaxie/beego/logs"
     "github.com/gadelkareem/cachita"
     h "github.com/gadelkareem/go-helpers"
     "gopkg.in/danilopolani/gocialite.v1"
@@ -82,6 +83,7 @@ func (c *Container) InitTest() {
 
 func (c *Container) initQue() {
     if len(os.Args) > 1 {
+        logs.Debug("Running command %+v", os.Args)
         return
     }
     qc, _, err := kernel.Que(10)
