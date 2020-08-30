@@ -107,15 +107,13 @@ func (d dbLogger) AfterQuery(c context.Context, q *pg.QueryEvent) error {
     return err
 }
 
-func Que(maxConnections int32) (*que.Client, *pgxpool.Pool, error) {
+func Que(maxConnections int32) (*que.Client, *pgxpool.Pool) {
     connPoolConfig, err := pgxpool.ParseConfig(dbURL)
     h.PanicOnError(err)
     connPoolConfig.MaxConns = maxConnections
     connPoolConfig.AfterConnect = que.PrepareStatements
 
     p, err := pgxpool.ConnectConfig(context.Background(), connPoolConfig)
-    if err != nil {
-        return nil, nil, err
-    }
-    return que.NewClient(p), p, nil
+    h.PanicOnError(err)
+    return que.NewClient(p), p
 }

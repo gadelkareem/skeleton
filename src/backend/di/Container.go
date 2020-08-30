@@ -14,7 +14,6 @@ import (
     "backend/services"
     "github.com/astaxie/beego/logs"
     "github.com/gadelkareem/cachita"
-    h "github.com/gadelkareem/go-helpers"
     "gopkg.in/danilopolani/gocialite.v1"
 )
 
@@ -86,8 +85,7 @@ func (c *Container) initQue() {
         logs.Debug("Running command %+v", os.Args)
         return
     }
-    qc, _, err := kernel.Que(10)
-    h.PanicOnError(err)
+    qc, _ := kernel.Que(10)
     c.QueManager = queue.NewQueManager(qc)
 }
 
