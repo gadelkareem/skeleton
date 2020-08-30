@@ -2,6 +2,7 @@ package di
 
 import (
     "net/http"
+    "os"
 
     "backend/commands"
     "backend/kernel"
@@ -12,6 +13,7 @@ import (
     "backend/rbac"
     "backend/services"
     "github.com/gadelkareem/cachita"
+    h "github.com/gadelkareem/go-helpers"
     "gopkg.in/danilopolani/gocialite.v1"
 )
 
@@ -35,9 +37,9 @@ type Container struct {
 
 func InitContainer() *Container {
     c := new(Container)
-    c.Init()
-    c.InitCommands()
-    c.InitWorkers()
+    c.init()
+    c.initCommands()
+    c.initWorkers()
 
     return c
 }
@@ -56,10 +58,9 @@ func (c *Container) commonInit() {
     c.AuditLogService = services.NewAuditLogService(c.AuditLogRepository)
 }
 
-func (c *Container) Init() {
+func (c *Container) init() {
     c.Cache = kernel.Cache()
-    qc, _ := kernel.Que(10)
-    c.QueManager = queue.NewQueManager(qc)
+    c.initQue()
     c.EmailService = services.NewEmailService(kernel.SMTPDialer(), nil, c.QueManager)
     c.SMSService = services.NewSMSService(&http.Client{}, c.QueManager)
     c.RateLimiter = limiter.NewRateLimiter(cachita.Memory(), nil)
@@ -68,7 +69,7 @@ func (c *Container) Init() {
     c.SocialAuthService = services.NewSocialAuthService(c.UserService, c.JWTService, gocialite.NewDispatcher())
 }
 
-func (c *Container) InitCommands() {
+func (c *Container) initCommands() {
     kernel.Commands = map[string]kernel.Command{
         "migrate": commands.NewMigrator(kernel.DB()),
         "admin":   commands.NewAdmin(c.UserService),
@@ -79,7 +80,16 @@ func (c *Container) InitTest() {
     c.commonInit()
 }
 
-func (c *Container) InitWorkers() {
+func (c *Container) initQue() {
+    if len(os.Args) > 1 {
+        return
+    }
+    qc, _, err := kernel.Que(10)
+    h.PanicOnError(err)
+    c.QueManager = queue.NewQueManager(qc)
+}
+
+func (c *Container) initWorkers() {
     c.QueManager.AddWorker(
         workers.NewSendMail(c.EmailService),
         workers.NewSendSMS(c.SMSService),
