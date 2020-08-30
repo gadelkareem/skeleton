@@ -84,5 +84,4 @@ func (c *Container) InitWorkers() {
         workers.NewSendMail(c.EmailService),
         workers.NewSendSMS(c.SMSService),
     )
-    c.QueManager.StartWorkers()
 }
