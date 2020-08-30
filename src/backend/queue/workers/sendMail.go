@@ -10,19 +10,19 @@ import (
 
 const SendMailType = "sendMail"
 
-type sender interface {
+type mailSender interface {
     Send(recipientEmail, subject, htmlBody, txtBody string) error
 }
 
 type sendMail struct {
-    s sender
+    s mailSender
 }
 
 type SendMailReq struct {
     RecipientEmail, Subject, HTML, Text string
 }
 
-func NewSendMail(s sender) queue.Worker {
+func NewSendMail(s mailSender) queue.Worker {
     return &sendMail{s: s}
 }
 

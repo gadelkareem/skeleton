@@ -11,7 +11,7 @@ type smsCl struct {
 }
 
 func initSMSService(c *di.Container) {
-    c.SMSService = services.NewSMSService(new(smsCl))
+    c.SMSService = services.NewSMSService(new(smsCl), nil)
 }
 
 func (c *smsCl) Do(*http.Request) (*http.Response, error) {

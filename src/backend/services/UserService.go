@@ -209,7 +209,7 @@ func (s *UserService) SendVerifySMS(m *models.User) (err error) {
         return
     }
 
-    err = s.sms.VerifySMS(m.Mobile, m.MobileVerifyCode)
+    err = s.sms.Enqueue(m.Mobile, m.MobileVerifyCode)
 
     return
 }

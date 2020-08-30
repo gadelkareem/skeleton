@@ -61,7 +61,7 @@ func (c *Container) Init() {
     qc, _ := kernel.Que(10)
     c.QueManager = queue.NewQueManager(qc)
     c.EmailService = services.NewEmailService(kernel.SMTPDialer(), nil, c.QueManager)
-    c.SMSService = services.NewSMSService(&http.Client{})
+    c.SMSService = services.NewSMSService(&http.Client{}, c.QueManager)
     c.RateLimiter = limiter.NewRateLimiter(cachita.Memory(), nil)
     c.RBAC = rbac.New(kernel.IsDev())
     c.commonInit()
@@ -82,6 +82,7 @@ func (c *Container) InitTest() {
 func (c *Container) InitWorkers() {
     c.QueManager.AddWorker(
         workers.NewSendMail(c.EmailService),
+        workers.NewSendSMS(c.SMSService),
     )
     c.QueManager.StartWorkers()
 }
