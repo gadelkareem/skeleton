@@ -35,6 +35,7 @@ A complete Golang and Nuxt boilerplate for your project with backend API, fronte
 - [Dependency injection](./src/backend/di/Container.go).
 - Backend API integration and unit tests.
 - Frontend [Jest](https://github.com/facebook/jest) tests.
+- [Queue management system](./src/backend/queue) using [Que](https://github.com/gadelkareem/que).
 
 ## Development
 

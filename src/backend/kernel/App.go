@@ -13,7 +13,6 @@ import (
     "github.com/astaxie/beego/context"
     "github.com/astaxie/beego/logs"
     "github.com/gadelkareem/go-helpers"
-    "github.com/gadelkareem/que"
 )
 
 const (
@@ -210,12 +209,7 @@ func (a app) logging() {
     logs.SetLevel(App.Config.DefaultInt("logLevel", logs.LevelWarning))
 }
 
-type workerStarter interface {
-    StartWorkers() *que.WorkerPool
-}
-
-func (a app) Run(q workerStarter, params ...string) {
-    q.StartWorkers()
+func (a app) Run(params ...string) {
     beego.Run(params...)
 }
 

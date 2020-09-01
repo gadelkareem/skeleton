@@ -14,5 +14,6 @@ func main() {
 
     routers.InitRouters(c)
     kernel.App.SetupServer(&controllers.ErrorController{})
-    kernel.App.Run(c.QueManager)
+    c.QueManager.StartWorkers()
+    kernel.App.Run()
 }
