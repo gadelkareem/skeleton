@@ -112,6 +112,11 @@ func (s *UserService) Authenticate(username, password string) (m *models.User, e
     return m, err
 }
 
+func (s *UserService) UpdateLoginAt(m *models.User) error {
+    m.LastLoginAt = time.Now()
+    return s.Save(m)
+}
+
 func (s *UserService) SignUp(m *models.User) (err error) {
     err = s.r.ValidateUser(m)
     if err != nil {
@@ -162,7 +167,7 @@ func (s *UserService) SignUpSocial(m *models.User) (err error) {
         }
         return
     }
-    // send welcome email link
+    // send welcome email
     err = s.es.WelcomeEmail(m.GetFullName(), m.Email)
 
     return
@@ -190,8 +195,10 @@ func (s *UserService) VerifyEmail(email, verificationHash string) error {
         return err
     }
 
-    // send verify email link
-    err = s.es.WelcomeEmail(m.GetFullName(), m.Email)
+    if m.LastLoginAt.IsZero() {
+        // send welcome email
+        err = s.es.WelcomeEmail(m.GetFullName(), m.Email)
+    }
 
     return err
 }

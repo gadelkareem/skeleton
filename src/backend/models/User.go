@@ -67,7 +67,6 @@ type (
 func NewUser() *User {
     return &User{
         Base:        NewBaseModel(),
-        LastLoginAt: time.Now(),
         Active:      false,
     }
 }

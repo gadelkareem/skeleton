@@ -101,6 +101,9 @@ func (s *SocialAuthService) Authenticate(r *models.SocialAuth) (*models.AuthToke
     if err != nil {
         return nil, err
     }
+
+    go s.us.UpdateLoginAt(m)
+
     return s.jwt.SocialToken(m)
 }
 

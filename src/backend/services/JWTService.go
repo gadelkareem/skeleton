@@ -71,6 +71,7 @@ func (s *JWTService) Authenticate(r *models.Login) (a *models.AuthToken, err err
             return nil, internal.ErrInvalidSMSCode
         }
     }
+    go s.us.UpdateLoginAt(u)
     a = &models.AuthToken{UserId: u.ID}
     a.Token, err = s.Token(u)
     if err != nil {
