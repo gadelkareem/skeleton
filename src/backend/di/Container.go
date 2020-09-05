@@ -13,7 +13,7 @@ import (
     "backend/services"
     "github.com/astaxie/beego/logs"
     "github.com/gadelkareem/cachita"
-    "gopkg.in/danilopolani/gocialite.v1"
+    "github.com/gadelkareem/gocialite"
 )
 
 type Container struct {
@@ -65,7 +65,7 @@ func (c *Container) init() {
     c.RateLimiter = limiter.NewRateLimiter(cachita.Memory(), nil)
     c.RBAC = rbac.New(kernel.IsDev())
     c.commonInit()
-    c.SocialAuthService = services.NewSocialAuthService(c.UserService, c.JWTService, gocialite.NewDispatcher())
+    c.SocialAuthService = services.NewSocialAuthService(c.UserService, c.JWTService, gocialite.NewDispatcher(c.Cache))
 }
 
 func (c *Container) initCommands() {

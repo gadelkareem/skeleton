@@ -9,10 +9,10 @@ import (
     "backend/kernel"
     "backend/models"
     "github.com/astaxie/beego/logs"
-    "github.com/danilopolani/gocialite/structs"
     h "github.com/gadelkareem/go-helpers"
+    "github.com/gadelkareem/gocialite"
+    "github.com/gadelkareem/gocialite/structs"
     "golang.org/x/oauth2"
-    "gopkg.in/danilopolani/gocialite.v1"
 )
 
 type (
@@ -22,7 +22,7 @@ type (
         s   SocialHandler
     }
     SocialHandler interface {
-        New() *gocialite.Gocial
+        New() (*gocialite.Gocial, error)
         Handle(state, code string) (*structs.User, *oauth2.Token, error)
     }
 )
@@ -44,7 +44,11 @@ func (s *SocialAuthService) Redirect(provider string) (a *models.SocialAuth, err
     }
 
     a = new(models.SocialAuth)
-    d := s.s.New().Driver(provider)
+    g, err := s.s.New()
+    if err != nil {
+        return nil, err
+    }
+    d := g.Driver(provider)
     if p["scope"] != "" {
         d = d.Scopes([]string{p["scope"]})
     }
@@ -60,7 +64,7 @@ func (s *SocialAuthService) Redirect(provider string) (a *models.SocialAuth, err
 func (s *SocialAuthService) Authenticate(r *models.SocialAuth) (*models.AuthToken, error) {
     u, _, err := s.s.Handle(r.State, r.Code)
     if err != nil {
-        logs.Debug("Social login error: %s",err)
+        logs.Debug("Social login error: %s", err)
         if strings.Contains(err.Error(), "invalid CSRF token") {
             return nil, internal.ErrInvalidCSRFToken
         }
