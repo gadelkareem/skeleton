@@ -142,6 +142,8 @@ github.com/gadelkareem/go-helpers v0.0.0-20200725110331-77a434fc0423 h1:eERtwaJW
 github.com/gadelkareem/go-helpers v0.0.0-20200725110331-77a434fc0423/go.mod h1:NQj6Txfr/VxtlQDQoy14/d6/MyZ5nZX0EatXIVklKpo=
 github.com/gadelkareem/gocialite v1.0.3-0.20200905121752-f78752646dbf h1:xO/qLf08BYBAnRMbHJx30MQdwsYYtMr0ocUORRvzuJ8=
 github.com/gadelkareem/gocialite v1.0.3-0.20200905121752-f78752646dbf/go.mod h1:B83QJ/RYQpawdKcLJU1EOUphCn39/clYpefbXyOhwQA=
+github.com/gadelkareem/gocialite v1.0.3-0.20200906110041-d3fe1179b224 h1:zrsyXIT92KafMEm1No8SMgAShkypkgFhVwZVYFrJw3w=
+github.com/gadelkareem/gocialite v1.0.3-0.20200906110041-d3fe1179b224/go.mod h1:B83QJ/RYQpawdKcLJU1EOUphCn39/clYpefbXyOhwQA=
 github.com/gadelkareem/que v1.0.3 h1:uqYGTV/Tzk5B9jdqW91HG7qcHvTfcWeHBygZzWTEE6E=
 github.com/gadelkareem/que v1.0.3/go.mod h1:Lop8MkFrrXYXVuvuC5BZ4l4THmZ6B0PgTGFDzo0zlcM=
 github.com/garyburd/redigo v1.6.0/go.mod h1:NR3MbYisc3/PwhQ00EMzDiPmrwpPxAn5GI05/YaO1SY=

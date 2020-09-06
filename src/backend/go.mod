@@ -7,7 +7,7 @@ require (
 	github.com/brianvoe/gofakeit/v4 v4.3.0
 	github.com/gadelkareem/cachita v0.2.1
 	github.com/gadelkareem/go-helpers v0.0.0-20200725110331-77a434fc0423
-	github.com/gadelkareem/gocialite v1.0.3-0.20200905121752-f78752646dbf
+	github.com/gadelkareem/gocialite v1.0.3-0.20200906110041-d3fe1179b224
 	github.com/gadelkareem/que v1.0.3
 	github.com/gbrlsnchs/jwt/v3 v3.0.0-rc.2
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df

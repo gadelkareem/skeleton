@@ -22,7 +22,7 @@ type (
         s   SocialHandler
     }
     SocialHandler interface {
-        New() (*gocialite.Gocial, error)
+        New() *gocialite.Gocial
         Handle(state, code string) (*structs.User, *oauth2.Token, error)
     }
 )
@@ -44,11 +44,7 @@ func (s *SocialAuthService) Redirect(provider string) (a *models.SocialAuth, err
     }
 
     a = new(models.SocialAuth)
-    g, err := s.s.New()
-    if err != nil {
-        return nil, err
-    }
-    d := g.Driver(provider)
+    d := s.s.New().Driver(provider)
     if p["scope"] != "" {
         d = d.Scopes([]string{p["scope"]})
     }

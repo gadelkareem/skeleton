@@ -19,7 +19,7 @@ func initSocialAuthService(c *di.Container) {
     c.SocialAuthService = services.NewSocialAuthService(c.UserService, c.JWTService, &GocialiteMock{d: gocialite.NewDispatcher(c.Cache)})
 }
 
-func (g *GocialiteMock) New() (*gocialite.Gocial, error) {
+func (g *GocialiteMock) New() *gocialite.Gocial {
     return g.d.New()
 }
 
