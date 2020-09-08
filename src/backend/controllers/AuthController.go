@@ -18,6 +18,7 @@ type AuthController struct {
 func (c *AuthController) Token() {
     r := new(models.Login)
     c.parseRequest(r)
+    c.validate(r)
 
     a, err := c.C.JWTService.Authenticate(r)
     c.handleError(err)
@@ -33,6 +34,7 @@ func (c *AuthController) Token() {
 func (c *AuthController) RefreshToken() {
     r := new(models.AuthToken)
     c.parseRequest(r)
+    c.validate(r)
 
     a, err := c.C.JWTService.AuthenticateRefreshToken(r.RefreshToken)
     c.handleError(err)
@@ -66,6 +68,7 @@ func (c *AuthController) Logout() {
 func (c *AuthController) SocialRedirect() {
     r := new(models.SocialAuth)
     c.parseRequest(r)
+    c.validate(r)
 
     a, err := c.C.SocialAuthService.Redirect(r.Provider)
     c.handleError(err)
@@ -77,6 +80,7 @@ func (c *AuthController) SocialRedirect() {
 func (c *AuthController) SocialCallback() {
     r := new(models.SocialAuth)
     c.parseRequest(r)
+    c.validate(r)
 
     a, err := c.C.SocialAuthService.Authenticate(r)
     c.handleError(err)

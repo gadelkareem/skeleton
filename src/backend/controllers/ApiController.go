@@ -64,6 +64,23 @@ func (c *ApiController) parseRequest(m interface{}) {
     }
 }
 
+func (c *ApiController) validate(m interface{}) {
+    v := kernel.Validation()
+    b, err := v.Valid(m)
+    if err != nil {
+        c.handleError(err)
+    }
+    if !b {
+        vErrs := make(map[string]interface{})
+        for _, e := range v.Errors {
+            vErrs[e.Key] = e.Error()
+        }
+        c.handleError(internal.ValidationErrors(vErrs))
+    }
+
+    return
+}
+
 func (c *ApiController) parseJSONRequest(m interface{}) {
     if err := json.Unmarshal(c.Ctx.Input.RequestBody, m); err != nil {
         logs.Error("Error parsing request %s err: %s", c.Ctx.Request.URL, err)

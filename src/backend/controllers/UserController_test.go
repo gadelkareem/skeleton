@@ -436,6 +436,7 @@ func TestUserController_DisableMFA(t *testing.T) {
     // tests.FailOnErr(t, err)
     u.AuthenticatorEnabled = true
     u.VerifyMobile()
+    pass := u.Password
     tests.SaveUser(t, u)
     f := func(status int) {
         tests.ApiRequest(&tests.Request{T: t,
@@ -450,6 +451,7 @@ func TestUserController_DisableMFA(t *testing.T) {
     assert.False(t, u.AuthenticatorEnabled)
 
     r.Questions[0].Answer = "wrong answer"
+    u.Password = pass
     f(http.StatusUnauthorized)
 }
 

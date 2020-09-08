@@ -29,6 +29,7 @@ func (c *UserController) SignUp() {
 func (c *UserController) VerifyEmail() {
     r := new(models.VerifyEmail)
     c.parseRequest(r)
+    c.validate(r)
 
     err := c.C.UserService.VerifyEmail(r.Email, r.Token)
     c.handleError(err)
@@ -42,6 +43,7 @@ func (c *UserController) VerifyEmail() {
 func (c *UserController) ForgotPassword() {
     r := new(models.ResetPassword)
     c.parseRequest(r)
+    c.validate(r)
 
     err := c.C.UserService.ForgotPassword(r.Email, r.Username)
     c.handleError(err)
@@ -55,6 +57,7 @@ func (c *UserController) ForgotPassword() {
 func (c *UserController) ResetPassword() {
     r := new(models.ResetPassword)
     c.parseRequest(r)
+    c.validate(r)
 
     err := c.C.UserService.ResetPassword(r.Email, r.Token, r.Password)
     c.handleError(err)
@@ -96,6 +99,7 @@ func (c *UserController) SendVerifySMS() {
 func (c *UserController) VerifyMobile() {
     r := new(models.VerifyMobile)
     c.parseRequest(r)
+    c.validate(r)
 
     err := c.C.UserService.VerifyMobile(r.Code, c.user)
     c.handleError(err)
@@ -109,6 +113,7 @@ func (c *UserController) VerifyMobile() {
 func (c *UserController) UpdatePassword() {
     r := new(models.UpdatePassword)
     c.parseRequest(r)
+    c.validate(r)
 
     err := c.C.UserService.UpdatePassword(c.user, r.OldPassword, r.Password)
     c.handleError(err)
@@ -140,6 +145,7 @@ func (c *UserController) GenerateAuthenticator() {
 func (c *UserController) Authenticator() {
     r := new(models.Authenticator)
     c.parseRequest(r)
+    c.validate(r)
 
     err := c.C.AuthenticatorService.Process(c.user, r)
     c.handleError(err)
@@ -153,6 +159,7 @@ func (c *UserController) Authenticator() {
 func (c *UserController) RecoveryQuestions() {
     r := new(models.RecoveryQuestions)
     c.parseRequest(r)
+    c.validate(r)
 
     err := c.C.UserService.SaveRecoveryQuestions(c.user, r)
     c.handleError(err)
@@ -166,6 +173,7 @@ func (c *UserController) RecoveryQuestions() {
 func (c *UserController) GetRecoveryQuestions() {
     r := new(models.Login)
     c.parseRequest(r)
+    c.validate(r)
 
     rc, err := c.C.UserService.RecoveryQuestions(r)
     c.handleError(err)
@@ -179,6 +187,7 @@ func (c *UserController) GetRecoveryQuestions() {
 func (c *UserController) DisableMFA() {
     r := new(models.DisableMFA)
     c.parseRequest(r)
+    c.validate(r)
 
     err := c.C.UserService.DisableMFA(r)
     c.handleError(err)

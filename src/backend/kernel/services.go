@@ -52,5 +52,7 @@ func SMTPDialer() *gomail.Dialer {
 func Validation() *validation.Validation {
     validation.CanSkipFuncs["MinSize"] = struct{}{}
     validation.CanSkipFuncs["Match"] = struct{}{}
+    validation.CanSkipFuncs["Numeric"] = struct{}{}
+    validation.CanSkipFuncs["Length"] = struct{}{}
     return &validation.Validation{RequiredFirst: true}
 }

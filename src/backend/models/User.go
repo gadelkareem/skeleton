@@ -254,7 +254,6 @@ func (m *User) IsValidRecoveryQuestions(q []*RecoveryQuestion) bool {
             return false
         }
         if !comparePasswords(s, rc.Answer) {
-            fmt.Printf("\n\nQuestions: %+q\n\n", rc)
             return false
         }
     }
