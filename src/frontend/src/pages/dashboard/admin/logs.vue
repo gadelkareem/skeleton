@@ -16,7 +16,7 @@
         <div onclick="this.classList.toggle('json')">{{ JSON.stringify(item.log, undefined, 4) }}</div>
       </template>
       <template #item.created_at="{ item }">
-        <span>{{ new Date(item.created_at).toLocaleString() }}</span>
+        <span>{{ new Date(item.created_at * 1000).toLocaleString() }}</span>
       </template>
     </paginator>
 

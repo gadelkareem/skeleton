@@ -42,7 +42,7 @@ type (
         AvatarURL                   string            `pg:"avatar_url" jsonapi:"attr,avatar_url" fake:"https://{person.last}.{internet.domain_suffix}/?????????????????????????.jpg"`
         Mobile                      string            `pg:"mobile" jsonapi:"attr,mobile" fake:"+1-202-555-####"`
         MobileVerifyCode            string            `pg:"mobile_verify_code" json:"-" fake:"skip"`
-        MobileVerifyCreatedAt       time.Time         `pg:"mobile_verify_created_at" json:"-" fake:"skip"`
+        MobileVerifyCreatedAt       time.Time         `pg:"mobile_verify_created_at,type:TIMESTAMPTZ" json:"-" fake:"skip"`
         MobileVerified              bool              `pg:"mobile_verified"  jsonapi:"attr,mobile_verified" fake:"skip"`
         RecoveryQuestions           map[string]string `pg:"recovery_questions"  json:"-" fake:"skip"`
         RecoveryQuestionsSet        bool              `pg:"recovery_questions_set"  jsonapi:"attr,recovery_questions_set" fake:"skip"`
@@ -54,7 +54,7 @@ type (
         AuthenticatorEnabled        bool              `pg:"authenticator_enabled" jsonapi:"attr,authenticator_enabled" json:"enabled" fake:"skip"`
         AuthenticatorSecret         string            `pg:"authenticator_secret" json:"-" fake:"skip"`
         Country                     string            `valid:"MaxSize(100)" pg:"country" jsonapi:"attr,country" fake:"{address.country}"`
-        LastLoginAt                 time.Time         `pg:"last_login_at" json:"-" fake:"skip"`
+        LastLoginAt                 time.Time         `pg:"last_login_at,type:TIMESTAMPTZ" json:"-" fake:"skip"`
         DeletedAt                   time.Time         `pg:"deleted_at,type:TIMESTAMPTZ" json:"-"`
     }
     Address struct {
