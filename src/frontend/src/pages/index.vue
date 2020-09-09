@@ -95,6 +95,7 @@
               <a href="https://gitlab.com/gadelkareem/skeleton/-/blob/master/src/backend/di/Container.go">Dependency injection</a>.</li>
             <li>Backend API integration and unit tests.</li>
             <li>Frontend <a href="https://github.com/facebook/jest" rel="nofollow noreferrer noopener" target="_blank">Jest</a> tests.</li>
+            <li><a href="https://gitlab.com/gadelkareem/skeleton/-/blob/master/src/backend/queue" rel="nofollow noreferrer noopener" target="_blank">Queue management system</a> using <a href="https://github.com/gadelkareem/que" rel="nofollow noreferrer noopener" target="_blank">Que</a>.</li>
           </ul>
         </v-row>
       </v-container>
