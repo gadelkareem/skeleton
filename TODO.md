@@ -2,7 +2,7 @@
     - [x] Enqueue emails
     - [x] Enqueue SMS
 
-- Quickies
+- [x] Quickies
     - [x] after signup "active" is NULL instead of false
     - [x] do not send welcome email twice after user changes his email
     - [x] gocialite state is not scalable
