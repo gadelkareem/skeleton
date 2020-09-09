@@ -8,6 +8,6 @@
     - [x] gocialite state is not scalable
     - [x] validate jsonapi models
     - [x] check memory leak in nuxt https://github.com/nuxt/nuxt.js/issues/1984
-    - better 404 errors, ex /api/v1/login-requests
+    - [x] better 404 errors, ex /api/v1/login-requests
     - audit logs createdAt is wrong
 
