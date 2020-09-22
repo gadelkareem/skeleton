@@ -10,8 +10,8 @@ import (
     "backend/models"
     "github.com/astaxie/beego/logs"
     h "github.com/gadelkareem/go-helpers"
-    "github.com/gadelkareem/gocialite"
-    "github.com/gadelkareem/gocialite/structs"
+    "github.com/gadelkareem/gocialite/v2"
+    "github.com/gadelkareem/gocialite/v2/structs"
     "golang.org/x/oauth2"
 )
 

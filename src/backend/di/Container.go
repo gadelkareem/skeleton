@@ -13,7 +13,7 @@ import (
     "backend/services"
     "github.com/astaxie/beego/logs"
     "github.com/gadelkareem/cachita"
-    "github.com/gadelkareem/gocialite"
+    "github.com/gadelkareem/gocialite/v2"
 )
 
 type Container struct {

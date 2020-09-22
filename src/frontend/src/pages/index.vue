@@ -134,6 +134,9 @@ export default {
         }
       ]
     }
+  },
+  mounted () {
+    this.$store.dispatch('page/title', 'Home')
   }
 }
 </script>

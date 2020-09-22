@@ -4,8 +4,8 @@ import (
     "backend/di"
     "backend/services"
     "github.com/brianvoe/gofakeit/v4"
-    "github.com/gadelkareem/gocialite"
-    "github.com/gadelkareem/gocialite/structs"
+    "github.com/gadelkareem/gocialite/v2"
+    "github.com/gadelkareem/gocialite/v2/structs"
     "golang.org/x/oauth2"
 )
 
