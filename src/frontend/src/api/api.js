@@ -28,6 +28,9 @@ const createInterceptor = () => {
           return api.axios.request(err.config)
         })
         .catch((e) => {
+          if (process.browser) {
+            localStorage.clear()
+          }
           console.log('unexpected refresh token error:', e)
           AuthAPI.removeToken()
           return Promise.reject(err)
