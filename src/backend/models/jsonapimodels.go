@@ -58,7 +58,7 @@ type (
         RecoveryQuestions []*RecoveryQuestion `jsonapi:"relation,questions" valid:"Required"`
     }
     RecoveryQuestions struct {
-        ID        int                 `jsonapi:"primary,recovery-questions-requests,omitempty" valid:"Numeric"`
+        ID        int                 `jsonapi:"primary,recovery-questions-requests,omitempty"`
         Questions []*RecoveryQuestion `jsonapi:"relation,questions" valid:"Required"`
     }
     RecoveryQuestion struct {
