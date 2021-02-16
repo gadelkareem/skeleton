@@ -5,6 +5,7 @@ import (
     "fmt"
 
     "backend/queue"
+    "github.com/astaxie/beego/logs"
     "github.com/gadelkareem/que"
 )
 
@@ -32,9 +33,14 @@ func (w sendSMS) Type() string {
 
 func (w sendSMS) Run(j *que.Job) error {
     var r SendSMSReq
-    if err := json.Unmarshal(j.Args, &r); err != nil {
+    err := json.Unmarshal(j.Args, &r)
+    if err != nil {
         return fmt.Errorf("Unable to unmarshal job arguments into request: %s, err: %+v ", j.Args, err)
     }
 
-    return w.s.Send(r.MobileNumber, r.Message)
+    err = w.s.Send(r.MobileNumber, r.Message)
+    if err != nil {
+        logs.Error("Worker %s failed! Error: %s", w.Type(), err)
+    }
+    return err
 }
