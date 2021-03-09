@@ -1,12 +1,16 @@
 import { mount } from '@vue/test-utils'
+import Vuetify from 'vuetify'
 import Alert from '../Alert'
+
+const vuetify = new Vuetify()
 
 describe('Alert.vue', () => {
   it('should have a custom error and match snapshot', () => {
     const w = mount(Alert, {
       propsData: {
         errors: [{ title: 'test error' }]
-      }
+      },
+      vuetify
     })
 
     expect(w.html()).toMatchSnapshot()
@@ -21,7 +25,8 @@ describe('Alert.vue', () => {
       propsData: {
         successText: 'test success',
         success: true
-      }
+      },
+      vuetify
     })
 
     expect(w.find('.v-alert__content > div').text()).toBe('test success')

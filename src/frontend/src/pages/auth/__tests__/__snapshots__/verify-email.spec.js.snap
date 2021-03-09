@@ -15,7 +15,7 @@ exports[`verify-email.vue should match snapshot 1`] = `
         <!---->
       </div> <span> <!----> <!----></span>
       <div role="alert" class="v-alert v-sheet theme--dark info">
-        <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon material-icons theme--dark">$info</i>
+        <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-information theme--dark"></i>
           <div class="v-alert__content">
             Please wait while verifying your email.
           </div>

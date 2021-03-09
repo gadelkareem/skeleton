@@ -1,10 +1,12 @@
-import { mount } from '@vue/test-utils'
+import { mount, createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
 import Page from '../logout'
+import Vuetify from 'vuetify'
+
+const localVue = createLocalVue()
 
 describe('logout.vue', () => {
-  let actions
-  let store
+  let actions,  store, vuetify
 
   beforeEach(() => {
     actions = {
@@ -21,11 +23,14 @@ describe('logout.vue', () => {
         loading: { status: false }
       }
     })
+    vuetify = new Vuetify()
   })
 
   it('should match snapshot', () => {
     const w = mount(Page, {
       store,
+      localVue,
+      vuetify,
       stubs: ['router-link', 'router-view']
     })
 

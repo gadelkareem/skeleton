@@ -18,7 +18,7 @@ exports[`delete-account.vue should match snapshot 1`] = `
         <!---->
       </div> <span> <!----> <!----></span>
       <div class="container">
-        <div class="text-center col col-12"><button type="submit" class="mr-0 v-btn v-btn--contained theme--light v-size--default error"><span class="v-btn__content">
+        <div class="text-center col col-12"><button type="submit" class="mr-0 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default error"><span class="v-btn__content">
             Delete Account
           </span></button></div>
       </div>

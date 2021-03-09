@@ -1,11 +1,14 @@
-import { mount } from '@vue/test-utils'
+import {createLocalVue, mount} from '@vue/test-utils'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import initData from '@@/globals/init-data'
 import Page from '../update-profile'
+import Vuetify from 'vuetify'
+
+const localVue = createLocalVue()
 
 describe('update-profile.vue', () => {
-  let store
+  let store, vuetify
 
   beforeEach(() => {
     const actions = {
@@ -20,9 +23,10 @@ describe('update-profile.vue', () => {
       actions,
       getters,
       state: {
-        loading: { status: false }
+        loading: {status: false}
       }
     })
+    vuetify = new Vuetify()
   })
 
   it('should match snapshot', () => {
@@ -30,13 +34,15 @@ describe('update-profile.vue', () => {
     const w = mount(Page, {
       store,
       router,
+      localVue,
+      vuetify,
       stubs: ['router-link', 'router-view'],
-      created () {
+      created() {
         this.$vuetify.lang = {
           t: () => {
           }
         }
-        this.$vuetify.theme = { dark: false }
+        this.$vuetify.theme = {dark: false}
       }
     })
 

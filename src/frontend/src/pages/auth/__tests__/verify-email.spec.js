@@ -1,11 +1,13 @@
-import { mount } from '@vue/test-utils'
+import { mount, createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import Page from '../verify-email'
+import Vuetify from 'vuetify'
+
+const localVue = createLocalVue()
 
 describe('verify-email.vue', () => {
-  let actions
-  let store
+  let actions, store, vuetify
 
   beforeEach(() => {
     actions = {
@@ -19,6 +21,7 @@ describe('verify-email.vue', () => {
         loading: { status: false }
       }
     })
+    vuetify= new Vuetify()
   })
 
   it('should match snapshot', () => {
@@ -26,6 +29,8 @@ describe('verify-email.vue', () => {
     const w = mount(Page, {
       store,
       router,
+      localVue,
+      vuetify,
       stubs: ['router-link', 'router-view']
     })
 

@@ -21,7 +21,7 @@ exports[`recovery-questions.vue should match snapshot 1`] = `
         <div class="container py-0">
           <!---->
           <div class="row">
-            <div class="text-right col col-12"><button type="submit" class="mr-0 v-btn v-btn--contained theme--light v-size--default info"><span class="v-btn__content">
+            <div class="text-right col col-12"><button type="submit" class="mr-0 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default info"><span class="v-btn__content">
                 Save
               </span></button></div>
           </div>
