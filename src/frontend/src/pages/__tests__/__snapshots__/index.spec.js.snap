@@ -3,8 +3,8 @@
 exports[`index.vue should match snapshot 1`] = `
 <span><div class="v-window v-item-group theme--dark v-carousel" style="height: 30vh;"><div class="v-window__container" style="height: 30vh;"><transition-stub name="fade-transition" style="background-blend-mode: darken;"><div class="v-window-item"><div class="v-image v-responsive v-carousel__item theme--dark" style="height: 30vh;"><div class="v-responsive__content"><div class="row fill-height align-center justify-center"><div class="display-4 white--text px-4 rounded" style="background-color: rgba(0, 0, 0, 0.1); font-size: 2vw;">
           Beautiful and tested Golang and NodeJS code
-        </div></div></div></div></div></transition-stub><transition-stub name="fade-transition" style="background-blend-mode: darken;"><!----></transition-stub><transition-stub name="fade-transition" style="background-blend-mode: darken;"><!----></transition-stub><transition-stub name="fade-transition" style="background-blend-mode: darken;"><!----></transition-stub><transition-stub name="fade-transition" style="background-blend-mode: darken;"><!----></transition-stub><div class="v-window__prev"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--dark v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate material-icons theme--dark" style="font-size: 36px;">$prev</i></span></button></div>
-<div class="v-window__next"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--dark v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate material-icons theme--dark" style="font-size: 36px;">$next</i></span></button></div>
+        </div></div></div></div></div></transition-stub><transition-stub name="fade-transition" style="background-blend-mode: darken;"><!----></transition-stub><transition-stub name="fade-transition" style="background-blend-mode: darken;"><!----></transition-stub><transition-stub name="fade-transition" style="background-blend-mode: darken;"><!----></transition-stub><transition-stub name="fade-transition" style="background-blend-mode: darken;"><!----></transition-stub><div class="v-window__prev"><button type="button" class="v-btn v-btn--icon v-btn--round theme--dark v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--dark" style="font-size: 36px;"></i></span></button></div>
+<div class="v-window__next"><button type="button" class="v-btn v-btn--icon v-btn--round theme--dark v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--dark" style="font-size: 36px;"></i></span></button></div>
 </div>
 </div>
 <section style="padding: 48px 0px;">
@@ -66,8 +66,8 @@ exports[`index.vue should match snapshot 1`] = `
               <transition-stub name="fade-transition">
                 <!---->
               </transition-stub>
-              <div class="v-window__prev"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--dark v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate material-icons theme--dark" style="font-size: 36px;">$prev</i></span></button></div>
-              <div class="v-window__next"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--dark v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate material-icons theme--dark" style="font-size: 36px;">$next</i></span></button></div>
+              <div class="v-window__prev"><button type="button" class="v-btn v-btn--icon v-btn--round theme--dark v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--dark" style="font-size: 36px;"></i></span></button></div>
+              <div class="v-window__next"><button type="button" class="v-btn v-btn--icon v-btn--round theme--dark v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--dark" style="font-size: 36px;"></i></span></button></div>
             </div>
           </div>
         </div>
