@@ -110,5 +110,13 @@ export default {
       body,
       type: 'mfa-disable-request'
     })
+  },
+  readNotification (id, body) {
+    return api.request({
+      url: '/users/' + id + '/notifications',
+      method: 'PATCH',
+      body,
+      type: 'notification'
+    })
   }
 }

@@ -169,6 +169,18 @@ func (c *UserController) RecoveryQuestions() {
     c.SendStatus(http.StatusOK)
 }
 
+// @router /:id/notifications [patch]
+func (c *UserController) ReadNotification() {
+    r := new(models.Notification)
+    c.parseRequest(r)
+    c.validate(r)
+
+    err := c.C.UserService.ReadNotification(c.user, r)
+    c.handleError(err)
+
+    c.SendStatus(http.StatusOK)
+}
+
 // @router /recovery-questions [post]
 func (c *UserController) GetRecoveryQuestions() {
     r := new(models.Login)

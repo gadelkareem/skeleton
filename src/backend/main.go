@@ -13,7 +13,7 @@ func main() {
     kernel.App.RunCommand()
 
     routers.InitRouters(c)
-    kernel.App.SetupServer(&controllers.ErrorController{})
+    kernel.App.SetupServer(&controllers.ErrorController{ApiController: controllers.NewApiController(c)})
     c.QueManager.StartWorkers()
     kernel.App.Run()
 }

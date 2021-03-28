@@ -15,12 +15,6 @@ import (
     "golang.org/x/crypto/bcrypt"
 )
 
-const (
-    RoleGuest = "guest"
-    RoleUser  = "user"
-    RoleAdmin = "admin"
-)
-
 var ForbiddenUserames = []string{"admin", "mod", "root"}
 
 type (
@@ -29,17 +23,17 @@ type (
         tableName struct{} `pg:"s_users,alias:u,discard_unknown_columns"`
 
         ID                          int64             `pg:"id,pk" jsonapi:"primary,users" fake:"skip"`
-        Username                    string            `valid:"Required;Match(/^[A-Za-z0-9]+(?:[-_.][A-Za-z0-9]+)*$/)" pg:"username,notnull" jsonapi:"attr,username" fake:"{person.last}-###"`
+        Username                    string            `valid:"Required;Match(/^[A-Za-z0-9]+(?:[-_.][A-Za-z0-9]+)*$/)" pg:"username,notnull" jsonapi:"attr,username" fake:"{lastname}-###"`
         Password                    string            `valid:"MinSize(6);MaxSize(100)" pg:"-" jsonapi:"attr,password" fake:"?????##??"`
         PasswordHash                string            `pg:"password_hash,use_zero" json:"-" fake:"skip"`
         ForgotPasswordHash          string            `pg:"forgot_password_hash" json:"-" fake:"skip"`
         ForgotPasswordHashCreatedAt time.Time         `pg:"forgot_password_hash_created_at" json:"-" fake:"skip"`
-        Email                       string            `valid:"Required;Email;MaxSize(100)" pg:"email,notnull" jsonapi:"attr,email" fake:"{person.first}####@{person.last}.{internet.domain_suffix}"`
+        Email                       string            `valid:"Required;Email;MaxSize(100)" pg:"email,notnull" jsonapi:"attr,email" fake:"{email}"`
         EmailVerifyHash             string            `pg:"email_verify_hash,notnull" json:"-" fake:"skip"`
         EmailVerifyCreatedAt        time.Time         `pg:"email_verify_created_at" json:"-" fake:"skip"`
-        FirstName                   string            `valid:"MaxSize(100)" pg:"first_name" jsonapi:"attr,first_name" fake:"{person.first}"`
-        LastName                    string            `valid:"MaxSize(100)" pg:"last_name" jsonapi:"attr,last_name" fake:"{person.last}"`
-        AvatarURL                   string            `pg:"avatar_url" jsonapi:"attr,avatar_url" fake:"https://{person.last}.{internet.domain_suffix}/?????????????????????????.jpg"`
+        FirstName                   string            `valid:"MaxSize(100)" pg:"first_name" jsonapi:"attr,first_name" fake:"{firstname}"`
+        LastName                    string            `valid:"MaxSize(100)" pg:"last_name" jsonapi:"attr,last_name" fake:"{lastname}"`
+        AvatarURL                   string            `pg:"avatar_url" jsonapi:"attr,avatar_url" fake:"https://{domainname}/?????????????????????????.jpg"`
         Mobile                      string            `pg:"mobile" jsonapi:"attr,mobile" fake:"+1-202-555-####"`
         MobileVerifyCode            string            `pg:"mobile_verify_code" json:"-" fake:"skip"`
         MobileVerifyCreatedAt       time.Time         `pg:"mobile_verify_created_at,type:TIMESTAMPTZ" json:"-" fake:"skip"`
@@ -49,25 +43,33 @@ type (
         Roles                       []string          `pg:"roles,array" jsonapi:"attr,roles" json:"roles" fake:"skip"`
         Active                      bool              `pg:"active" jsonapi:"attr,active" fake:"skip"`
         SocialLogin                 bool              `pg:"social_login" jsonapi:"attr,social_login" fake:"skip"`
-        Language                    string            `valid:"MaxSize(100);Alpha" pg:"language" jsonapi:"attr,language" fake:"{languages.short}"`
+        Language                    string            `valid:"MaxSize(100);Alpha" pg:"language" jsonapi:"attr,language" fake:"{regex:[A-Z]{2}}"`
         Address                     Address           `pg:"address" jsonapi:"attr,address"`
+        Notifications               []Notification    `pg:"notifications" jsonapi:"attr,notifications" fakesize:"10"`
         AuthenticatorEnabled        bool              `pg:"authenticator_enabled" jsonapi:"attr,authenticator_enabled" json:"enabled" fake:"skip"`
         AuthenticatorSecret         string            `pg:"authenticator_secret" json:"-" fake:"skip"`
-        Country                     string            `valid:"MaxSize(100)" pg:"country" jsonapi:"attr,country" fake:"{address.country}"`
+        Country                     string            `valid:"MaxSize(100)" pg:"country" jsonapi:"attr,country" fake:"{country}"`
         LastLoginAt                 time.Time         `pg:"last_login_at,type:TIMESTAMPTZ" json:"-" fake:"skip"`
-        DeletedAt                   time.Time         `pg:"deleted_at,type:TIMESTAMPTZ" json:"-"`
+        DeletedAt                   time.Time         `pg:"deleted_at,type:TIMESTAMPTZ" json:"-" fake:"skip"`
     }
     Address struct {
-        Street  string `jsonapi:"attr,street" json:"street"  fake:"{address.street_name} ###"`
-        City    string `jsonapi:"attr,city" json:"city"  fake:"{address.city}"`
-        ZipCode string `jsonapi:"attr,zip_code" json:"zip_code"  fake:"{address.zip}"`
+        Street  string `jsonapi:"attr,street" json:"street"  fake:"{street} ###"`
+        City    string `jsonapi:"attr,city" json:"city"  fake:"{city}"`
+        ZipCode string `jsonapi:"attr,zip_code" json:"zip_code"  fake:"{zip}"`
+    }
+    Notification struct {
+        ID          string `valid:"MaxSize(32)" jsonapi:"primary,notifications" json:"id" fake:"{regex:[a-f0-9]{32}}"`
+        Message     string `jsonapi:"attr,message" json:"message" fake:"{sentence:12}"`
+        CreatedAt   int64  `jsonapi:"attr,created_at" json:"created_at" fake:"{number}"`
+        URL         string `jsonapi:"attr,url" json:"url" fake:"{url}"`
+        ReadReceipt bool   `jsonapi:"attr,read_receipt" json:"read_receipt" fake:"{sentence:12}"`
     }
 )
 
 func NewUser() *User {
     return &User{
-        Base:        NewBaseModel(),
-        Active:      false,
+        Base:   NewBaseModel(),
+        Active: false,
     }
 }
 
@@ -214,6 +216,40 @@ func (m *User) AddRecoveryQuestions(q []*RecoveryQuestion) error {
     return nil
 }
 
+func (m *User) AddNotification(msg string, u string) {
+    nt := Notification{Message: msg, URL: u, CreatedAt: time.Now().UnixNano()}
+    for _, n := range m.Notifications {
+        if nt.Message == n.Message && !n.ReadReceipt {
+            return
+        }
+    }
+    nt.ID = h.Md5(fmt.Sprintf("%s%d", nt.Message, nt.CreatedAt))
+    m.Notifications = append(m.Notifications, nt)
+    return
+}
+
+func (m *User) ReadNotification(n *Notification) {
+    for i := range m.Notifications {
+        if n.ID == m.Notifications[i].ID {
+            m.Notifications[i].ReadReceipt = true
+            return
+        }
+    }
+    return
+}
+
+func (m *User) CleanNotifications() {
+    var ns []Notification
+    for _, n := range m.Notifications {
+        if n.ReadReceipt && n.CreatedAt < time.Now().AddDate(0, 0, -7).UnixNano() {
+            continue
+        }
+        ns = append(ns, n)
+    }
+    m.Notifications = ns
+    return
+}
+
 func (m *User) Sanitize() {
     m.Password = ""
     m.ForgotPasswordHash = ""
@@ -242,6 +278,7 @@ func (m *User) Delete() {
     m.RecoveryQuestions = nil
     m.MobileVerifyCode = ""
     m.AuthenticatorSecret = ""
+    m.Notifications = nil
 }
 
 func (m *User) IsValidRecoveryQuestions(q []*RecoveryQuestion) bool {

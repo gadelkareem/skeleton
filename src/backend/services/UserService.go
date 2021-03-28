@@ -131,6 +131,7 @@ func (s *UserService) SignUp(m *models.User) (err error) {
     m.HashPass()
     m.GenerateEmailVerificationHash()
     m.SetDefaultAvatar()
+    m.AddNotification("Welcome to Skeleton!", "/dashboard/home/")
     err = s.Save(m)
     if err != nil {
         switch err.Error() {
@@ -157,6 +158,7 @@ func (s *UserService) SignUpSocial(m *models.User) (err error) {
     m.Activate()
     m.SetDefaultAvatar()
     m.SocialLogin = true
+    m.AddNotification("Welcome to Skeleton!", "/dashboard/home/")
     err = s.Save(m)
     if err != nil {
         switch err.Error() {
@@ -211,6 +213,7 @@ func (s *UserService) SendVerifySMS(m *models.User) (err error) {
         return internal.ErrMobileRequired
     }
     m.GenerateVerifyMobileCode()
+    m.AddNotification("Verify your mobile", "/dashboard/account/verify-mobile/")
     err = s.Save(m)
     if err != nil {
         return
@@ -241,6 +244,8 @@ func (s *UserService) ForgotPassword(email, username string) (err error) {
     m := models.NewEmptyUser()
     if email != "" {
         m.Email = email
+    } else if username == "" {
+        return internal.ErrEmailRequired // username and email are empty
     } else {
         m.Username = username
     }
@@ -406,6 +411,13 @@ func (s *UserService) SaveRecoveryQuestions(m *models.User, r *models.RecoveryQu
     if err != nil {
         return err
     }
+
+    return s.Save(m)
+}
+
+func (s *UserService) ReadNotification(m *models.User, r *models.Notification) error {
+    m.ReadNotification(r)
+    m.CleanNotifications()
 
     return s.Save(m)
 }

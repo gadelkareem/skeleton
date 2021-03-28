@@ -13,7 +13,6 @@ type (
 
 func (c *ErrorController) Prepare() {
     c.EnableRender = false
-    c.setUser()
     kernel.SetCORS(c.Ctx)
 }
 

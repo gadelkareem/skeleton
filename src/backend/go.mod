@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/astaxie/beego v1.12.2
-	github.com/brianvoe/gofakeit/v4 v4.3.0
+	github.com/brianvoe/gofakeit/v6 v6.3.0
 	github.com/gadelkareem/cachita v0.2.1
 	github.com/gadelkareem/go-helpers v0.0.0-20200725110331-77a434fc0423
 	github.com/gadelkareem/gocialite/v2 v2.0.5

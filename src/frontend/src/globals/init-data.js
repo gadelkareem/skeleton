@@ -20,6 +20,7 @@ export default () => ({
     roles: null,
     active: true,
     mobile_verified: false,
-    recovery_questions_set: false
+    recovery_questions_set: false,
+    notifications: []
   }
 })

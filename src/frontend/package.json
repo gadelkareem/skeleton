@@ -7,7 +7,7 @@
     "lint": "eslint --ext .js,.vue .",
     "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'",
     "generate": "nuxt generate ./src",
-    "docker-start": "NUXT_HOST=0.0.0.0 yarn --verbose install && yarn --verbose serve",
+    "docker-start": "NUXT_HOST=0.0.0.0 yarn --verbose install --prefer-offline --frozen-lockfile && yarn --verbose serve",
     "test": "jest"
   },
   "dependencies": {

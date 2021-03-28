@@ -3,7 +3,7 @@ package tests
 import (
     "backend/di"
     "backend/services"
-    "github.com/brianvoe/gofakeit/v4"
+    "github.com/brianvoe/gofakeit/v6"
     "github.com/gadelkareem/gocialite/v2"
     "github.com/gadelkareem/gocialite/v2/structs"
     "golang.org/x/oauth2"

@@ -62,6 +62,7 @@
       <v-icon>mdi-view-dashboard</v-icon>
     </v-btn>
 
+    <!--    Notifications -->
     <v-menu
       bottom
       left
@@ -81,27 +82,37 @@
             color="red"
             overlap
             bordered
+            :content="unreadNotifications"
+            :value="unreadNotifications"
           >
-            <template v-slot:badge>
-              <span>5</span>
-            </template>
+            <!--            <template v-slot:badge>-->
+            <!--              <span>{{ notifications.length }}</span>-->
+            <!--            </template>-->
 
-            <v-icon>mdi-bell</v-icon>
+            <v-icon color="gray">mdi-bell</v-icon>
           </v-badge>
         </v-btn>
       </template>
 
       <v-list
+        v-if="notifications.length"
         :tile="false"
         nav
+        width="300"
       >
         <div>
-          <app-bar-item
+          <v-list-item
             v-for="(n, i) in notifications"
             :key="`item-${i}`"
+            @click="read(n)"
           >
-            <v-list-item-title v-text="n" />
-          </app-bar-item>
+            <v-list-item-content>
+              <v-list-item-title class="text-wrap" v-text="n.message" />
+            </v-list-item-content>
+            <v-list-item-icon>
+              <v-icon :color="n.read_receipt ? '#cdcdcd': 'blue'">mdi-circle</v-icon>
+            </v-list-item-icon>
+          </v-list-item>
         </div>
       </v-list>
     </v-menu>
@@ -111,37 +122,14 @@
 </template>
 
 <script>
-// Components
-import { VHover, VListItem } from 'vuetify/lib'
+
+import UserAPI from '@@/api/user'
 
 export default {
   name: 'DashboardCoreAppBar',
 
   components: {
-    AccountMenu: () => import('./AccountMenu'),
-    AppBarItem: {
-      render (h) {
-        return h(VHover, {
-          scopedSlots: {
-            default: ({ hover }) => {
-              return h(VListItem, {
-                attrs: this.$attrs,
-                class: {
-                  'black--text': !hover,
-                  'white--text secondary elevation-12': hover
-                },
-                props: {
-                  activeClass: '',
-                  dark: hover,
-                  link: true,
-                  ...this.$attrs
-                }
-              }, this.$slots.default)
-            }
-          }
-        })
-      }
-    }
+    AccountMenu: () => import('./AccountMenu')
   },
 
   props: {
@@ -150,28 +138,47 @@ export default {
       default: false
     }
   },
-
-  data: () => ({
-    notifications: [
-      'Mike John Responded to your email',
-      'You have 5 new tasks',
-      'You\'re now friends with Andrew',
-      'Another Notification',
-      'Another one'
-    ]
-  }),
-
   computed: {
     drawer () {
       return this.$store.getters['dashboard/drawer']
+    },
+    user () {
+      return this.$store.getters['user/user']
+    },
+    notifications () {
+      let n = this.user.notifications
+      n = n.sort((a, b) => (a.created_at > b.created_at) ? -1 : ((b.created_at > a.created_at) ? 1 : 0))
+      return n || []
+    },
+    unreadNotifications () {
+      return this.notifications.filter(n => !n.read_receipt).length
     }
-  },
-  mounted () {
-    // console.log(this.$meta().title)
   },
   methods: {
     setDrawer (v) {
       this.$store.commit('dashboard/SET_DRAWER', v)
+    },
+    open (n) {
+      if (n.url.includes('://')) { location.href = n.url } else { this.$router.push(n.url) }
+    },
+    read (n) {
+      if (n.read_receipt) {
+        return
+      }
+      UserAPI.readNotification(this.user.id, {
+        id: n.id,
+        read_receipt: true
+      })
+        .then((r) => {
+          this.$store.dispatch('user/fetchUser', this.user.id)
+        })
+        .catch((err) => {
+          console.log(this.parseError(err))
+        })
+        .finally(() => {
+          this.$store.dispatch('loading/finish')
+          this.open(n)
+        })
     }
   }
 }

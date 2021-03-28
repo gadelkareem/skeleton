@@ -10,12 +10,13 @@ import (
     "time"
 
     "backend/internal"
+    h "github.com/gadelkareem/go-helpers"
     "github.com/pquerna/otp/totp"
 
     "backend/kernel"
     "backend/models"
     "backend/tests"
-    "github.com/brianvoe/gofakeit/v4"
+    "github.com/brianvoe/gofakeit/v6"
     "github.com/stretchr/testify/assert"
 )
 
@@ -471,4 +472,30 @@ func TestUserController_DeleteUser(t *testing.T) {
     w := tests.Login(t, u.Username, u.Password)
     assert.Equal(t, w.Code, http.StatusUnauthorized)
     tests.AssertError(t, w.Body, internal.ErrInvalidPass.Error())
+}
+
+func TestUserController_ReadNotification(t *testing.T) {
+    t.Parallel()
+
+    // add notification
+    u, tk := tests.UserWithToken(true)
+    r := models.Notification{CreatedAt: time.Now().UnixNano(), Message: gofakeit.Sentence(6), ReadReceipt: false}
+    r.ID = h.Md5(fmt.Sprintf("%s%d", r.Message, r.CreatedAt))
+    u.Notifications = append(u.Notifications, r)
+    tests.SaveUser(t, u)
+
+    tests.ApiRequest(&tests.Request{T: t,
+        Method:    http.MethodPatch,
+        URI:       fmt.Sprintf("/users/%d/notifications", u.ID),
+        Model:     &r,
+        AuthToken: tk,
+        Status:    http.StatusOK})
+    u = tests.RefreshUser(t, u, true)
+
+    for _, n := range u.Notifications {
+        if n.Message == r.Message {
+            assert.True(t, n.ReadReceipt)
+        }
+    }
+
 }

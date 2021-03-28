@@ -8,7 +8,7 @@ import (
     "backend/kernel"
     "backend/models"
     "backend/tests"
-    "github.com/brianvoe/gofakeit/v4"
+    "github.com/brianvoe/gofakeit/v6"
     "github.com/stretchr/testify/assert"
 )
 

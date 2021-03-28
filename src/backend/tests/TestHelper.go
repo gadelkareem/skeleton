@@ -23,7 +23,7 @@ import (
     "backend/routers"
     "github.com/astaxie/beego"
     "github.com/astaxie/beego/logs"
-    "github.com/brianvoe/gofakeit/v4"
+    "github.com/brianvoe/gofakeit/v6"
     "github.com/gadelkareem/cachita"
     h "github.com/gadelkareem/go-helpers"
     "github.com/google/jsonapi"
