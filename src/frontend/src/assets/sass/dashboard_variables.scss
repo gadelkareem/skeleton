@@ -3,9 +3,9 @@ $sheet-border-radius: 4px;
 $list-item-title-font-size: 0.929rem;
 $list-item-dense-title-font-size: 0.929rem;
 $list-item-dense-title-font-weight: initial;
-$fab-icon-sizes: ( small: 20 );
-$btn-font-sizes: ( default: 1rem, large: 1rem );
-$btn-sizes: ( default: 41, large: 54 );
+$fab-icon-sizes: (small: 20);
+$btn-font-sizes: (default: 1rem, large: 1rem);
+$btn-sizes: (default: 41, large: 54);
 $btn-letter-spacing: 0;
 $btn-font-weight: 400;
 $card-text-font-size: 16px;
@@ -27,8 +27,8 @@ $headings: (
     'size': 1.125rem,
     'line-height': 1.4em
   ),
-  'h5': ( 'size': 1.0625rem ),
-  'h6': ( 'size': .75rem ),
-  'subtitle-2': ( 'size': 1rem ),
-  'overline': ( 'letter-spacing': 0 )
+  'h5': ('size': 1.0625rem),
+  'h6': ('size': .75rem),
+  'subtitle-2': ('size': 1rem),
+  'overline': ('letter-spacing': 0)
 );

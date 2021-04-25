@@ -1,0 +1,156 @@
+
+.logo
+  text-decoration: none
+  font-family: Seravek, Helvetica Neue
+  font-size: 1.4em
+  text-transform: uppercase
+  & .v-image
+    width: 64px
+    height: 32px
+    transition: all 0.3s ease
+    display: inline-block
+    vertical-align: sub
+    margin-right: 10px
+    border: 0
+    +breakpoints-down(md)
+      width: 56px
+      height: 24px
+      margin-right: 0
+  & .logo-text
+    text-decoration: none
+    display: inline-block
+    transition: all 0.3s ease
+    color: #000
+    +breakpoints-down(md)
+      font-size: 1em
+#core-navigation-drawer
+  & .logo
+    & .v-image
+      margin-right: 0
+      width: 56px
+  & .logo-text
+    font-size: 17px
+
+
+.theme--dark
+  .logo-text
+    color: #fff
+
+.use-text
+  &-title
+    font-weight: $font-bold
+    font-size: 48px
+    line-height: 72px
+
+    +breakpoints-down(md)
+      font-size: 38px
+      line-height: 60px
+
+
+    +breakpoints-down(xs)
+      font-size: 28px
+      line-height: 44px
+
+  &-title2
+    font-size: 36px
+    line-height: 56px
+    font-weight: $font-bold
+
+    +breakpoints-down(md)
+      font-size: 32px
+      line-height: 48px
+
+
+    +breakpoints-down(xs)
+      font-size: 24px
+      line-height: 36px
+
+  &-subtitle
+    font-weight: $font-medium
+    font-size: 28px
+    line-height: 44px
+
+    +breakpoints-down(md)
+      font-size: 24px
+      line-height: 36px
+
+
+    +breakpoints-down(xs)
+      font-size: 18px
+      line-height: 28px
+
+  &-subtitle2
+    font-weight: $font-regular
+    font-size: 22px
+    line-height: 32px
+
+    +breakpoints-down(md)
+      font-size: 20px
+      line-height: 32px
+
+
+    +breakpoints-down(xs)
+      font-size: 16px
+      line-height: 24px
+
+  &-paragraph
+    font-weight: $font-regular
+    font-size: 16px
+    line-height: 24px
+
+  &-caption
+    font-weight: $font-regular
+    font-size: 16px
+    line-height: 24px
+
+    +breakpoints-down(xs)
+      font-size: 14px
+      line-height: 22px
+
+.use-hidden
+  &-lg-down
+    +breakpoints-down(lg)
+      display: none
+
+  &-md-down
+    +breakpoints-down(md)
+      display: none
+
+  &-sm-down
+    +breakpoints-down(sm)
+      display: none
+
+  &-xs-down
+    +breakpoints-down(xs)
+      display: none
+
+  &-lg-up
+    +breakpoints-up(lg)
+      display: none
+
+  &-md-up
+    +breakpoints-up(md)
+      display: none
+
+  &-sm-up
+    +breakpoints-up(sm)
+      display: none
+
+.article
+  & .v-card
+    min-height: 70vh
+  & h1
+    font-size: 34px
+    color: #000
+    font-weight: 400
+    line-height: 40px
+    margin-bottom: 36px
+  & p, & ul
+    font-size: 17px
+    color: #525666
+  & .date
+    color: #5a5a5e
+    margin-bottom: 15px
+  & h2
+    padding: 20px 0
+    color: #000
