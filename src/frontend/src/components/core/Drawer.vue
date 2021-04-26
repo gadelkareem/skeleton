@@ -190,7 +190,7 @@ export default {
       }
     },
     logo () {
-      return require(this.$vuetify.theme.dark ? '@@/static/logo.svg' : '@@/static/logo-dark.svg')
+      return require('@@/static/logo-dark.svg')
     }
   },
   methods: {
