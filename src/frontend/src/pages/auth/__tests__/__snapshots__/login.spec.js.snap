@@ -3,7 +3,7 @@
 exports[`login.vue should match snapshot 1`] = `
 <section class="container container--fluid">
   <div class="row justify-center">
-    <div class="v-card--material pa-3 pa-6 v-card v-sheet theme--light v-card--material--has-heading" style="min-width: 20%;" min-width="20%">
+    <div class="v-card--material pa-3 pa-6 v-card v-sheet theme--light v-card--material--has-heading" style="min-width: 40%;" min-width="40%">
       <div class="d-flex grow flex-wrap">
         <div class="text-start v-card--material__heading mb-n6 v-sheet theme--dark elevation-6 info pa-7" style="width: 100%;">
           <div class="display-2 font-weight-light">

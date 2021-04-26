@@ -2,8 +2,8 @@ import { mount, createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import initData from '@@/globals/init-data'
-import Page from '../logs'
 import Vuetify from 'vuetify'
+import Page from '../logs'
 
 const localVue = createLocalVue()
 
@@ -26,7 +26,7 @@ describe('logs.vue', () => {
         loading: { status: false }
       }
     })
-    vuetify= new Vuetify()
+    vuetify = new Vuetify()
   })
 
   it('should match snapshot', () => {

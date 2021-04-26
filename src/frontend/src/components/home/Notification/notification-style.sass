@@ -1,0 +1,45 @@
+.notification
+  width: 95%
+  margin: 0 auto
+
+  +breakpoints-up(lg)
+    width: 80%
+
+
+  \::v-deep .v-snack__wrapper
+    width: 100%
+    margin-bottom: $spacing2
+    max-width: none
+    font-size: 16px
+    color: $palette-common-white
+    background: $palette-common-black
+
+    +breakpoints-up(sm)
+      padding: spacing(0.5, 2)
+
+
+    > div:first-child
+      display: flex
+      align-items: center
+
+      .action
+        +breakpoints-up(sm)
+          flex: 1
+
+          +margin-right($spacing2)
+
+
+        +breakpoints-down(xs)
+          text-align: center
+
+  .button.v-btn
+    width: 100%
+
+    +breakpoints-up(sm)
+      width: 150px
+
+.action
+  +breakpoints-down(xs)
+    width: 100%
+    padding: 0
+    margin: 0

@@ -1,11 +1,12 @@
 <template>
   <v-app v-if="userLoaded">
-    <dashboard-core-app-bar />
-
     <dashboard-core-drawer />
-
-    <dashboard-core-view />
-
+    <dashboard-core-app-bar />
+    <v-main app>
+      <router-view />
+      <br><br>
+    </v-main>
+    <dashboard-core-footer />
     <dashboard-core-settings />
   </v-app>
 </template>
@@ -18,7 +19,7 @@ export default {
     DashboardCoreAppBar: () => import('@@/components/core/AppBar'),
     DashboardCoreDrawer: () => import('@@/components/core/Drawer'),
     DashboardCoreSettings: () => import('@@/components/core/Settings'),
-    DashboardCoreView: () => import('@@/components/core/View')
+    DashboardCoreFooter: () => import('@@/components/core/Footer')
   },
   head () {
     return {
@@ -39,3 +40,7 @@ export default {
   }
 }
 </script>
+
+<style lang="sass">
+@import @@/assets/sass/dashboard_overrides.sass
+</style>

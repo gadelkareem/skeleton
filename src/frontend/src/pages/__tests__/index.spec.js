@@ -1,13 +1,13 @@
-import { mount, createLocalVue } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
-import Page from '../index'
 import Vuetify from 'vuetify'
+import Page from '../index'
 
-const localVue = createLocalVue()
+const vuetify = new Vuetify()
 
 describe('index.vue', () => {
-  let store, vuetify
+  let store
 
   beforeEach(() => {
     const actions = {
@@ -21,7 +21,6 @@ describe('index.vue', () => {
         loading: { status: false }
       }
     })
-    vuetify = new Vuetify()
   })
 
   it('should match snapshot', () => {
@@ -29,18 +28,10 @@ describe('index.vue', () => {
     const w = mount(Page, {
       store,
       router,
-      localVue,
-      vuetify,
       stubs: ['router-link', 'router-view'],
-      created () {
-        this.$vuetify.lang = {
-          t: () => {}
-        }
-        this.$vuetify.breakpoint = {
-          width: 0,
-          height: 0
-        }
-        this.$vuetify.theme = { dark: false }
+      vuetify,
+      mocks: {
+        $t: msg => msg
       }
     })
 

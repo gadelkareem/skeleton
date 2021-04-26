@@ -32,7 +32,7 @@
         <v-row v-else-if="!showForm" align="center" justify="center">
           <v-btn
             color="info"
-            class="mr-0"
+            class="mr-0 mt-4"
             type="submit"
             @click="showForms"
           >
@@ -51,10 +51,10 @@
               </a>
             </v-row>
             <v-row align="center" justify="center">
-              <v-btn icon @click="generateAuthenticator(true)">
+              <v-btn icon class="icon_btn" @click="generateAuthenticator(true)">
                 <v-icon>mdi-refresh</v-icon>
               </v-btn>
-              <v-btn icon @click="showSeed = !showSeed">
+              <v-btn icon class="icon_btn" @click="showSeed = !showSeed">
                 <v-icon>mdi-eye</v-icon>
               </v-btn>
             </v-row>

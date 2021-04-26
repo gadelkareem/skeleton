@@ -1,13 +1,14 @@
-import { mount, createLocalVue } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
-import Login from '../login'
 import Vuetify from 'vuetify'
+import Login from '../login'
 
-const localVue = createLocalVue()
+const vuetify = new Vuetify()
 
 describe('login.vue', () => {
-  let actions, store, vuetify
+  let actions
+  let store
 
   beforeEach(() => {
     actions = {
@@ -22,15 +23,13 @@ describe('login.vue', () => {
         loading: { status: false }
       }
     })
-    vuetify= new Vuetify()
   })
 
   it('should match snapshot', () => {
     const w = mount(Login, {
       store,
-      localVue,
-      vuetify,
-      stubs: ['router-link', 'router-view']
+      stubs: ['router-link', 'router-view'],
+      vuetify
     })
 
     expect(w.html()).toMatchSnapshot()
@@ -42,9 +41,8 @@ describe('login.vue', () => {
     const w = mount(Login, {
       store,
       router,
-      localVue,
-      vuetify,
-      stubs: ['router-link', 'router-view']
+      stubs: ['router-link', 'router-view'],
+      vuetify
     })
 
     w.find('[data-username]').setValue('user1')

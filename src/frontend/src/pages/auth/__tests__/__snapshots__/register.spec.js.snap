@@ -3,7 +3,7 @@
 exports[`register.vue should match snapshot 1`] = `
 <section class="container container--fluid">
   <div class="row justify-center">
-    <div class="v-card--material pa-3 pa-6 v-card v-sheet theme--light v-card--material--has-heading" style="min-width: 40%;" min-width="40%">
+    <div class="v-card--material pa-3 pa-6 v-card v-sheet theme--light v-card--material--has-heading" style="min-width: 70%;" min-width="70%">
       <div class="d-flex grow flex-wrap">
         <div class="text-start v-card--material__heading mb-n6 v-sheet theme--dark elevation-6 info pa-7" style="width: 100%;">
           <div class="display-2 font-weight-light">
@@ -26,7 +26,7 @@ exports[`register.vue should match snapshot 1`] = `
                   <fieldset aria-hidden="true">
                     <legend style="width: 0px;"><span>​</span></legend>
                   </fieldset>
-                  <div class="v-text-field__slot"><label for="input-9" class="v-label theme--light" style="right: 0px; position: absolute;">Username*</label><input id="input-9" type="text"></div>
+                  <div class="v-text-field__slot"><label for="input-9" class="v-label theme--light" style="left: 0px; position: absolute;">Username*</label><input id="input-9" type="text"></div>
                 </div>
                 <div class="v-text-field__details">
                   <div class="v-messages theme--light">
@@ -43,7 +43,7 @@ exports[`register.vue should match snapshot 1`] = `
                   <fieldset aria-hidden="true">
                     <legend style="width: 0px;"><span>​</span></legend>
                   </fieldset>
-                  <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="right: 0px; position: absolute;">Password*</label><input id="input-12" type="password"></div>
+                  <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">Password*</label><input id="input-12" type="password"></div>
                 </div>
                 <div class="v-text-field__details">
                   <div class="v-messages theme--light">
@@ -60,7 +60,7 @@ exports[`register.vue should match snapshot 1`] = `
                   <fieldset aria-hidden="true">
                     <legend style="width: 0px;"><span>​</span></legend>
                   </fieldset>
-                  <div class="v-text-field__slot"><label for="input-15" class="v-label theme--light" style="right: 0px; position: absolute;">Repeat Password*</label><input id="input-15" type="password"></div>
+                  <div class="v-text-field__slot"><label for="input-15" class="v-label theme--light" style="left: 0px; position: absolute;">Repeat Password*</label><input id="input-15" type="password"></div>
                 </div>
                 <div class="v-text-field__details">
                   <div class="v-messages theme--light">
@@ -77,7 +77,7 @@ exports[`register.vue should match snapshot 1`] = `
                   <fieldset aria-hidden="true">
                     <legend style="width: 0px;"><span>​</span></legend>
                   </fieldset>
-                  <div class="v-text-field__slot"><label for="input-18" class="v-label theme--light" style="right: 0px; position: absolute;">Email*</label><input id="input-18" type="email"></div>
+                  <div class="v-text-field__slot"><label for="input-18" class="v-label theme--light" style="left: 0px; position: absolute;">Email*</label><input id="input-18" type="email"></div>
                 </div>
                 <div class="v-text-field__details">
                   <div class="v-messages theme--light">

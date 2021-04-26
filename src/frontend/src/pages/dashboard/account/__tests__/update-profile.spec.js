@@ -1,9 +1,9 @@
-import {createLocalVue, mount} from '@vue/test-utils'
+import { mount, createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import initData from '@@/globals/init-data'
-import Page from '../update-profile'
 import Vuetify from 'vuetify'
+import Page from '../update-profile'
 
 const localVue = createLocalVue()
 
@@ -23,7 +23,7 @@ describe('update-profile.vue', () => {
       actions,
       getters,
       state: {
-        loading: {status: false}
+        loading: { status: false }
       }
     })
     vuetify = new Vuetify()
@@ -37,12 +37,12 @@ describe('update-profile.vue', () => {
       localVue,
       vuetify,
       stubs: ['router-link', 'router-view'],
-      created() {
+      created () {
         this.$vuetify.lang = {
           t: () => {
           }
         }
-        this.$vuetify.theme = {dark: false}
+        this.$vuetify.theme = { dark: false }
       }
     })
 

@@ -1,86 +1,32 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      text
+    <main-header />
+    <v-main
+      id="main-wrap"
     >
-      <v-container
-        mx-auto
-        py-0
-      >
-        <v-layout>
-          <router-link to="/">
-            <v-img
-              :src="require('@@/static/logo.svg')"
-              contain
-              height="48"
-              to="/"
-              position="left"
-            />
-          </router-link>
-          <v-spacer />
-          <v-btn
-            v-for="(link, i) in links"
-            :key="i"
-            :to="link.to"
-            class="ml-0 hidden-sm-and-down"
-            text
-          >
-            {{ link.text }}
-          </v-btn>
-        </v-layout>
-      </v-container>
-    </v-app-bar>
-
-    <v-main id="home">
-      <router-view />
+      <nuxt />
     </v-main>
-
-    <v-footer
-      id="dashboard-core-footer"
-    >
-      <v-container>
-        <v-row
-          align="center"
-          no-gutters
-        >
-          <v-col
-            v-for="(link, i) in links"
-            :key="i"
-            class="text-center mb-sm-0 mb-5"
-            cols="auto"
-          >
-            <a
-              :href="link.to"
-              class="mr-0 grey--text text--darken-3"
-              rel="noopener"
-              v-text="link.text"
-            />
-          </v-col>
-
-          <v-spacer class="hidden-sm-and-down" />
-
-          <v-col
-            cols="12"
-            md="auto"
-          >
-            <div class="body-1 font-weight-light pt-6 pt-md-0 text-center">
-              &copy; 2020, <a href="https://gitlab.com/gadelkareem/skeleton">Skeleton</a>.
-            </div>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-footer>
+    <main-footer app absolute />
   </v-app>
 </template>
 
 <script>
+import Footer from '@@/components/core/Footer/Footer'
+import Header from '@@/components/home/Header/Header'
 
 export default {
   name: 'Home',
-  data: () => ({
-    drawer: true
-  }),
+  loading: false,
+  components: {
+    'main-footer': Footer,
+    'main-header': Header
+  },
+  data () {
+    return {
+      show: false,
+      drawer: true
+    }
+  },
   computed: {
     links () {
       if (this.$store.getters['auth/isAuthenticated']) {
@@ -107,6 +53,31 @@ export default {
       ]
     }
   },
+  mounted () {
+    // Preloader and Progress bar setup
+    this.show = true
+    this.$nextTick(() => {
+      setTimeout(() => this.$nuxt.$loading.finish(), 500)
+      this.$nuxt.$loading.start()
+    })
+    const preloader = document.getElementById('preloader')
+    if (preloader !== null || undefined) {
+      preloader.remove()
+    }
+    // RTL initial
+    const rtlURL = document.location.pathname.split('/')[1] === 'ar'
+    this.$vuetify.rtl = rtlURL
+  },
+  methods: {
+    changeColor () {
+      this.$vuetify.theme.themes = {
+        light: {
+          primary: '#00af4a',
+          secondary: '#ff2020'
+        }
+      }
+    }
+  },
   head () {
     return {
       title: this.$store.getters['page/title']
@@ -114,3 +85,12 @@ export default {
   }
 }
 </script>
+
+<style lang="sass">
+@import @@/assets/sass/home_overrides.sass
+@import @@/assets/sass/home/vendors/animate.css
+@import @@/assets/sass/home/vendors/animate-extends.css
+@import @@/assets/sass/home/vendors/hamburger-menu.css
+@import @@/assets/sass/home/vendors/slick-carousel/slick.css
+@import @@/assets/sass/home/vendors/slick-carousel/slick-theme.css
+</style>

@@ -6,7 +6,7 @@
     <v-row justify="center">
       <material-card
         class="pa-6"
-        min-width="40%"
+        :min-width="$vuetify.breakpoint.smAndDown ? '95%' : '70%'"
       >
         <template v-slot:heading>
           <div class="display-2 font-weight-light">

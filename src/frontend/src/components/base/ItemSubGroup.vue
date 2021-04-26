@@ -8,6 +8,7 @@
 
 <script>
 import ItemGroup from './ItemGroup'
+
 export default {
   name: 'ItemSubGroup',
   components: { ItemGroup },

@@ -75,6 +75,7 @@
                 md="4"
               >
                 <v-text-field
+                  ref="mobile"
                   v-model.trim="user.mobile"
                   label="Mobile"
                   class="purple-input"
@@ -251,6 +252,9 @@ export default {
   },
   mounted () {
     this.$store.dispatch('page/title', 'Profile')
+    if (this.$route.query.action === 'add-mobile') {
+      this.$refs.mobile.focus()
+    }
   },
   methods: {
     submit () {

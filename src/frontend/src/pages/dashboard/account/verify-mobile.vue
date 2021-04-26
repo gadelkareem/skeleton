@@ -30,7 +30,7 @@
         </v-row>
         <v-row v-else-if="!user.mobile" align="center" justify="center" class="mt-5">
           <p class="display-1 ma-10">
-            Please <router-link to="/dashboard/account/update-profile/">
+            Please <router-link to="/dashboard/account/update-profile/?action=add-mobile">
               add a mobile number to your account
             </router-link> to be able to use this feature.
           </p>
@@ -40,7 +40,7 @@
             Your mobile number is verified.
           </p>
         </v-row>
-        <v-row v-else-if="!showForm" align="center" justify="center">
+        <v-row v-else-if="!showForm" align="center" justify="center" class="mt-5">
           <v-btn
             color="info"
             class="mr-0"

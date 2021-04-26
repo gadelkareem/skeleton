@@ -1,8 +1,8 @@
 import { mount, createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
-import Page from '../home'
 import Vuetify from 'vuetify'
+import Page from '../home'
 
 const localVue = createLocalVue()
 

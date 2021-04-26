@@ -1,0 +1,83 @@
+.link
+  margin: spacing(1, 1.5)
+
+.footer
+  background: #fff
+  border-top: #d4d4d4 1px solid !important
+
+  +palette-divider
+
+  //margin-top: $spacing1
+
+  //+breakpoints-up(sm)
+  //  padding-top: $spacing6
+  //  padding-bottom: $spacing6
+
+
+  //& > div
+  //  margin-top: $spacing10
+  //  padding-bottom: $spacing10
+
+  ul
+    margin: 0
+    padding: 0
+
+    li
+      list-style: none
+      line-height: 32px
+
+      a
+        +palette-text-secondary
+
+        text-decoration: none
+
+        &:hover
+          color: $palette-primary-main
+
+  .body-2
+    +palette-text-secondary
+.theme--dark
+  .footer
+    background: #272727
+
+.logo
+  margin-top: $spacing4
+  //& .v-image
+  //  display: block
+
+
+.socmed
+  display: flex
+  justify-content: center
+
+  .button
+    margin: $spacing1
+
+  .icon
+    width: 24px
+    height: 24px
+    font-size: 24px
+
+//.select-lang
+//  margin: 0 auto
+//  width: 200px
+//  display: inherit
+//  margin-top: $spacing2
+
+.site-map-item
+  +breakpoints-down("md")
+    padding-bottom: 0 !important
+    padding-top: 0 !important
+
+.accordion-root
+  background: none
+  box-shadow: none
+
+#main-wrap .accordion-content.v-expansion-panel
+  background-color: transparent
+
+  &:before, &:after
+    display: none
+
+.accordion-icon
+  padding: 0

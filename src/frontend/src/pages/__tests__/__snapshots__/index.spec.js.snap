@@ -1,110 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`index.vue should match snapshot 1`] = `
-<span><div class="v-window v-item-group theme--dark v-carousel" style="height: 30vh;"><div class="v-window__container" style="height: 30vh;"><transition-stub name="fade-transition" style="background-blend-mode: darken;"><div class="v-window-item"><div class="v-image v-responsive v-carousel__item theme--dark" style="height: 30vh;"><div class="v-responsive__content"><div class="row fill-height align-center justify-center"><div class="display-4 white--text px-4 rounded" style="background-color: rgba(0, 0, 0, 0.1); font-size: 2vw;">
-          Beautiful and tested Golang and NodeJS code
-        </div></div></div></div></div></transition-stub><transition-stub name="fade-transition" style="background-blend-mode: darken;"><!----></transition-stub><transition-stub name="fade-transition" style="background-blend-mode: darken;"><!----></transition-stub><transition-stub name="fade-transition" style="background-blend-mode: darken;"><!----></transition-stub><transition-stub name="fade-transition" style="background-blend-mode: darken;"><!----></transition-stub><div class="v-window__prev"><button type="button" class="v-btn v-btn--icon v-btn--round theme--dark v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--dark" style="font-size: 36px;"></i></span></button></div>
-<div class="v-window__next"><button type="button" class="v-btn v-btn--icon v-btn--round theme--dark v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--dark" style="font-size: 36px;"></i></span></button></div>
-</div>
-</div>
-<section style="padding: 48px 0px;">
-  <div class="container">
-    <div class="row align-center justify-center">
-      <div class="col col-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-image-multiple theme--light" style="font-size: 100px; color: rgb(224, 224, 224); caret-color: #e0e0e0;"></i>
-        <div class="display-1 ml-2" style="color: rgb(78, 101, 109);">Screenshots</div>
+<div>
+  <section id="home"></section>
+  <div class="main-wrap">
+    <!---->
+    <mq-layout mq="lgDown,xl">
+      <div class="page-nav">
+        <nav class="section-nav">
+          <scrollactive offset="20" active-class="active" tag="section"><a href="#feature" class="anchor-link scrollactive-item" style="top: 30px;"><span class="v-tooltip v-tooltip--left"><!----><span>feature</span></span></a><a href="#pricing" class="anchor-link scrollactive-item" style="top: 0px;"><span class="v-tooltip v-tooltip--left"><!----><span>pricing</span></span></a></scrollactive>
+        </nav> <span class="v-tooltip v-tooltip--left"><!----><scrollactive tag="div"><a href="#home" class="fab anchor-link scrollactive-item v-btn v-btn--is-elevated v-btn--fab v-btn--has-bg v-btn--round theme--light v-size--default primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-up theme--dark"></i></span></a></scrollactive></span>
       </div>
-      <div class="col col-8">
-        <div class="mx-auto v-card v-sheet v-sheet--shaped theme--light elevation-24">
-          <div class="v-window v-item-group theme--dark v-carousel" style="height: 800px;">
-            <div class="v-window__container" style="height: 800px;">
-              <transition-stub name="fade-transition">
-                <div class="v-window-item">
-                  <div class="v-image v-responsive v-carousel__item theme--dark" style="height: 800px;">
-                    <div class="v-responsive__content"></div>
-                  </div>
-                </div>
-              </transition-stub>
-              <transition-stub name="fade-transition">
-                <!---->
-              </transition-stub>
-              <transition-stub name="fade-transition">
-                <!---->
-              </transition-stub>
-              <transition-stub name="fade-transition">
-                <!---->
-              </transition-stub>
-              <transition-stub name="fade-transition">
-                <!---->
-              </transition-stub>
-              <transition-stub name="fade-transition">
-                <!---->
-              </transition-stub>
-              <transition-stub name="fade-transition">
-                <!---->
-              </transition-stub>
-              <transition-stub name="fade-transition">
-                <!---->
-              </transition-stub>
-              <transition-stub name="fade-transition">
-                <!---->
-              </transition-stub>
-              <transition-stub name="fade-transition">
-                <!---->
-              </transition-stub>
-              <transition-stub name="fade-transition">
-                <!---->
-              </transition-stub>
-              <transition-stub name="fade-transition">
-                <!---->
-              </transition-stub>
-              <transition-stub name="fade-transition">
-                <!---->
-              </transition-stub>
-              <transition-stub name="fade-transition">
-                <!---->
-              </transition-stub>
-              <transition-stub name="fade-transition">
-                <!---->
-              </transition-stub>
-              <div class="v-window__prev"><button type="button" class="v-btn v-btn--icon v-btn--round theme--dark v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--dark" style="font-size: 36px;"></i></span></button></div>
-              <div class="v-window__next"><button type="button" class="v-btn v-btn--icon v-btn--round theme--dark v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--dark" style="font-size: 36px;"></i></span></button></div>
+    </mq-layout>
+    <mq-layout mq="lgDown,xl">
+      <div class="v-snack notification v-snack--bottom v-snack--has-background" style="padding-bottom: 0px; padding-top: 0px;">
+        <transition-stub name="v-snack-transition">
+          <div class="v-snack__wrapper v-sheet theme--dark" style="display: none;">
+            <div role="status" aria-live="polite" class="v-snack__content">
+              <div class="action">
+                By continuing to use the site, you agree to the use of cookies. more information
+              </div> <button type="button" class="button v-btn v-btn--outlined theme--dark v-size--default white--text"><span class="v-btn__content">
+    common.accept
+  </span></button>
             </div>
+            <div class="v-snack__action "></div>
           </div>
-        </div>
+        </transition-stub>
       </div>
-    </div>
+    </mq-layout>
   </div>
-</section>
-<section style="padding: 48px 0px;">
-  <div class="container">
-    <div class="row">
-      <ul dir="auto">
-        <li>Backend written in <a href="https://golang.org/" rel="nofollow noreferrer noopener" target="_blank">Golang</a> using <a href="https://beego.me/" rel="nofollow noreferrer noopener" target="_blank">Beego framework</a>.</li>
-        <li>Frontend written in <a href="https://nodejs.org/en/" rel="nofollow noreferrer noopener" target="_blank">NodeJS</a> using <a href="https://nuxtjs.org/" rel="nofollow noreferrer noopener" target="_blank">NUXT</a> and <a href="https://vuejs.org/" rel="nofollow noreferrer noopener" target="_blank">Vue.js</a> frameworks.</li>
-        <li>Material design using <a href="https://vuetifyjs.com/" rel="nofollow noreferrer noopener" target="_blank">Vuetify</a>.</li>
-        <li>JSON REST API based on <a href="https://jsonapi.org/" rel="nofollow noreferrer noopener" target="_blank">jsonapi.org</a> standard.</li>
-        <li>Fully featured user registration, login, password reminder, profile update, 2FA authentication, SMS based mobile confirmation, ... etc.</li>
-        <li><a href="https://jwt.io/" rel="nofollow noreferrer noopener" target="_blank">JSON Web Tokens (JWT)</a> based authentication.</li>
-        <li><a href="https://gitlab.com/gadelkareem/skeleton/-/blob/master/src/backend/services/SocialAuthService.go">Social login</a> using Facebook, LinkedIn, Google, Github.</li>
-        <li><a href="https://en.wikipedia.org/wiki/Search_engine_optimization" rel="nofollow noreferrer noopener" target="_blank">SEO friendly</a> thanks to <a href="https://nuxtjs.org/guide/#static-generated-pre-rendering-" rel="nofollow noreferrer noopener" target="_blank">the NUXT Static Generated (Pre Rendering)</a>.</li>
-        <li><a href="https://gitlab.com/gadelkareem/skeleton/-/tree/master/src/backend/migrations/sql">SQL migration</a> using <a href="https://github.com/rubenv/sql-migrate" rel="nofollow noreferrer noopener" target="_blank">sql-migrate</a>.</li>
-        <li><a href="https://gitlab.com/gadelkareem/skeleton/-/tree/master/src/backend/limiter">Rate limiter</a> for API routes to easily set a rate limit per IP for one or more routes.</li>
-        <li><a href="https://gitlab.com/gadelkareem/skeleton/-/tree/master/src/backend/rbac">Role-based access control (RBAC)</a> for API routes and permissions.</li>
-        <li><a href="https://gitlab.com/gadelkareem/skeleton/-/tree/master/src/backend/utils/paginator">Pagination</a> implementation for API and frontend with caching.</li>
-        <li><a href="https://gitlab.com/gadelkareem/skeleton/-/blob/master/src/backend/services/AuthenticatorService.go">Multi-factor authentication</a> using <a href="https://github.com/pquerna/otp" rel="nofollow noreferrer noopener" target="_blank">One Time Passwords</a> and mobile SMS code.</li>
-        <li><a href="https://gitlab.com/gadelkareem/skeleton/-/blob/master/src/backend/services/EmailService.go">Nice Email templates</a> using <a href="https://github.com/matcornic/hermes" rel="nofollow noreferrer noopener" target="_blank">Hermes</a>.</li>
-        <li><a href="https://gitlab.com/gadelkareem/skeleton/-/tree/master/src/frontend/src/pages/dashboard">Fully featured admin dashboard</a> based on <a href="https://demos.creative-tim.com/vuetify-material-dashboard/?partner=116160&amp;ref=vuetifyjs.com#/" rel="nofollow noreferrer noopener" target="_blank">Vuetify Material Dashboard</a>.</li>
-        <li><a href="https://gitlab.com/gadelkareem/skeleton/-/pipelines">Complete CI/CD pipelines</a> including tests using <a href="https://gitlab.com/gadelkareem/skeleton/-/blob/master/.gitlab-ci.yml">GitLab .gitlab-ci.yml</a> file.</li>
-        <li><a href="#deploy-to-heroku">Deploy to Heroku</a> using few easy steps.</li>
-        <li>Automated development initialization using <a href="https://gitlab.com/gadelkareem/skeleton/-/blob/master/docker-compose.yml">Docker compose</a> and <a href="https://gitlab.com/gadelkareem/skeleton/-/blob/master/init.sh">init file</a>.</li>
-        <li>Application Cache using <a href="https://github.com/gadelkareem/cachita" rel="nofollow noreferrer noopener" target="_blank">Cachita</a> with support for memory, Redis, database and file cache.</li>
-        <li><a href="https://gitlab.com/gadelkareem/skeleton/-/blob/master/src/backend/di/Container.go">Dependency injection</a>.</li>
-        <li>Backend API integration and unit tests.</li>
-        <li>Frontend <a href="https://github.com/facebook/jest" rel="nofollow noreferrer noopener" target="_blank">Jest</a> tests.</li>
-        <li><a href="https://gitlab.com/gadelkareem/skeleton/-/blob/master/src/backend/queue" rel="nofollow noreferrer noopener" target="_blank">Queue management system</a> using <a href="https://github.com/gadelkareem/que" rel="nofollow noreferrer noopener" target="_blank">Que</a>.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-</span>
+</div>
 `;

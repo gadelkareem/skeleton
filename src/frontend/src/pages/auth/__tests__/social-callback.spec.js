@@ -1,13 +1,14 @@
-import { mount, createLocalVue } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
-import Page from '../social-callback'
 import Vuetify from 'vuetify'
+import Page from '../social-callback'
 
-const localVue = createLocalVue()
+const vuetify = new Vuetify()
 
 describe('social-callback.vue', () => {
-  let actions, store, vuetify
+  let actions
+  let store
 
   beforeEach(() => {
     actions = {
@@ -22,7 +23,6 @@ describe('social-callback.vue', () => {
         loading: { status: false }
       }
     })
-    vuetify = new Vuetify()
   })
 
   it('should match snapshot', () => {
@@ -30,12 +30,12 @@ describe('social-callback.vue', () => {
     const w = mount(Page, {
       store,
       router,
-      localVue,
-      vuetify,
-      stubs: ['router-link', 'router-view']
+      stubs: ['router-link', 'router-view'],
+      vuetify
     })
 
     expect(w.html()).toMatchSnapshot()
+
     w.destroy()
   })
 })

@@ -1,6 +1,9 @@
 import { mount } from '@vue/test-utils'
 import Vuex from 'vuex'
+import Vuetify from 'vuetify'
 import Page from '../register'
+
+const vuetify = new Vuetify()
 
 describe('register.vue', () => {
   let actions
@@ -23,7 +26,8 @@ describe('register.vue', () => {
   it('should match snapshot', () => {
     const w = mount(Page, {
       store,
-      stubs: ['router-link', 'router-view']
+      stubs: ['router-link', 'router-view'],
+      vuetify
     })
 
     expect(w.html()).toMatchSnapshot()

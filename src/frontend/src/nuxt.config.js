@@ -21,7 +21,7 @@ export default {
     htmlAttrs: {
       dir: 'ltr'
     },
-    title: 'Proxy Cloud - skeletontagline',
+    title: 'Skeleton - skeletontagline',
     titleTemplate: '%s - Skeleton',
     meta: [
       {
