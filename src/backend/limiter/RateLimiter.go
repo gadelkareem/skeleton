@@ -39,6 +39,7 @@ var config = []Rate{
         Routes: [][]string{
             {"*", "/api/v1/users/forgot-password"},
             {"*", "/api/v1/users/{userId}/send-verify-sms"},
+            {"*", "/api/v1/common/contact"},
         },
     },
 }

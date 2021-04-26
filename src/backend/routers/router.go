@@ -24,6 +24,11 @@ func InitRouters(c *di.Container) {
                 &controllers.AuditLogController{ApiController: api},
             ),
         ),
+        beego.NSNamespace("/common",
+            beego.NSInclude(
+                &controllers.CommonController{ApiController: api},
+            ),
+        ),
     )
     beego.AddNamespace(ns)
 }

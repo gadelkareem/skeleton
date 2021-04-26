@@ -84,6 +84,14 @@ func (s *EmailService) WelcomeEmail(recipientName, recipientEmail string) (err e
     return s.generate(email, recipientEmail, fmt.Sprintf("Welcome to %s", kernel.SiteName))
 }
 
+func (s *EmailService) Contact(name, email, msg, ip string) (err error) {
+    msg = fmt.Sprintf("Name: %s\n"+
+        "Email: %s\n"+
+        "Message: %s\n"+
+        "IP: %s", name, email, msg, ip)
+    return s.Send(s.senderEmail, fmt.Sprintf("[Contact] Message from %s", name), "", msg)
+}
+
 func (s *EmailService) VerifyUserEmail(recipientName, recipientEmail, verifyLink string) (err error) {
 
     email := hermes.Email{

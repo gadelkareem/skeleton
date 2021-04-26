@@ -70,6 +70,15 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["backend/controllers:CommonController"] = append(beego.GlobalControllerRouter["backend/controllers:CommonController"],
+        beego.ControllerComments{
+            Method: "Contact",
+            Router: "/contact",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["backend/controllers:UserController"] = append(beego.GlobalControllerRouter["backend/controllers:UserController"],
         beego.ControllerComments{
             Method: "GetUsers",

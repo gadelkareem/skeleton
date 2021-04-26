@@ -65,4 +65,10 @@ type (
         Question string `jsonapi:"primary,questions" valid:"Required"`
         Answer   string `jsonapi:"attr,answer" valid:"Required"`
     }
+    Contact struct {
+        ID      int    `jsonapi:"primary,contact-requests,omitempty"`
+        Name    string `jsonapi:"attr,name" valid:"Required"`
+        Email   string `jsonapi:"attr,email" valid:"Required;Email;MaxSize(100)"`
+        Message string `jsonapi:"attr,message" valid:"MinSize(10)"`
+    }
 )

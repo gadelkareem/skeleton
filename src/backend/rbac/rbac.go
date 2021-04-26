@@ -28,6 +28,7 @@ var routes = map[string][][]string{
         {"POST", "/api/v1/users/forgot-password"},
         {"POST", "/api/v1/users/recovery-questions"},
         {"POST", "/api/v1/users/disable-mfa"},
+        {"POST", "/api/v1/common/contact"},
     },
     RoleAdmin: {
         {"*", "/api/v1/*"},
