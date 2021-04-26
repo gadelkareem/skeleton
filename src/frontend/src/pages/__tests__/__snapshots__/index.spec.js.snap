@@ -8,7 +8,7 @@ exports[`index.vue should match snapshot 1`] = `
     <mq-layout mq="lgDown,xl">
       <div class="page-nav">
         <nav class="section-nav">
-          <scrollactive offset="20" active-class="active" tag="section"><a href="#feature" class="anchor-link scrollactive-item" style="top: 30px;"><span class="v-tooltip v-tooltip--left"><!----><span>feature</span></span></a><a href="#pricing" class="anchor-link scrollactive-item" style="top: 0px;"><span class="v-tooltip v-tooltip--left"><!----><span>pricing</span></span></a></scrollactive>
+          <scrollactive offset="20" active-class="active" tag="section"><a href="#feature" class="anchor-link scrollactive-item" style="top: 0px;"><span class="v-tooltip v-tooltip--left"><!----><span>feature</span></span></a></scrollactive>
         </nav> <span class="v-tooltip v-tooltip--left"><!----><scrollactive tag="div"><a href="#home" class="fab anchor-link scrollactive-item v-btn v-btn--is-elevated v-btn--fab v-btn--has-bg v-btn--round theme--light v-size--default primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-up theme--dark"></i></span></a></scrollactive></span>
       </div>
     </mq-layout>
