@@ -9,19 +9,19 @@
       >
         <v-col sm="4">
           <div class="counter-item">
-            <span class="icon ion-leaf" />
+            <span class="icon test-tube" />
             <div class="text">
               <h4 v-if="loaded" class="display-1">
                 <span
                   v-countUp:onWindowScroll.once="{
                     watchedElId: 'watched_counter',
                     startValue: 0,
-                    endValue: 123,
+                    endValue: 88.4,
                     options: { duration: 1 }
                   }"
-                />
+                />%
               </h4>
-              <h6 class="title">Lorem</h6>
+              <h6 class="title">Test Coverage</h6>
             </div>
           </div>
         </v-col>
@@ -66,13 +66,12 @@
   </div>
 </template>
 
-<style scoped lang="sass">
-@import './counter-style'
+<style scoped lang="scss">
+@import './counter-style';
 </style>
 
 <script>
 export default {
-  name: 'Counter',
   data: () => ({
     loaded: false
   }),

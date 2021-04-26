@@ -16,32 +16,32 @@
             <feature />
           </v-container>
         </section>
-        <section
-          class="page-section"
-        >
-          <counter />
-        </section>
-        <section
-          id="testimonials"
-          class="space-top"
-        >
-          <Testimonials />
-        </section>
-        <section
-          id="pricing"
-          class="space-top"
-        >
-          <pricing />
-        </section>
-        <section
-          id="blog"
-          class="space-top space-bottom"
-        >
-          <blog />
-        </section>
-        <section id="subscribe">
-          <subscribe />
-        </section>
+        <!--        <section-->
+        <!--          class="page-section"-->
+        <!--        >-->
+        <!--          <counter />-->
+        <!--        </section>-->
+        <!--        <section-->
+        <!--          id="testimonials"-->
+        <!--          class="space-top"-->
+        <!--        >-->
+        <!--          <Testimonials />-->
+        <!--        </section>-->
+        <!--        <section-->
+        <!--          id="pricing"-->
+        <!--          class="space-top"-->
+        <!--        >-->
+        <!--          <pricing />-->
+        <!--        </section>-->
+        <!--        <section-->
+        <!--          id="blog"-->
+        <!--          class="space-top space-bottom"-->
+        <!--        >-->
+        <!--          <blog />-->
+        <!--        </section>-->
+        <!--        <section id="subscribe">-->
+        <!--          <subscribe />-->
+        <!--        </section>-->
       </main>
       <hidden point="mdDown">
         <page-nav />
@@ -78,11 +78,11 @@
 import Hidden from '@@/components/home/Hidden'
 import AnimateSlider from '@@/components/home/AnimateSlider'
 import Feature from '@@/components/home/Feature'
-import Counter from '@@/components/home/Counter'
-import Testimonials from '@@/components/home/Testimonials'
-import Pricing from '@@/components/home/Pricing'
-import Blog from '@@/components/home/Blog'
-import Subscribe from '@@/components/home/Subscribe'
+// import Counter from '@@/components/home/Counter'
+// import Testimonials from '@@/components/home/Testimonials'
+// import Pricing from '@@/components/home/Pricing'
+// import Blog from '@@/components/home/Blog'
+// import Subscribe from '@@/components/home/Subscribe'
 import PageNav from '@@/components/home/PageNav'
 import Notification from '@@/components/home/Notification'
 import brand from '@@/static/text/brand'
@@ -92,11 +92,11 @@ export default {
     AnimateSlider,
     Hidden,
     Feature,
-    Counter,
-    Testimonials,
-    Pricing,
-    Blog,
-    Subscribe,
+    // Counter,
+    // Testimonials,
+    // Pricing,
+    // Blog,
+    // Subscribe,
     PageNav,
     Notification
   },

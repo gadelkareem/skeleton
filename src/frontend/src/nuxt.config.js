@@ -53,11 +53,11 @@ export default {
       { rel: 'icon', type: 'image/png', href: '/favicon-32x32.png', sizes: '32x32' },
       { rel: 'icon', type: 'image/png', href: '/favicon-16x16.png', sizes: '16x16' },
       { rel: 'mask-icon', href: '/safari-pinned-tab.svg', color: '#5bbad5' },
-      { rel: 'manifest', href: '/site.webmanifest' }
+      { rel: 'manifest', href: '/site.webmanifest' },
       // Fonts and Icons
-      // { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Montserrat:400,500,600&display=swap' }
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Montserrat:400,500,600&display=swap' },
       // { rel: 'stylesheet', href: 'https://fonts.googleapis.com/icon?family=Material+Icons' },
-      // { rel: 'stylesheet', href: 'https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css' }
+      { rel: 'stylesheet', href: 'https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css' }
     ]
   },
   /*
