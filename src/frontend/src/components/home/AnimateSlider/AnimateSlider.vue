@@ -50,7 +50,7 @@
       small
       @click="prev"
     >
-      <v-icon>
+      <v-icon color="primary">
         mdi-arrow-left
       </v-icon>
     </v-btn>
@@ -60,7 +60,7 @@
       small
       @click="next"
     >
-      <v-icon>
+      <v-icon color="primary">
         mdi-arrow-right
       </v-icon>
     </v-btn>

@@ -131,7 +131,7 @@
                 delay="0.3s"
               >
                 <p class="text">
-                  Check these quick screenshots or hit <v-btn color="blue" to="/auth/register/">register</v-btn>and start testing life demo.
+                  Check these quick screenshots or hit <v-btn color="primary" to="/auth/register/">register</v-btn>and start testing life demo.
                 </p>
               </u-animate>
               <u-animate
