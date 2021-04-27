@@ -29,18 +29,18 @@
           <!--              Secondary action-->
           <!--            </v-btn>-->
           <!--          </div>-->
-          <section>
-            <img
-              :src="content[Math.abs(currentImg) % content.length].userProfile"
-              :alt="content[Math.abs(currentImg) % content.length].user"
-            >
-            <span>
-              Posted by&nbsp;
-              <strong>
-                {{ content[Math.abs(currentImg) % content.length].user }}
-              </strong>
-            </span>
-          </section>
+          <!--          <section>-->
+          <!--            <img-->
+          <!--              :src="content[Math.abs(currentImg) % content.length].userProfile"-->
+          <!--              :alt="content[Math.abs(currentImg) % content.length].user"-->
+          <!--            >-->
+          <!--            <span>-->
+          <!--              Posted by&nbsp;-->
+          <!--              <strong>-->
+          <!--                {{ content[Math.abs(currentImg) % content.length].user }}-->
+          <!--              </strong>-->
+          <!--            </span>-->
+          <!--          </section>-->
         </div>
       </div>
     </transition-group>

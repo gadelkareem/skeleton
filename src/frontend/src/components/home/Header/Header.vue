@@ -1,13 +1,12 @@
 <template>
   <fragment>
     <v-navigation-drawer
-      v-if="isTablet"
       v-model="openNavMobile"
       fixed
       temporary
       class="mobile-nav"
     >
-      <mobile-menu />
+      <mobile-menu :is-logged-in="isLoggedIn" />
     </v-navigation-drawer>
     <v-app-bar
       v-scroll="handleScroll"
@@ -98,7 +97,8 @@ function createData (name, url, offset) {
 export default {
   name: 'Header',
   components: {
-    MobileMenu, Settings
+    MobileMenu,
+    Settings
   },
   data () {
     return {
@@ -118,8 +118,8 @@ export default {
   },
   computed: {
     isTablet () {
-      const smDown = this.$store.state.breakpoints.smDown
-      return smDown.includes(this.$mq)
+      const mdDown = this.$store.state.breakpoints.mdDown
+      return mdDown.includes(this.$mq)
     },
     isDesktop () {
       const smUp = this.$store.state.breakpoints.smUp
