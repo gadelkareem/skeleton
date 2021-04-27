@@ -14,12 +14,12 @@
       </v-col>
       <v-col class="px-6" md="4">
         <div class="feature-list">
-          <v-icon color="primary" class="icon">mdi-account-check</v-icon>
+          <v-icon color="primary" class="icon">mdi-open-source-initiative</v-icon>
           <h5 class="headline">
-            Fully featured platform
+            Free and Open Source
           </h5>
           <p class="body-1">
-            Fully featured user registration, login, password reminder, profile update, 2FA authentication, SMS based mobile confirmation, audit logs ... etc.
+            Skeleton is totally open source and available on both <a href="https://github.com/gadelkareem/skeleton">Github</a> and <a href="https://gitlab.com/gadelkareem/skeleton">Gitlab</a>.
           </p>
         </div>
       </v-col>

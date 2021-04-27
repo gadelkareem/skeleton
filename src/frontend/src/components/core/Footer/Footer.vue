@@ -41,9 +41,9 @@
                     v-for="(item, index2) in footer.description"
                     :key="index2"
                   >
-                    <nuxt-link :to="footer.link[index2]">
+                    <a :href="footer.link[index2]">
                       {{ item }}
-                    </nuxt-link>
+                    </a>
                   </li>
                 </ul>
               </v-expansion-panel-content>
@@ -66,9 +66,9 @@
                   v-for="(item, index2) in footer.description"
                   :key="index2"
                 >
-                  <nuxt-link :to="footer.link[index2]">
+                  <a :href="footer.link[index2]">
                     {{ item }}
-                  </nuxt-link>
+                  </a>
                 </li>
               </ul>
             </v-col>
@@ -140,21 +140,17 @@ export default {
         description: ['Contact us'],
         link: ['/home/contact/']
       },
-      // {
-      //   title: 'Resources',
-      //   description: [
-      //     'Resource',
-      //     'Resource name',
-      //     'Another resource',
-      //     'Final resource'
-      //   ],
-      //   link: [
-      //     '#resource',
-      //     '#resource-name',
-      //     '#another-resource',
-      //     '#final-resource'
-      //   ]
-      // },
+      {
+        title: 'Project Links',
+        description: [
+          'Github',
+          'Gitlab'
+        ],
+        link: [
+          'https://github.com/gadelkareem/skeleton',
+          'https://gitlab.com/gadelkareem/skeleton'
+        ]
+      },
       {
         title: 'Legal',
         description: ['Privacy Policy'],

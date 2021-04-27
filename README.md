@@ -28,6 +28,7 @@ A complete Golang and Nuxt boilerplate for your project with backend API, fronte
 - [Multi-factor authentication](./src/backend/services/AuthenticatorService.go) using [One Time Passwords](https://github.com/pquerna/otp) and mobile SMS code.
 - [Nice Email templates](./src/backend/services/EmailService.go) using [Hermes](https://github.com/matcornic/hermes).
 - [Fully featured admin dashboard](./src/frontend/src/pages/dashboard) based on [Vuetify Material Dashboard](https://demos.creative-tim.com/vuetify-material-dashboard/?partner=116160&ref=vuetifyjs.com#/).
+- [Beautiful home page](./src/frontend/src/pages/index.vue) based on [Veluxi Starter](https://github.com/ilhammeidi/veluxi-starter).
 - [Complete CI/CD pipelines](https://gitlab.com/gadelkareem/skeleton/-/pipelines) including tests using [GitLab .gitlab-ci.yml](.gitlab-ci.yml) file.
 - [Deploy to Heroku](#deploy-to-heroku) using few easy steps.
 - Automated development initialization using [Docker compose](./docker-compose.yml) and [init file](./init.sh).

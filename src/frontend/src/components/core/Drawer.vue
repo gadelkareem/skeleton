@@ -26,7 +26,7 @@
         <v-list-item-content>
           <a class="logo" href="/">
             <v-img
-              :src="logo"
+              :src="require('@@/static/logo-dark.svg')"
               contain
               position="left"
             />
@@ -188,9 +188,6 @@ export default {
         avatar: true,
         title: this.$t('avatar')
       }
-    },
-    logo () {
-      return require('@@/static/logo-dark.svg')
     }
   },
   methods: {
