@@ -1,6 +1,7 @@
 <template>
   <fragment>
     <v-navigation-drawer
+      v-show="isTablet"
       v-model="openNavMobile"
       fixed
       temporary

@@ -1,9 +1,9 @@
 <template>
   <v-app>
+    <main-header />
     <v-main
       id="main-wrap"
     >
-      <main-header />
       <nuxt />
     </v-main>
     <main-footer app absolute />
