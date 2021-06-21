@@ -1,6 +1,7 @@
 package controllers
 
 import (
+    "net"
     "net/http"
 
     "backend/di"
@@ -57,7 +58,18 @@ func (c *BaseController) readString(key string, def ...string) string {
 }
 
 func (c *BaseController) requestIP() string {
-    return c.Ctx.Input.IP()
+    ips := c.Ctx.Input.Proxy()
+    if len(ips) > 0 && ips[0] != "" {
+        rip, _, err := net.SplitHostPort(ips[0])
+        if err != nil {
+            rip = ips[len(ips)-1]
+        }
+        return rip
+    }
+    if ip, _, err := net.SplitHostPort(c.Ctx.Input.Context.Request.RemoteAddr); err == nil {
+        return ip
+    }
+    return c.Ctx.Input.Context.Request.RemoteAddr
 }
 
 func (c *BaseController) requestUserAgent() string {

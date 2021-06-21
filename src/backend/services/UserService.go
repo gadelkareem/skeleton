@@ -5,6 +5,7 @@ import (
     "time"
 
     "backend/internal"
+    "backend/kernel"
     "backend/models"
     "backend/rbac"
     "backend/utils/paginator"
@@ -99,6 +100,9 @@ func (s *UserService) DeleteUser(id int64) error {
 }
 
 func (s *UserService) MakeAdmin(username string) error {
+    if kernel.App.IsCLI {
+        return internal.ErrForbidden
+    }
     u, err := s.FindUser(&models.User{Username: username}, true)
     if err != nil {
         return err
@@ -125,7 +129,7 @@ func (s *UserService) SignUp(m *models.User) (err error) {
     if m.Password == "" {
         return internal.ValidationError("Password.Required", "Password cannot be empty.")
     }
-    if h.InArray(m.Username, models.ForbiddenUserames) {
+    if h.InArray(m.Username, models.ForbiddenUsernames) {
         return internal.ValidationError("Username", "Username is not allowed.")
     }
     m.HashPass()

@@ -15,7 +15,7 @@ import (
     "golang.org/x/crypto/bcrypt"
 )
 
-var ForbiddenUserames = []string{"admin", "mod", "root"}
+var ForbiddenUsernames = []string{"admin", "mod", "root"}
 
 type (
     User struct {
