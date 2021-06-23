@@ -151,13 +151,13 @@ func (c *ApiController) handleError(err error) {
     if e != nil {
         logs.Error("Error writing body: %s", e)
     }
-    c.log(internalErr.Status())
+    go c.log(internalErr.Status())
     c.StopRun()
 }
 
 func (c *ApiController) SendStatus(s int) {
     c.Ctx.ResponseWriter.WriteHeader(s)
-    c.log(s)
+    go c.log(s)
     c.StopRun()
 }
 

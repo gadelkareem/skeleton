@@ -15,7 +15,8 @@ type (
         kernel.Controller
         C *di.Container
 
-        user *models.User
+        user   *models.User
+        userIP string
     }
 )
 
@@ -57,7 +58,10 @@ func (c *BaseController) readString(key string, def ...string) string {
 }
 
 func (c *BaseController) requestIP() string {
-    return c.Ctx.Input.IP()
+    if c.userIP == "" {
+        c.userIP = c.Ctx.Input.IP()
+    }
+    return c.userIP
 }
 
 func (c *BaseController) requestUserAgent() string {

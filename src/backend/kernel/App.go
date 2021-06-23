@@ -31,7 +31,7 @@ type (
     app struct {
         Config                                      config.Configer
         RunMode, Host, FrontEndURL, APIURL, APIPath string
-        DisableCache, EnableControls                bool
+        DisableCache, EnableControls, IsCLI         bool
     }
     Controller struct {
         beego.Controller
@@ -234,6 +234,7 @@ func (a app) RunCommand() {
             cmd.Help()
             os.Exit(0)
         }
+        a.IsCLI = true
         cmd.Run(args[2:])
         os.Exit(0)
     }
