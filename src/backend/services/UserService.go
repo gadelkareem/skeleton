@@ -460,7 +460,7 @@ func (s *UserService) PaginateUsers(p *paginator.Paginator) (*paginator.Paginato
     p.Sort = s.sanitizeSort(p.Sort)
     // caching
     id, _ := s.c.Get(&ms, &p)
-    if len(ms) > 1 {
+    if len(ms) > 0 {
         var msi []interface{}
         for _, m := range ms {
             msi = append(msi, m)
