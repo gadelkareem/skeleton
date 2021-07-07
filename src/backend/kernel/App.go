@@ -137,7 +137,7 @@ func handleProdConfig(m string) {
     h.PanicOnError(err)
 }
 
-func (a app) ConfigOrEnvVar(k, e string) string {
+func (a *app) ConfigOrEnvVar(k, e string) string {
     s := os.Getenv(e)
     if s == "" {
         return App.Config.String(k)
@@ -145,7 +145,7 @@ func (a app) ConfigOrEnvVar(k, e string) string {
     return s
 }
 
-func (a app) ConfigOrEnvInt(k, e string) int {
+func (a *app) ConfigOrEnvInt(k, e string) int {
     s := os.Getenv(e)
     if s == "" {
         return App.Config.DefaultInt(k, 0)
@@ -154,7 +154,7 @@ func (a app) ConfigOrEnvInt(k, e string) int {
     return i
 }
 
-func (a app) SetupServer(errController ControllerInterface) {
+func (a *app) SetupServer(errController ControllerInterface) {
     // leave it high until https://github.com/golang/go/issues/16100
     beego.BConfig.Listen.ServerTimeOut = 15
     beego.ErrorController(errController)
@@ -197,7 +197,7 @@ func SetCORS(c *context.Context) {
     c.Output.Header("Access-Control-Allow-Credentials", "true")
 }
 
-func (a app) logging() {
+func (a *app) logging() {
     if App.RunMode == Prod {
         err := logs.GetBeeLogger().DelLogger(logs.AdapterConsole)
         h.PanicOnError(err)
@@ -209,11 +209,11 @@ func (a app) logging() {
     logs.SetLevel(App.Config.DefaultInt("logLevel", logs.LevelWarning))
 }
 
-func (a app) Run(params ...string) {
+func (a *app) Run(params ...string) {
     beego.Run(params...)
 }
 
-func (a app) RunCommand() {
+func (a *app) RunCommand() {
     isHelp := func(s string) bool {
         return s == "help" || s == "-h" || s == "--help"
     }
