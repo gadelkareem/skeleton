@@ -185,8 +185,11 @@ func (c *ApiController) auditLog(l models.Log) {
     if l.Request == "" {
         l.Request = string(c.Ctx.Input.RequestBody)
     }
-    if c.user != nil {
-        l.AdminId = c.user.ID
+    if l.UserID != 0 && c.user != nil && l.UserID != c.user.ID {
+        l.AdminID = c.user.ID
+    }
+    if l.UserID == 0 && c.user != nil {
+        l.UserID = c.user.ID
     }
     c.C.AuditLogService.AddAuditLog(l)
 }

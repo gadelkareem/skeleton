@@ -20,7 +20,7 @@ func (c *UserController) SignUp() {
     err := c.C.UserService.SignUp(u)
     c.handleError(err)
 
-    go c.auditLog(models.Log{UserId: u.ID, Action: "SignUp", Request: "SKIP"})
+    go c.auditLog(models.Log{UserID: u.ID, Action: "SignUp", Request: "SKIP"})
 
     c.SendStatus(http.StatusCreated)
 }
@@ -80,7 +80,7 @@ func (c *UserController) UpdateUser() {
     }
     c.handleError(err)
 
-    go c.auditLog(models.Log{UserId: u.ID, Action: "Update", Request: "SKIP"})
+    go c.auditLog(models.Log{UserID: u.ID, Action: "Update", Request: "SKIP"})
 
     c.json(u)
 }
@@ -90,7 +90,7 @@ func (c *UserController) SendVerifySMS() {
     err := c.C.UserService.SendVerifySMS(c.user)
     c.handleError(err)
 
-    go c.auditLog(models.Log{UserId: c.user.ID, Action: "SendVerifySMS"})
+    go c.auditLog(models.Log{UserID: c.user.ID, Action: "SendVerifySMS"})
 
     c.SendStatus(http.StatusOK)
 }
@@ -104,7 +104,7 @@ func (c *UserController) VerifyMobile() {
     err := c.C.UserService.VerifyMobile(r.Code, c.user)
     c.handleError(err)
 
-    go c.auditLog(models.Log{UserId: c.user.ID, Action: "VerifyMobile"})
+    go c.auditLog(models.Log{UserID: c.user.ID, Action: "VerifyMobile"})
 
     c.SendStatus(http.StatusOK)
 }
@@ -118,7 +118,7 @@ func (c *UserController) UpdatePassword() {
     err := c.C.UserService.UpdatePassword(c.user, r.OldPassword, r.Password)
     c.handleError(err)
 
-    go c.auditLog(models.Log{UserId: c.user.ID, Action: "UpdatePassword", Request: "SKIP"})
+    go c.auditLog(models.Log{UserID: c.user.ID, Action: "UpdatePassword", Request: "SKIP"})
 
     c.SendStatus(http.StatusOK)
 }
@@ -136,7 +136,7 @@ func (c *UserController) GenerateAuthenticator() {
     r, err := c.C.AuthenticatorService.Generate(c.user)
     c.handleError(err)
 
-    go c.auditLog(models.Log{UserId: c.user.ID, Action: "GenerateAuthenticator"})
+    go c.auditLog(models.Log{UserID: c.user.ID, Action: "GenerateAuthenticator"})
 
     c.json(r)
 }
@@ -150,7 +150,7 @@ func (c *UserController) Authenticator() {
     err := c.C.AuthenticatorService.Process(c.user, r)
     c.handleError(err)
 
-    go c.auditLog(models.Log{UserId: c.user.ID, Action: "Authenticator", Request: "SKIP"})
+    go c.auditLog(models.Log{UserID: c.user.ID, Action: "Authenticator", Request: "SKIP"})
 
     c.SendStatus(http.StatusOK)
 }
@@ -164,7 +164,7 @@ func (c *UserController) RecoveryQuestions() {
     err := c.C.UserService.SaveRecoveryQuestions(c.user, r)
     c.handleError(err)
 
-    go c.auditLog(models.Log{UserId: c.user.ID, Action: "Questions", Request: "SKIP"})
+    go c.auditLog(models.Log{UserID: c.user.ID, Action: "Questions", Request: "SKIP"})
 
     c.SendStatus(http.StatusOK)
 }

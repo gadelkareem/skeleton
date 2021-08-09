@@ -15,8 +15,8 @@ type (
         CreatedAt time.Time `pg:"created_at,type:TIMESTAMPTZ" jsonapi:"attr,created_at"`
     }
     Log struct {
-        UserId    int64  `json:"user_id" jsonapi:"attr,user_id,omitempty"`
-        AdminId   int64  `json:"admin_id" jsonapi:"attr,admin_id,omitempty"`
+        UserID    int64  `json:"user_id" jsonapi:"attr,user_id,omitempty"`
+        AdminID   int64  `json:"admin_id" jsonapi:"attr,admin_id,omitempty"`
         UserEmail string `json:"user_email" jsonapi:"attr,user_email,omitempty" fake:"{person.first}####@{person.last}.{internet.domain_suffix}"`
         Username  string `json:"username" jsonapi:"attr,username,omitempty" jsonapi:"attr,username" fake:"{person.last}-###"`
         Action    string `json:"action" jsonapi:"attr,action,omitempty"`
