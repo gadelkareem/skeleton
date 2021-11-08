@@ -61,7 +61,7 @@ services:
     stdin_open: true
     tty: true
     environment:
-      DATABASE_URL: postgres://postgres:postgres@db/postgres
+      DATABASE_URL: postgres://skeleton_backend:dev_awTf9d2GceKRNzhkCb4H5B8nfmq@db:5432/skeleton_backend?sslmode=disable
       REDIS_URL: redis://cache:6379
       HTTP_ADDR: 0.0.0.0
       # comment this for mailtrap
