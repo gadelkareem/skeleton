@@ -20,7 +20,7 @@
         <alert
           :errors="errors"
           :success="success"
-          success-text="Your password has been updated successfully!"
+          success-txt="Your password has been updated successfully!"
         />
         <v-form
           ref="form"
