@@ -19,7 +19,7 @@
         <alert
           :errors="errors"
           :success="success"
-          success-text="Mobile verified successfully"
+          success-txt="Mobile verified successfully"
         />
         <v-row v-if="!user.recovery_questions_set" align="center" justify="center" class="mt-5">
           <p class="display-1 ma-10">

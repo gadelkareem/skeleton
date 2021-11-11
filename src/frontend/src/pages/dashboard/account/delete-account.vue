@@ -19,7 +19,7 @@
         <alert
           :errors="errors"
           :success="success"
-          success-text="Your account has been deleted successfully"
+          success-txt="Your account has been deleted successfully"
         />
         <v-container>
           <v-col

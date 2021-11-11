@@ -19,7 +19,7 @@
         <alert
           :errors="errors"
           :success="success"
-          success-text="Successful!"
+          success-txt="Successful!"
         />
         <v-form
           v-if="user.id"
