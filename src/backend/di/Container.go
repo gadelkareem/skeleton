@@ -7,6 +7,7 @@ import (
     "backend/kernel"
     "backend/limiter"
     "backend/models"
+    "backend/payment_gateway/stripe_client"
     "backend/queue"
     "backend/queue/workers"
     "backend/rbac"
@@ -20,6 +21,7 @@ type Container struct {
     DB                   *kernel.PgDb
     UserRepository       *models.UserRepository
     UserService          *services.UserService
+    PaymentService       *services.PaymentService
     EmailService         *services.EmailService
     JWTService           *services.JWTService
     SocialAuthService    *services.SocialAuthService
@@ -47,8 +49,9 @@ func (c *Container) commonInit() {
     c.DB = kernel.NewDB()
     c.CacheService = services.NewCacheService(c.Cache, true)
 
+    c.PaymentService = services.NewPaymentService(stripe_client.NewClient(), c.CacheService)
     c.UserRepository = models.NewUserRepository(c.DB, 0)
-    c.UserService = services.NewUserService(c.UserRepository, c.EmailService, c.SMSService, c.RBAC, c.CacheService)
+    c.UserService = services.NewUserService(c.UserRepository, c.EmailService, c.SMSService, c.RBAC, c.CacheService, c.PaymentService)
 
     c.JWTService = services.NewJWTService(kernel.App.Config.String("hmacKey"), c.UserService)
     c.AuthenticatorService = services.NewAuthenticatorService(c.UserService)
