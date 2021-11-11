@@ -6,7 +6,7 @@
       <router-view />
       <br><br>
     </v-main>
-    <dashboard-core-footer />
+    <dashboard-core-footer v-if="!hideFooter" />
     <dashboard-core-settings />
   </v-app>
 </template>
@@ -29,6 +29,11 @@ export default {
   data: () => ({
     userLoaded: false
   }),
+  computed: {
+    hideFooter () {
+      return this.$store.state.page.hideFooter
+    }
+  },
   created () {
     this.initUser()
       .then(() => {
