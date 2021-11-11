@@ -17,7 +17,15 @@ const (
 
 var routes = map[string][][]string{
     RoleUser: {
-        {"GET|POST|PATCH|DELETE", "/api/v1/users/{userId}*"},
+        {"GET|POST|PATCH|DELETE", "/api/v1/users/{userID}*"},
+        {"POST", "/api/v1/subscriptions"},
+        {"PATCH|DELETE", "/api/v1/subscriptions/*"},
+        {"GET|POST", "/api/v1/invoices*"},
+        {"POST", "/api/v1/payment-methods"},
+        {"DELETE", "/api/v1/payment-methods/*"},
+        {"GET|PATCH", "/api/v1/customers/{customerID}*"},
+        {"DELETE", "/api/v1/customers/{customerID}/subscriptions*"},
+        {"GET|POST|DELETE", "/api/v1/customers/{customerID}/payment-methods*"},
     },
     RoleGuest: {
         {"GET|POST", "/api/v1/auth/*"},
@@ -29,6 +37,8 @@ var routes = map[string][][]string{
         {"POST", "/api/v1/users/recovery-questions"},
         {"POST", "/api/v1/users/disable-mfa"},
         {"POST", "/api/v1/common/contact"},
+        {"GET", "/api/v1/products"},
+        {"POST", "/api/v1/payments/webhook"},
     },
     RoleAdmin: {
         {"*", "/api/v1/*"},
@@ -61,7 +71,7 @@ func (r *RBAC) CanAccessRoute(u *models.User, route, method string) bool {
             }
         }
     }
-    r.log("Access denied for %s %s %s %v", method, route, roles)
+    r.log("Access denied for %s %s %s", method, route, roles)
     return false
 }
 
@@ -70,7 +80,7 @@ func (r *RBAC) HasPermission(u *models.User, permission string) bool {
     for _, role := range roles {
         for _, rule := range r.permissions[role] {
             if hasPermission(u, rule, permission) {
-                r.log("Access granted for %s %s %s", permission, role)
+                r.log("Access granted for %s %s", permission, role)
                 return true
             }
         }
@@ -90,7 +100,8 @@ func hasPermission(u *models.User, rule, p string) bool {
         return true
     }
     if u != nil {
-        rule = strings.Replace(rule, "{userId}", fmt.Sprintf("%d", u.ID), 1)
+        rule = strings.Replace(rule, "{userID}", fmt.Sprintf("%d", u.ID), 1)
+        rule = strings.Replace(rule, "{customerID}", fmt.Sprintf("%s", u.CustomerID), 1)
     }
     if rule == p {
         return true
