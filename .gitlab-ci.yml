@@ -1,135 +1,135 @@
-
-
-stages:
-  - build-backend
-  - build-frontend
-  - create-heroku
-  - push-docker
-  - push-heroku
-
-
-variables:
-  GIT_STRATEGY: fetch
-  BACKEND_DIR: "${CI_PROJECT_DIR}/src/backend"
-  FRONTEND_DIR: "${CI_PROJECT_DIR}/src/frontend"
-  BUILD_DIR: "${CI_PROJECT_DIR}/src/backend/build"
-  CACHE_DIR: "${CI_PROJECT_DIR}/cache"
-  HEROKU_FILE: "${CI_PROJECT_DIR}/.heroku"
-  HEROKU_APP: "skeleton-${CI_PROJECT_NAMESPACE}"
-  HEROKU_REGISTRY: registry.heroku.com
-
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - cache/
-
-before_script:
-  - mkdir -p $CACHE_DIR
-  - mkdir -p $BUILD_DIR
-default:
-  image: gadelkareem/golang-nodejs:latest
-
-backend:build:
-  stage: build-backend
-  services:
-    - postgres:12.2-alpine
-  variables:
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: postgres
-    POSTGRES_HOST_AUTH_METHOD: trust
-    DATABASE_URL: postgres://skeleton_backend:dev_awTf9d2GceKRNzhkCb4H5B8nfmq@postgres/skeleton_backend?sslmode=disable
-    BEEGO_RUNMODE: test
-    CACHE_TYPE: memory
-  script:
-    - export GOPATH="$CACHE_DIR"
-    # init postgres
-    - PGHOST=postgres PGUSER=postgres PGPASSWORD=postgres bash ./docker/db/db.sh
-    - cd $BACKEND_DIR
-    - go mod tidy
-    - go get ./...
-    - CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o skeleton
-    # migration for tests
-    - chmod +x skeleton && ./skeleton migrate up
-    - go test -v ./... -count=1
-    - mv skeleton "$BUILD_DIR/"
-    - cp -r migrations "$BUILD_DIR/"
-    - cp -r conf "$BUILD_DIR/"
-  needs: []
-  artifacts:
-    paths:
-      - $BUILD_DIR
-    expire_in: 1 hour
-
-frontend:build:
-  stage: build-frontend
-  variables:
-    API_URL: /api/v1
-  script:
-    - yarn config set cache-folder $CACHE_DIR
-    - cd "$FRONTEND_DIR"
-    - yarn install
-    - yarn test
-    - yarn generate
-    - mv src/dist "$BUILD_DIR/"
-  needs: []
-  artifacts:
-    paths:
-      - $BUILD_DIR
-    expire_in: 1 hour
-
-heruko:create:
-  stage: create-heroku
-  cache: {}
-  script:
-    - echo $(heroku auth:token) > $HEROKU_FILE
-    - >
-      heroku create $HEROKU_APP &&
-      heroku addons:create heroku-postgresql:hobby-dev --app $HEROKU_APP &&
-      heroku pg:psql --command='CREATE EXTENSION pg_trgm;' || echo "App already exists"
-    - heroku config:set SKELETON_HOST=$HEROKU_APP.herokuapp.com
-    - heroku config:set SKELETON_FRONTEND=https://$HEROKU_APP.herokuapp.com
-    - heroku config:set PROD_CONFIG_SECRET_FILE=$PROD_CONFIG_SECRET_FILE
-  needs: []
-  artifacts:
-    paths:
-      - $HEROKU_FILE
-
-docker:push:
-  stage: push-docker
-  only:
-    - master
-  cache: {}
-  image: docker:19.03.11
-  services:
-    - docker:19.03.11-dind
-  variables:
-    # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
-    DOCKER_HOST: tcp://docker:2376
-    DOCKER_TLS_CERTDIR: "/certs"
-    DOCKER_HUB: docker.io
-    DOCKER_HUB_IMAGE: skeleton
-    DOCKER_HUB_IMAGE_URL: "${DOCKER_HUB}/${DOCKER_HUB_USER}/${DOCKER_HUB_IMAGE}"
-  script:
-    - cp docker/Dockerfile.gitlab "$BUILD_DIR/Dockerfile"
-    - cd $BUILD_DIR
-    - ls -al
-    - docker login -u _ -p $(cat $HEROKU_FILE) $HEROKU_REGISTRY
-    - docker pull "${HEROKU_REGISTRY}/${HEROKU_APP}/web" || true
-    - docker build --cache-from "${HEROKU_REGISTRY}/${HEROKU_APP}/web"  --tag "${HEROKU_REGISTRY}/${HEROKU_APP}/web" .
-    - docker push "${HEROKU_REGISTRY}/${HEROKU_APP}/web"
-    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD $DOCKER_HUB || true
-    - docker tag "${HEROKU_REGISTRY}/${HEROKU_APP}/web" $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA || true
-    - docker tag "${HEROKU_REGISTRY}/${HEROKU_APP}/web" $DOCKER_HUB_IMAGE_URL:latest || true
-    - docker push $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA || true
-    - docker push $DOCKER_HUB_IMAGE_URL:latest || true
-
-
-heruko:push:
-  stage: push-heroku
-  only:
-    - master
-  cache: {}
-  script:
-    - cd $BUILD_DIR
-    - BEEGO_RUNMODE=prod CACHE_TYPE=memory DATABASE_URL=$(heroku config:get DATABASE_URL) ./skeleton migrate up
-    - heroku container:release web --app $HEROKU_APP
+#
+#
+#stages:
+#  - build-backend
+#  - build-frontend
+#  - create-heroku
+#  - push-docker
+#  - push-heroku
+#
+#
+#variables:
+#  GIT_STRATEGY: fetch
+#  BACKEND_DIR: "${CI_PROJECT_DIR}/src/backend"
+#  FRONTEND_DIR: "${CI_PROJECT_DIR}/src/frontend"
+#  BUILD_DIR: "${CI_PROJECT_DIR}/src/backend/build"
+#  CACHE_DIR: "${CI_PROJECT_DIR}/cache"
+#  HEROKU_FILE: "${CI_PROJECT_DIR}/.heroku"
+#  HEROKU_APP: "skeleton-${CI_PROJECT_NAMESPACE}"
+#  HEROKU_REGISTRY: registry.heroku.com
+#
+#cache:
+#  key: ${CI_COMMIT_REF_SLUG}
+#  paths:
+#    - cache/
+#
+#before_script:
+#  - mkdir -p $CACHE_DIR
+#  - mkdir -p $BUILD_DIR
+#default:
+#  image: gadelkareem/golang-nodejs:latest
+#
+#backend:build:
+#  stage: build-backend
+#  services:
+#    - postgres:12.2-alpine
+#  variables:
+#    POSTGRES_USER: postgres
+#    POSTGRES_PASSWORD: postgres
+#    POSTGRES_HOST_AUTH_METHOD: trust
+#    DATABASE_URL: postgres://skeleton_backend:dev_awTf9d2GceKRNzhkCb4H5B8nfmq@postgres/skeleton_backend?sslmode=disable
+#    BEEGO_RUNMODE: test
+#    CACHE_TYPE: memory
+#  script:
+#    - export GOPATH="$CACHE_DIR"
+#    # init postgres
+#    - PGHOST=postgres PGUSER=postgres PGPASSWORD=postgres bash ./docker/db/db.sh
+#    - cd $BACKEND_DIR
+#    - go mod tidy
+#    - go get ./...
+#    - CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o skeleton
+#    # migration for tests
+#    - chmod +x skeleton && ./skeleton migrate up
+#    - go test -v ./... -count=1
+#    - mv skeleton "$BUILD_DIR/"
+#    - cp -r migrations "$BUILD_DIR/"
+#    - cp -r conf "$BUILD_DIR/"
+#  needs: []
+#  artifacts:
+#    paths:
+#      - $BUILD_DIR
+#    expire_in: 1 hour
+#
+#frontend:build:
+#  stage: build-frontend
+#  variables:
+#    API_URL: /api/v1
+#  script:
+#    - yarn config set cache-folder $CACHE_DIR
+#    - cd "$FRONTEND_DIR"
+#    - yarn install
+#    - yarn test
+#    - yarn generate
+#    - mv src/dist "$BUILD_DIR/"
+#  needs: []
+#  artifacts:
+#    paths:
+#      - $BUILD_DIR
+#    expire_in: 1 hour
+#
+#heruko:create:
+#  stage: create-heroku
+#  cache: {}
+#  script:
+#    - echo $(heroku auth:token) > $HEROKU_FILE
+#    - >
+#      heroku create $HEROKU_APP &&
+#      heroku addons:create heroku-postgresql:hobby-dev --app $HEROKU_APP &&
+#      heroku pg:psql --command='CREATE EXTENSION pg_trgm;' || echo "App already exists"
+#    - heroku config:set SKELETON_HOST=$HEROKU_APP.herokuapp.com
+#    - heroku config:set SKELETON_FRONTEND=https://$HEROKU_APP.herokuapp.com
+#    - heroku config:set PROD_CONFIG_SECRET_FILE=$PROD_CONFIG_SECRET_FILE
+#  needs: []
+#  artifacts:
+#    paths:
+#      - $HEROKU_FILE
+#
+#docker:push:
+#  stage: push-docker
+#  only:
+#    - master
+#  cache: {}
+#  image: docker:19.03.11
+#  services:
+#    - docker:19.03.11-dind
+#  variables:
+#    # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
+#    DOCKER_HOST: tcp://docker:2376
+#    DOCKER_TLS_CERTDIR: "/certs"
+#    DOCKER_HUB: docker.io
+#    DOCKER_HUB_IMAGE: skeleton
+#    DOCKER_HUB_IMAGE_URL: "${DOCKER_HUB}/${DOCKER_HUB_USER}/${DOCKER_HUB_IMAGE}"
+#  script:
+#    - cp docker/Dockerfile.gitlab "$BUILD_DIR/Dockerfile"
+#    - cd $BUILD_DIR
+#    - ls -al
+#    - docker login -u _ -p $(cat $HEROKU_FILE) $HEROKU_REGISTRY
+#    - docker pull "${HEROKU_REGISTRY}/${HEROKU_APP}/web" || true
+#    - docker build --cache-from "${HEROKU_REGISTRY}/${HEROKU_APP}/web"  --tag "${HEROKU_REGISTRY}/${HEROKU_APP}/web" .
+#    - docker push "${HEROKU_REGISTRY}/${HEROKU_APP}/web"
+#    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD $DOCKER_HUB || true
+#    - docker tag "${HEROKU_REGISTRY}/${HEROKU_APP}/web" $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA || true
+#    - docker tag "${HEROKU_REGISTRY}/${HEROKU_APP}/web" $DOCKER_HUB_IMAGE_URL:latest || true
+#    - docker push $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA || true
+#    - docker push $DOCKER_HUB_IMAGE_URL:latest || true
+#
+#
+#heruko:push:
+#  stage: push-heroku
+#  only:
+#    - master
+#  cache: {}
+#  script:
+#    - cd $BUILD_DIR
+#    - BEEGO_RUNMODE=prod CACHE_TYPE=memory DATABASE_URL=$(heroku config:get DATABASE_URL) ./skeleton migrate up
+#    - heroku container:release web --app $HEROKU_APP
