@@ -48,7 +48,8 @@ type (
         Notifications               []Notification    `pg:"notifications" jsonapi:"attr,notifications" fakesize:"10"`
         AuthenticatorEnabled        bool              `pg:"authenticator_enabled" jsonapi:"attr,authenticator_enabled" json:"enabled" fake:"skip"`
         AuthenticatorSecret         string            `pg:"authenticator_secret" json:"-" fake:"skip"`
-        Country                     string            `valid:"MaxSize(100)" pg:"country" jsonapi:"attr,country" fake:"{country}"`
+        Country                     string            `valid:"MaxSize(100)" pg:"country" jsonapi:"attr,country" fake:"??"`
+        CustomerID                  string            `pg:"customer_id" jsonapi:"attr,customer_id"`
         LastLoginAt                 time.Time         `pg:"last_login_at,type:TIMESTAMPTZ" json:"-" fake:"skip"`
         DeletedAt                   time.Time         `pg:"deleted_at,type:TIMESTAMPTZ" json:"-" fake:"skip"`
     }
@@ -58,11 +59,11 @@ type (
         ZipCode string `jsonapi:"attr,zip_code" json:"zip_code"  fake:"{zip}"`
     }
     Notification struct {
-        ID          string `valid:"MaxSize(32)" jsonapi:"primary,notifications" json:"id" fake:"{regex:[a-f0-9]{32}}"`
-        Message     string `jsonapi:"attr,message" json:"message" fake:"{sentence:12}"`
-        CreatedAt   int64  `jsonapi:"attr,created_at" json:"created_at" fake:"{number}"`
-        URL         string `jsonapi:"attr,url" json:"url" fake:"{url}"`
-        ReadReceipt bool   `jsonapi:"attr,read_receipt" json:"read_receipt" fake:"{sentence:12}"`
+        ID            string `valid:"MaxSize(32)" jsonapi:"primary,notifications" json:"id" fake:"{regex:[a-f0-9]{32}}"`
+        Message       string `jsonapi:"attr,message" json:"message" fake:"{sentence:12}"`
+        CreatedAt     int64  `jsonapi:"attr,created_at" json:"created_at" fake:"{number}"`
+        URL           string `jsonapi:"attr,url" json:"url" fake:"{url}"`
+        ReadReceiptAt int64  `jsonapi:"attr,read_receipt_at" json:"read_receipt_at" fake:"{sentence:12}"`
     }
 )
 
@@ -219,7 +220,7 @@ func (m *User) AddRecoveryQuestions(q []*RecoveryQuestion) error {
 func (m *User) AddNotification(msg string, u string) {
     nt := Notification{Message: msg, URL: u, CreatedAt: time.Now().UnixNano()}
     for _, n := range m.Notifications {
-        if nt.Message == n.Message && !n.ReadReceipt {
+        if nt.Message == n.Message && n.ReadReceiptAt == 0 {
             return
         }
     }
@@ -231,7 +232,7 @@ func (m *User) AddNotification(msg string, u string) {
 func (m *User) ReadNotification(n *Notification) {
     for i := range m.Notifications {
         if n.ID == m.Notifications[i].ID {
-            m.Notifications[i].ReadReceipt = true
+            m.Notifications[i].ReadReceiptAt = time.Now().UnixNano()
             return
         }
     }
@@ -240,8 +241,11 @@ func (m *User) ReadNotification(n *Notification) {
 
 func (m *User) CleanNotifications() {
     var ns []Notification
+    if len(m.Notifications) < 5 {
+        return
+    }
     for _, n := range m.Notifications {
-        if n.ReadReceipt && n.CreatedAt < time.Now().AddDate(0, 0, -7).UnixNano() {
+        if n.ReadReceiptAt < time.Now().AddDate(0, 0, -7).UnixNano() {
             continue
         }
         ns = append(ns, n)
