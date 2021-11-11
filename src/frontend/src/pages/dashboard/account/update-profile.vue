@@ -20,7 +20,7 @@
         <alert
           :errors="errors"
           :success="success"
-          success-text="Successful!"
+          success-txt="Successful!"
         />
         <v-form
           ref="form"
@@ -139,9 +139,12 @@
                 cols="12"
                 md="4"
               >
-                <v-text-field
-                  v-model.trim="user.country"
-                  label="City"
+                <v-select
+                  v-model="user.country"
+                  :items="countries"
+                  item-text="name"
+                  item-value="code"
+                  label="Country"
                   class="purple-input"
                 />
               </v-col>
@@ -248,6 +251,9 @@ export default {
       get () {
         return this.$store.getters['user/user']
       }
+    },
+    countries () {
+      return this.initData().countries
     }
   },
   mounted () {
