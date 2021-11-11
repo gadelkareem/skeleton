@@ -38,7 +38,7 @@ var config = []Rate{
     {L: &Limiter{Name: "api_1_5m", Limit: 1, TTL: 5 * time.Minute},
         Routes: [][]string{
             {"*", "/api/v1/users/forgot-password"},
-            {"*", "/api/v1/users/{userId}/send-verify-sms"},
+            {"*", "/api/v1/users/{userID}/send-verify-sms"},
             {"*", "/api/v1/common/contact"},
         },
     },
@@ -87,6 +87,9 @@ func (r *RateLimiter) isExceeded(u *models.User, ip, route, method string) (bool
 }
 
 func (r *RateLimiter) isTrustedBot(ip string) bool {
+    if isLocalhost(ip) {
+        return true
+    }
     r.botIpCacheMu.RLock()
     if _, exists := r.BotIpCache[ip]; exists {
         r.botIpCacheMu.RUnlock()
@@ -99,7 +102,7 @@ func (r *RateLimiter) isTrustedBot(ip string) bool {
         return false
     }
 
-    ds := []string{"google.com.", "googlebot.com.", "msn.com.", "baidu.com.", "semrush.com.", "yahoo.com."}
+    ds := []string{"google.com.", "googlebot.com.", "msn.com.", "baidu.com.", "semrush.com.", "yahoo.com.", "stripe.com."}
     for _, i := range addr {
         for _, d := range ds {
             if strings.HasSuffix(i, d) {
@@ -120,4 +123,8 @@ func (r *RateLimiter) isTrustedBot(ip string) bool {
         }
     }
     return false
+}
+
+func isLocalhost(ip string) bool {
+    return ip == "127.0.0.1" || ip == "::1"
 }
