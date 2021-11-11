@@ -46,5 +46,24 @@ export default {
   },
   eraseCookie (name) {
     document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+  },
+  formatTiers (products) {
+    const tiers = []
+    for (const p of products) {
+      const price = p.prices[0].recurring.interval === 'month' ? p.prices[0] : p.prices[1]
+      const t = {
+        title: p.name,
+        subheader: p.subheader,
+        priceID: price.id,
+        price: price.unit_amount / 100,
+        prices: p.prices,
+        description: p.description.split(','),
+        buttonText: 'Signup',
+        buttonVariant: 'outlined',
+        disabled: p.subheader !== 'Open'
+      }
+      tiers.push(t)
+    }
+    return tiers.sort((a, b) => (a.price > b.price) ? 1 : ((b.price > a.price) ? -1 : 0))
   }
 }
