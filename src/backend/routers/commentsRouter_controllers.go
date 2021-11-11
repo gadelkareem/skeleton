@@ -79,6 +79,113 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["backend/controllers:CustomerController"] = append(beego.GlobalControllerRouter["backend/controllers:CustomerController"],
+        beego.ControllerComments{
+            Method: "UpdateCustomer",
+            Router: "/:id",
+            AllowHTTPMethods: []string{"PATCH"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["backend/controllers:CustomerController"] = append(beego.GlobalControllerRouter["backend/controllers:CustomerController"],
+        beego.ControllerComments{
+            Method: "ListPaymentMethods",
+            Router: "/:id/payment-methods",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(
+				param.New("id", param.InPath),
+			),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["backend/controllers:CustomerController"] = append(beego.GlobalControllerRouter["backend/controllers:CustomerController"],
+        beego.ControllerComments{
+            Method: "CustomerSubscription",
+            Router: "/:id/subscription",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(
+				param.New("id", param.InPath),
+			),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["backend/controllers:InvoiceController"] = append(beego.GlobalControllerRouter["backend/controllers:InvoiceController"],
+        beego.ControllerComments{
+            Method: "UpcomingInvoice",
+            Router: "/upcoming",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["backend/controllers:PaymentController"] = append(beego.GlobalControllerRouter["backend/controllers:PaymentController"],
+        beego.ControllerComments{
+            Method: "Webhook",
+            Router: "/webhook/",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["backend/controllers:PaymentMethodController"] = append(beego.GlobalControllerRouter["backend/controllers:PaymentMethodController"],
+        beego.ControllerComments{
+            Method: "CreatePaymentMethod",
+            Router: "/",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["backend/controllers:PaymentMethodController"] = append(beego.GlobalControllerRouter["backend/controllers:PaymentMethodController"],
+        beego.ControllerComments{
+            Method: "DeletePaymentMethod",
+            Router: "/:id",
+            AllowHTTPMethods: []string{"delete"},
+            MethodParams: param.Make(
+				param.New("id", param.InPath),
+			),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["backend/controllers:ProductController"] = append(beego.GlobalControllerRouter["backend/controllers:ProductController"],
+        beego.ControllerComments{
+            Method: "GetProducts",
+            Router: "/",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["backend/controllers:SubscriptionController"] = append(beego.GlobalControllerRouter["backend/controllers:SubscriptionController"],
+        beego.ControllerComments{
+            Method: "CreateSubscription",
+            Router: "/",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["backend/controllers:SubscriptionController"] = append(beego.GlobalControllerRouter["backend/controllers:SubscriptionController"],
+        beego.ControllerComments{
+            Method: "UpdateSubscription",
+            Router: "/:id",
+            AllowHTTPMethods: []string{"patch"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["backend/controllers:SubscriptionController"] = append(beego.GlobalControllerRouter["backend/controllers:SubscriptionController"],
+        beego.ControllerComments{
+            Method: "CancelSubscription",
+            Router: "/:id",
+            AllowHTTPMethods: []string{"delete"},
+            MethodParams: param.Make(
+				param.New("id", param.InPath),
+			),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["backend/controllers:UserController"] = append(beego.GlobalControllerRouter["backend/controllers:UserController"],
         beego.ControllerComments{
             Method: "GetUsers",

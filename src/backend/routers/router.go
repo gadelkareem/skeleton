@@ -29,6 +29,36 @@ func InitRouters(c *di.Container) {
                 &controllers.CommonController{ApiController: api},
             ),
         ),
+        beego.NSNamespace("/products",
+            beego.NSInclude(
+                &controllers.ProductController{ApiController: api},
+            ),
+        ),
+        beego.NSNamespace("/subscriptions",
+            beego.NSInclude(
+                &controllers.SubscriptionController{ApiController: api},
+            ),
+        ),
+        beego.NSNamespace("/customers",
+            beego.NSInclude(
+                &controllers.CustomerController{ApiController: api},
+            ),
+        ),
+        beego.NSNamespace("/invoices",
+            beego.NSInclude(
+                &controllers.InvoiceController{ApiController: api},
+            ),
+        ),
+        beego.NSNamespace("/payments",
+            beego.NSInclude(
+                &controllers.PaymentController{ApiController: api},
+            ),
+        ),
+        beego.NSNamespace("/payment-methods",
+            beego.NSInclude(
+                &controllers.PaymentMethodController{ApiController: api},
+            ),
+        ),
     )
     beego.AddNamespace(ns)
 }
