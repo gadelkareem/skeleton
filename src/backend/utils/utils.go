@@ -11,7 +11,8 @@ import (
 func HasRoute(u *models.User, rule, route string) bool {
     route = strings.TrimRight(route, "/")
     if u != nil {
-        rule = strings.Replace(rule, "{userId}", fmt.Sprintf("%d", u.ID), 1)
+        rule = strings.Replace(rule, "{userID}", fmt.Sprintf("%d", u.ID), 1)
+        rule = strings.Replace(rule, "{customerID}", fmt.Sprintf("%s", u.CustomerID), 1)
     }
     if rule == route {
         return true

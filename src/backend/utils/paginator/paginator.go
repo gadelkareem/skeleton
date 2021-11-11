@@ -11,7 +11,7 @@ import (
 
 type Paginator struct {
     Models                                       []interface{}
-    Filter                                       string
+    Filter, uri                                  string
     Size, Limit, Offset, currentPage, totalPages int
     Sort                                         map[string]string
 }
@@ -21,8 +21,8 @@ const (
     DESC = "DESC"
 )
 
-func NewPaginator(pg map[string]int, sort, filter string) *Paginator {
-    p := &Paginator{}
+func NewPaginator(pg map[string]int, sort, filter, uri string) *Paginator {
+    p := &Paginator{uri: uri}
 
     var curPg, limit int
     if v, ok := pg["after"]; ok {
@@ -64,7 +64,7 @@ func NewPaginator(pg map[string]int, sort, filter string) *Paginator {
 }
 
 func (p *Paginator) Links() *jsonapi.Links {
-    pg := fmt.Sprintf("%s%s/users?page[size]=%d", kernel.App.APIURL, kernel.App.APIPath, kernel.ListLimit)
+    pg := fmt.Sprintf("%s%s?page[size]=%d", kernel.App.APIURL, p.uri, kernel.ListLimit)
     l := jsonapi.Links{
         jsonapi.KeyFirstPage: fmt.Sprintf("%s&page[after]=1", pg),
         jsonapi.KeyLastPage:  fmt.Sprintf("%s&page[after]=%d", pg, p.TotalPages()),
