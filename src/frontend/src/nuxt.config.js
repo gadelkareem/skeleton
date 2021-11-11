@@ -211,7 +211,8 @@ export default {
   },
   telemetry: false,
   env: {
-    APIURL: process.env.API_URL || 'http://localhost:8081/api/v1'
+    API_URL: process.env.API_URL,
+    STRIPE_PK: process.env.STRIPE_PK
   },
   /*
   ** Page Layout transition

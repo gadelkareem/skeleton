@@ -3,7 +3,7 @@ import helpers from '../globals/helpers'
 import AuthAPI from './auth'
 
 const api = new Kitsu({
-  baseURL: process.env.APIURL,
+  baseURL: process.env.API_URL,
   headers: {
     'X-Requested-With': 'XMLHttpRequest'
   },
