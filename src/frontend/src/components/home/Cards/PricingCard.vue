@@ -7,7 +7,7 @@
       <h5 class="text-xs-center headline">{{ card.title }}</h5>
       <div class="small-title text-xs-center body-1"> {{ card.subheader }}</div>
       <v-icon
-        v-if="card.title === 'Pro'"
+        v-if="card.title.includes('Premium')"
         class="icon"
       >
         mdi-star-outline
@@ -16,7 +16,7 @@
     <v-card-text class="pa-4">
       <div class="card-pricing">
         <h2 class="price text-xs-center display-2">
-          $ {{ card.price }}
+          € {{ card.price }}
         </h2>
         <h6 class="title">
           / mo
@@ -38,7 +38,7 @@
         block
         color="primary"
         :disabled="card.disabled"
-        :to="card.link"
+        :to="`/dashboard/subscription/plans/?plan=`+card.priceID"
       >
         {{ card.buttonText }}
       </v-btn>
