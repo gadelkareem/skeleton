@@ -23,7 +23,7 @@ describe('Alert.vue', () => {
   it('should have a custom success message', () => {
     const w = mount(Alert, {
       propsData: {
-        successText: 'test success',
+        successTxt: 'test success',
         success: true
       },
       vuetify
