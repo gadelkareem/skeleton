@@ -479,7 +479,7 @@ func TestUserController_ReadNotification(t *testing.T) {
 
     // add notification
     u, tk := tests.UserWithToken(true)
-    r := models.Notification{CreatedAt: time.Now().UnixNano(), Message: gofakeit.Sentence(6), ReadReceipt: false}
+    r := models.Notification{CreatedAt: time.Now().UnixNano(), Message: gofakeit.Sentence(6)}
     r.ID = h.Md5(fmt.Sprintf("%s%d", r.Message, r.CreatedAt))
     u.Notifications = append(u.Notifications, r)
     tests.SaveUser(t, u)
@@ -494,7 +494,7 @@ func TestUserController_ReadNotification(t *testing.T) {
 
     for _, n := range u.Notifications {
         if n.Message == r.Message {
-            assert.True(t, n.ReadReceipt)
+            assert.NotEmpty(t, n.ReadReceiptAt)
         }
     }
 

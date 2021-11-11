@@ -34,7 +34,6 @@ func (c *ApiController) Prepare() {
     method := c.Ctx.Request.Method
     c.rbac(u, method)
     c.rateLimit(u, method)
-
 }
 
 func (c *ApiController) rateLimit(u, method string) {
@@ -192,4 +191,17 @@ func (c *ApiController) auditLog(l models.Log) {
         l.UserID = c.user.ID
     }
     c.C.AuditLogService.AddAuditLog(l)
+}
+
+func (c *ApiController) paginator(size int) *paginator.Paginator {
+    page := map[string]int{"size": size, "after": 1}
+    err := c.Ctx.Input.Bind(&page, "page")
+    c.logOnError(err)
+    return paginator.NewPaginator(page, c.readString("sort"), c.readString("filter"), c.Ctx.Input.URI())
+}
+
+func (c *ApiController) AssertCustomer(id string) {
+    if id != c.user.CustomerID {
+        c.handleError(internal.ErrForbidden)
+    }
 }

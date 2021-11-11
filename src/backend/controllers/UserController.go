@@ -5,7 +5,6 @@ import (
 
     "backend/kernel"
     "backend/models"
-    "backend/utils/paginator"
 )
 
 type UserController struct {
@@ -211,12 +210,7 @@ func (c *UserController) DisableMFA() {
 
 // @router / [get]
 func (c *UserController) GetUsers() {
-    page := map[string]int{"size": kernel.ListLimit, "after": 1}
-    err := c.Ctx.Input.Bind(&page, "page")
-    c.logOnError(err)
-    sort, filter := c.readString("sort"), c.readString("filter")
-
-    p, err := c.C.UserService.PaginateUsers(paginator.NewPaginator(page, sort, filter))
+    p, err := c.C.UserService.PaginateUsers(c.paginator(kernel.ListLimit))
     c.handleError(err)
 
     c.jsonMany(p)

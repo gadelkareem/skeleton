@@ -1,7 +1,7 @@
 package controllers
 
 import (
-    "backend/utils/paginator"
+    "backend/kernel"
 )
 
 type AuditLogController struct {
@@ -10,12 +10,7 @@ type AuditLogController struct {
 
 // @router / [get]
 func (c *AuditLogController) GetAuditLogs() {
-    page := map[string]int{"size": 10, "after": 1}
-    err := c.Ctx.Input.Bind(&page, "page")
-    c.logOnError(err)
-    sort, filter := c.readString("sort"), c.readString("filter")
-
-    p, err := c.C.AuditLogService.PaginateAuditLogs(paginator.NewPaginator(page, sort, filter))
+    p, err := c.C.AuditLogService.PaginateAuditLogs(c.paginator(kernel.ListLimit))
     c.handleError(err)
 
     c.jsonMany(p)

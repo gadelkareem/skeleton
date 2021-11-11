@@ -98,6 +98,8 @@ cd src/backend
 go test -v ./... -count=1 | sort -u
 #extra
 go test -v backend/controllers -count=1 -debug=7 -run  TestUserController_VerifyMobile
+#colourfull
+go test -v ./... -count=1 | sed ''/PASS/s//(printf "\033[32mPASS\033[0m")/'' | sed ''/FAIL/s//(printf "\033[31mFAIL\033[0m")/''
 ```
 ## Frontend
 ```bash
