@@ -9,6 +9,7 @@ import (
     "backend/models"
     "backend/rbac"
     "backend/utils/paginator"
+    "github.com/astaxie/beego/logs"
     h "github.com/gadelkareem/go-helpers"
 )
 
@@ -19,11 +20,12 @@ type (
         sms *SMSService
         p   *rbac.RBAC
         c   *CacheService
+        py  *PaymentService
     }
 )
 
-func NewUserService(r *models.UserRepository, es *EmailService, sms *SMSService, p *rbac.RBAC, c *CacheService) *UserService {
-    return &UserService{r: r, es: es, sms: sms, p: p, c: c}
+func NewUserService(r *models.UserRepository, es *EmailService, sms *SMSService, p *rbac.RBAC, c *CacheService, py *PaymentService) *UserService {
+    return &UserService{r: r, es: es, sms: sms, p: p, c: c, py: py}
 }
 
 func (s *UserService) Save(m *models.User, columns ...string) error {
@@ -148,6 +150,28 @@ func (s *UserService) SignUp(m *models.User) (err error) {
     }
     // send verify email link
     err = s.es.VerifyUserEmail(m.GetFullName(), m.Email, m.GetEmailVerificationURL())
+    if err != nil {
+        return
+    }
+    // @todo add a worker
+    go func() {
+        cus := &models.Customer{}
+        if m.CustomerID != "" {
+            cus.ID = m.CustomerID
+            cus, err = s.py.UpdateCustomer(cus, m)
+        } else {
+            cus, err = s.py.CreateCustomer(m)
+        }
+        if err != nil {
+            logs.Error("Error getting payment customer ID %v", err)
+            return
+        }
+        m.CustomerID = cus.ID
+        err = s.Save(m)
+        if err != nil {
+            logs.Error("Error saving user %v", err)
+        }
+    }()
 
     return
 }
