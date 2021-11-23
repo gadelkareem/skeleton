@@ -120,6 +120,25 @@ export default {
         ]
       },
       {
+        icon: 'mdi-credit-card',
+        title: 'Subscription',
+        group: 'subscription',
+        children: [
+          {
+            title: 'Plans',
+            to: '/dashboard/subscription/plans/'
+          },
+          {
+            title: 'Payment Methods',
+            to: '/dashboard/subscription/payment-methods/'
+          },
+          {
+            title: 'Invoices',
+            to: '/dashboard/subscription/invoices/'
+          }
+        ]
+      },
+      {
         icon: 'mdi-shield-check',
         title: 'Admin',
         group: 'admin',
