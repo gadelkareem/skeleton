@@ -38,7 +38,7 @@ export default {
     return api.patch('user', user)
   },
   delete (id) {
-    return api.get('user', id)
+    return api.remove('user', id)
   },
   changePassword (id, oldPassword, password) {
     return api.request({

@@ -154,7 +154,7 @@ export default {
         return
       }
       if (!this.user.mobile) {
-        this.updateAlert({ errors: [{ title: 'Please add your mobile number to your Card.' }] })
+        this.updateAlert({ errors: [{ title: 'Please add your mobile number.' }] })
         this.$store.dispatch('loading/finish')
         return
       }
