@@ -121,6 +121,7 @@
 <script>
 import MaterialCard from '@@/components/base/MaterialCard'
 import PaymentMethodCard from '@@/components/payment/card/PaymentMethodCard'
+
 export default {
   name: 'Subscribe',
   components: { PaymentMethodCard, MaterialCard },

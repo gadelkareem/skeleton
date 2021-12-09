@@ -281,6 +281,7 @@ export default {
       })
         .then((r) => {
           this.newInvoice = r.data
+          this.newInvoice.total = this.newInvoice.total / 100
         })
         .catch((err) => {
           this.errors = this.parseError(err)
