@@ -40,9 +40,6 @@
           information that we may receive from or about you through channels other than through the
           use of the SITE.
         </li>
-        <li>
-          Users who reside in the EEA are invited to read our <a href="/legal/gdpr/">GDPR Privacy Notice</a>.
-        </li>
       </ul>
       <p>
         <b>CHILDRENS ONLINE PRIVACY PROTECTION ACT Compliance and Non-Applicability Statement.</b>

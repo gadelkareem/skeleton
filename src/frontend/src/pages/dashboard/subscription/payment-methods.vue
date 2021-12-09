@@ -16,7 +16,7 @@
   </v-container>
 </template>
 <script>
-import PaymentMethods from '@@/components/payment/paymentMethods'
+import PaymentMethods from '@@/components/payment/PaymentMethods'
 import Alert from '@@/components/base/Alert'
 import AddPaymentMethod from '@@/components/payment/AddPaymentMethod'
 export default {
