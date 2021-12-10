@@ -65,7 +65,7 @@ frontend:build:
   variables:
     API_URL: /api/v1
   script:
-#    - yarn config set cache-folder $CACHE_DIR
+    - yarn config set cache-folder $CACHE_DIR
     - cd "$FRONTEND_DIR"
     - yarn install
     - yarn test

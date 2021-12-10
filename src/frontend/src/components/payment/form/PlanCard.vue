@@ -1,5 +1,5 @@
 <template>
-  <v-item id="plan-card" v-slot="{ active, toggle }" active-class="active-card">
+  <v-item v-slot="{ active, toggle }" active-class="active-card">
     <v-card
       class="center-box card"
       :elevation="active? 9: 0"
@@ -31,6 +31,7 @@
     </v-card>
   </v-item>
 </template>
+
 <script>
 export default {
   name: 'PlanCard',

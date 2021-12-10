@@ -38,17 +38,13 @@
     counter-increment: steps
   .checkout-price
     color: var(--v-primary-base)
-  .active-card
-    border: 1px solid var(--v-primary-base)
-    opacity: 100% !important
-  .price-card, .card
-    opacity: 80%
-
-#plan-card
   .card
     padding: $spacing3
-    opacity: 60%
+    opacity: 0.6 !important
     background: #fff
+  .active-card
+    border: 1px solid var(--v-primary-base)
+    opacity: 1 !important
 
   .price
     &-card
@@ -59,4 +55,4 @@
 
   .active-card
     border: 1px solid var(--v-primary-base)
-    opacity: 100% !important
+    opacity: 1 !important

@@ -1,7 +1,7 @@
 <template>
   <v-item v-slot="{ active, toggle }" active-class="active-card">
     <v-card
-      class="center-box price-card text-wrap"
+      class="center-box price-card text-wrap card"
       :elevation="active? 9: 0"
       min-width="50"
       @click="toggle"
