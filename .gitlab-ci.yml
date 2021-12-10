@@ -17,6 +17,7 @@ variables:
   HEROKU_FILE: "${CI_PROJECT_DIR}/.heroku"
   HEROKU_APP: "skeleton-${CI_PROJECT_NAMESPACE}"
   HEROKU_REGISTRY: registry.heroku.com
+  HEROKU_API_KEY: "${HEROKU_API_KEY}"
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
