@@ -5,7 +5,7 @@
     :dark="barColor !== 'rgba(228, 226, 226, 1), rgba(255, 255, 255, 0.7)'"
     :right="$vuetify.rtl"
     :src="barImage"
-    mobile-break-point="960"
+    mobile-breakpoint="960"
     app
     width="auto"
   >
@@ -131,10 +131,6 @@ export default {
           {
             title: 'Payment Methods',
             to: '/dashboard/subscription/payment-methods/'
-          },
-          {
-            title: 'Invoices',
-            to: '/dashboard/subscription/invoices/'
           }
         ]
       },
