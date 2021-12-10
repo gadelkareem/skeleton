@@ -19,3 +19,25 @@
   background-color: transparent !important
 .list-no-bullets
   list-style: none
+  
+#create-subscription
+  counter-reset: steps
+  .step__number
+    display: inline-block
+    width: 2em
+    height: 2em
+    border: 2px solid var(--v-primary-base)
+    border-radius: 50%
+    line-height: 2em
+    text-align: center
+    font-weight: 500
+    margin-right: 0.5em
+
+  .step__number:before
+    content: counter(steps)
+    counter-increment: steps
+  .checkout-price
+    color: var(--v-primary-base)
+  .active-card
+    border: 1px solid var(--v-primary-base)
+    opacity: 100% !important
