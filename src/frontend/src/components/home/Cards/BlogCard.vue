@@ -27,10 +27,6 @@
   </v-card>
 </template>
 
-<style scoped lang="sass">
-@import './card-styles'
-</style>
-
 <script>
 export default {
   name: 'BlogCard',
