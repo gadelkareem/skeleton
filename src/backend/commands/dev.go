@@ -1,6 +1,5 @@
 package commands
 
-import "C"
 import (
 	"fmt"
 
