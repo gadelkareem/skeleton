@@ -172,7 +172,11 @@ export default {
       this.updateAlert()
       const clientSecret = await this.setupPaymentIntent()
       console.log('clientSecret', clientSecret)
-      if (!clientSecret) { return 0 }
+      // no payment intent required
+      if (!clientSecret) {
+        this.$emit('addConfirmedPaymentMethods', this.selectedPaymentMethodID)
+        return 0
+      }
       return this.stripeConfirmCard(clientSecret)
     },
     async stripeConfirmCard (clientSecret) {
@@ -188,7 +192,7 @@ export default {
         }
       ).then(function (r) {
         this.$store.dispatch('loading/finish')
-        if (r.error) {
+        if (r.error && r.error.code !== 'payment_intent_unexpected_state') {
           console.log(r)
           this.updateAlert({ errors: [{ title: r.error.message }] })
           return Promise.reject(new Error())

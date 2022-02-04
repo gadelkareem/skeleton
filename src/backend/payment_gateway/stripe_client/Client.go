@@ -2,13 +2,13 @@ package stripe_client
 
 import (
 	"encoding/json"
-	"time"
 
 	"backend/internal"
 	"backend/kernel"
 	"backend/models"
 	"backend/payment_gateway"
 	"backend/services"
+	"github.com/astaxie/beego/logs"
 	"github.com/stripe/stripe-go/v72"
 	"github.com/stripe/stripe-go/v72/customer"
 	"github.com/stripe/stripe-go/v72/invoice"
@@ -129,7 +129,7 @@ func (c *Client) UpdateSubscription(s *models.Subscription) (*models.Subscriptio
 		ProrationBehavior:    stripe.String(string(stripe.SubscriptionProrationBehaviorAlwaysInvoice)),
 	}
 	if s.CreatePaymentIntent {
-		s.PaymentBehavior = "allow_incomplete"
+		s.PaymentBehavior = string(stripe.SubscriptionPaymentBehaviorAllowIncomplete)
 		sps.PaymentBehavior = stripe.String(s.PaymentBehavior)
 		sps.AddExpand("latest_invoice.payment_intent")
 	}
@@ -143,6 +143,8 @@ func (c *Client) UpdateSubscription(s *models.Subscription) (*models.Subscriptio
 	if ss.LatestInvoice != nil && ss.LatestInvoice.PaymentIntent != nil {
 		s.PaymentIntentClientSecret = ss.LatestInvoice.PaymentIntent.ClientSecret
 	}
+	go c.refundSubscription(ss)
+
 	return s, err
 }
 
@@ -151,7 +153,6 @@ func (c *Client) CancelSubscription(id string) (*models.Subscription, error) {
 	if err != nil {
 		return nil, err
 	}
-	cancelTime := time.Now().Unix()
 	_, err = sub.Cancel(subscription.ID, &stripe.SubscriptionCancelParams{
 		Prorate:    stripe.Bool(true),
 		InvoiceNow: stripe.Bool(true),
@@ -160,34 +161,31 @@ func (c *Client) CancelSubscription(id string) (*models.Subscription, error) {
 		return nil, err
 	}
 
-	invItr := invoice.List(&stripe.InvoiceListParams{
-		Customer:     stripe.String(subscription.Customer.ID),
-		Subscription: stripe.String(subscription.ID),
-	})
-	var refundAmount int64
-	for _, i := range invItr.InvoiceList().Data {
-		if i.Created >= cancelTime {
-			refundAmount = i.Total * -1
-			break
-		}
-	}
-	if refundAmount > 0 {
-		latestInvoice, err := invoice.Get(subscription.LatestInvoice.ID, nil)
-		if err != nil {
-			return nil, err
-		}
-		_, err = refund.New(&stripe.RefundParams{
-			Charge: stripe.String(latestInvoice.Charge.ID),
-			Amount: stripe.Int64(refundAmount),
-		})
-		if err != nil {
-			return nil, err
-		}
-	}
+	go c.refundSubscription(subscription)
 
 	return &models.Subscription{
 		ID: subscription.ID,
 	}, err
+}
+
+func (c *Client) refundSubscription(subscription *stripe.Subscription) {
+	latestInvoice, err := invoice.Get(subscription.LatestInvoice.ID, nil)
+	if err != nil {
+		logs.Error("[Refund failed] Could not retrieve latest invoice for customer:%s on subscription:%s Error:%+v", subscription.Customer.ID, subscription.ID, err)
+		return
+	}
+	if latestInvoice.Charge == nil {
+		logs.Error("[Refund failed] Could not retrieve charge for customer:%s on subscription:%s invoice:%s", subscription.Customer.ID, subscription.ID, latestInvoice.ID)
+		return
+	}
+	_, err = refund.New(&stripe.RefundParams{
+		Charge: stripe.String(latestInvoice.Charge.ID),
+		Amount: stripe.Int64(latestInvoice.Total),
+	})
+	if err != nil {
+		logs.Error("[Refund failed] Could not process refund for customer:%s on subscription:%s  Error:%+v", subscription.Customer.ID, subscription.ID, err)
+		return
+	}
 }
 
 func (c *Client) subscription(id string) (*stripe.Subscription, error) {

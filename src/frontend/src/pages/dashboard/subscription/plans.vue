@@ -9,52 +9,53 @@
       :success="success"
       :success-txt="successTxt"
     />
-    <select-plan v-show="step === 0 && !displaySubscription" ref="selectPlan" @updatePlan="updatePlan" @updateAlert="updateAlert" />
+    <select-plan v-show="step === 0 && !displaySubscription" ref="selectPlan" @updateAlert="updateAlert" @updatePlan="updatePlan" />
     <select-payment-method
-      v-show="step === 1 && !displaySubscription"
       v-if="plan"
+      v-show="step === 1 && !displaySubscription"
       ref="selectPaymentMethod"
       :plan="plan"
       :subscription="subscription"
-      @updateAlert="updateAlert"
-      @setPaymentMethod="setPaymentMethod"
       @setPaymentIntent="setPaymentIntent"
+      @setPaymentMethod="setPaymentMethod"
+      @updateAlert="updateAlert"
     />
     <subscribe
-      v-show="step === 2 || displaySubscription"
       v-if="plan && paymentMethod"
+      v-show="step === 2 || displaySubscription"
       ref="subscribe"
-      :plan="plan"
-      :payment-method="paymentMethod"
       :checkout="!displaySubscription"
       :new-invoice="newInvoice"
-      @setChangeSubscription="setChangeSubscription"
+      :payment-method="paymentMethod"
+      :plan="plan"
       @cancelSubscription="cancelSubscription"
+      @setChangeSubscription="setChangeSubscription"
     />
     <v-spacer style="margin-top:200px" />
     <v-footer
       v-if="!displaySubscription && plan"
-      fixed
-      elevation="6"
-      width="auto"
       app
+      elevation="6"
+      fixed
       inset
+      width="auto"
     >
       <v-container>
         <v-row
           align="center"
-          justify="center"
           dense
+          justify="center"
         >
-          <v-col cols="2" class="mr-2">
-            <v-card v-if="newInvoice && newInvoice.total > 0" class="pa-4 mt-0" elevation="2" :loading="$store.state.loading.status">
+          <v-col class="mr-2" cols="2">
+            <v-card v-if="newInvoice && newInvoice.total" :loading="$store.state.loading.status" class="pa-4 mt-0" elevation="2">
               <v-card-title class="text--secondary">
-                Paid Today:
+                <template v-if="newInvoice.total > 0">Paid Today</template>
+                <template v-else>Total Refund</template>:
               </v-card-title>
               <v-card-text>
                 <template>
                   <span class=" text-xs-center display-2 checkout-price">
-                    € {{ newInvoice.total }}
+                    € {{ Math.abs(newInvoice.total) }}
                   </span>
                 </template>
               </v-card-text>
@@ -80,13 +81,13 @@
                   </span>
                 </template>
                 <span class="float-right">
-                  <v-btn v-if="step> 0" class=" primary" :loading="$store.state.loading.status" @click="previousStep()">
+                  <v-btn v-if="step> 0" :loading="$store.state.loading.status" class=" primary" @click="previousStep()">
                     Back
                   </v-btn>
-                  <v-btn v-else-if="changeSubscription" class=" primary" :loading="$store.state.loading.status" @click="changeSubscription=false">
+                  <v-btn v-else-if="changeSubscription" :loading="$store.state.loading.status" class=" primary" @click="changeSubscription=false">
                     Cancel
                   </v-btn>
-                  <v-btn class="primary" :loading="$store.state.loading.status" @click="nextStep()">
+                  <v-btn :loading="$store.state.loading.status" class="primary" @click="nextStep()">
                     {{ stepActions[step] }}
                   </v-btn>
                 </span>
@@ -195,25 +196,23 @@ export default {
       this.paymentMethod = pm
     },
     async subscribe () {
-      if (this.subscription) {
-        this.updateAlert({ success: true, successTxt: 'Your subscription has been updated successfully' })
-        return
-      }
+      // if (this.subscription) {
+      //   this.updateAlert({ success: true, successTxt: 'Your subscription has been updated successfully' })
+      //   return
+      // }
       const s = {
         price_id: this.plan.priceID,
         customer_id: this.user.customer_id,
-        payment_method_id: this.paymentMethod.id,
-        id: this.paymentIntent.id
+        payment_method_id: this.paymentMethod.id
+        // id: this.paymentIntent.id
       }
       const s1 = this.subscription ? {
-        price_id: this.plan.priceID,
-        customer_id: this.user.customer_id,
-        old_price_id: this.subscription.price_id,
-        item_id: this.paymentIntent.item_id,
-        payment_method_id: this.paymentMethod.id
+        id: this.subscription.id,
+        old_price_id: this.subscription.price_id
+        // item_id: this.paymentIntent.item_id,
       } : {}
       await this.$store.dispatch('loading/start')
-      await SubscriptionAPI.update({ ...s, ...s1 })
+      await SubscriptionAPI.createOrUpdate({ ...s, ...s1 })
         .then((r) => {
           this.updateAlert({ success: true, successTxt: this.subscription ? 'Your subscription has been updated successfully' : 'You have successfully subscribed' })
           this.changeSubscription = false
