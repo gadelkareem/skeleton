@@ -1,21 +1,21 @@
 <template>
   <v-dialog
     v-model="dialog"
-    persistent
     max-width="600px"
+    persistent
   >
     <template v-slot:activator="{ on, attrs }">
       <v-btn
-        v-bind="attrs"
         :loading="$store.state.loading.status"
+        class="mt-7"
         color="white"
         dark
-        x-large
         height="150"
+        v-bind="attrs"
         width="300"
-        class="mt-7"
-        v-on="on"
+        x-large
         @click="init"
+        v-on="on"
       >
         <v-icon
           color="green"
@@ -60,8 +60,8 @@
                   <v-text-field
                     v-model.trim="name"
                     :rules="[$validator.name]"
-                    label="Card Holder Name"
                     class="purple-input"
+                    label="Card Holder Name"
                   />
                 </v-col>
                 <v-col cols="12">
@@ -71,22 +71,22 @@
                   </div>
                 </v-col>
                 <v-col
-                  cols="12"
                   class="text-right mt-6"
+                  cols="12"
                 >
                   <v-btn
-                    color="info"
-                    class="mr-0"
                     :loading="$store.state.loading.status"
+                    class="mr-0"
+                    color="info"
                     @click="dialog=false;updateAlert()"
                   >
                     Cancel
                   </v-btn>
                   <v-btn
-                    color="info"
-                    class="mr-0"
-                    type="submit"
                     :loading="$store.state.loading.status"
+                    class="mr-0"
+                    color="info"
+                    type="submit"
                   >
                     Add Card
                   </v-btn>
@@ -100,8 +100,8 @@
           >
             <v-row justify="center">
               <v-btn
-                color="info"
                 class="mr-0"
+                color="info"
                 @click="resetForm"
               >
                 Close
@@ -186,6 +186,7 @@ export default {
             this.$emit('listPaymentMethods', true)
             this.$refs.form.reset()
             this.card.clear()
+            this.dialog = false
           })
           .catch((err) => {
             this.errors = this.parseError(err)
@@ -267,6 +268,7 @@ export default {
     resetForm () {
       this.updateAlert()
       this.dialog = false
+      this.$emit('updateAlert', null)
     }
   }
 }

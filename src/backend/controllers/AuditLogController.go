@@ -1,17 +1,17 @@
 package controllers
 
 import (
-    "backend/kernel"
+	"backend/kernel"
 )
 
 type AuditLogController struct {
-    ApiController
+	ApiController
 }
 
 // @router / [get]
 func (c *AuditLogController) GetAuditLogs() {
-    p, err := c.C.AuditLogService.PaginateAuditLogs(c.paginator(kernel.ListLimit))
-    c.handleError(err)
+	p, err := c.C.AuditLogService.PaginateAuditLogs(c.paginator(kernel.ListLimit))
+	c.handleError(err)
 
-    c.jsonMany(p)
+	c.jsonMany(p)
 }

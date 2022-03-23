@@ -1,12 +1,15 @@
 package services
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
 	"backend/internal"
 	"backend/kernel"
 	"backend/models"
+	"backend/queue"
+	"backend/queue/workers"
 	"backend/rbac"
 	"backend/utils/paginator"
 	"github.com/astaxie/beego/logs"
@@ -21,11 +24,12 @@ type (
 		p   *rbac.RBAC
 		c   *CacheService
 		py  *PaymentService
+		q   *queue.QueManager
 	}
 )
 
-func NewUserService(r *models.UserRepository, es *EmailService, sms *SMSService, p *rbac.RBAC, c *CacheService, py *PaymentService) *UserService {
-	return &UserService{r: r, es: es, sms: sms, p: p, c: c, py: py}
+func NewUserService(r *models.UserRepository, es *EmailService, sms *SMSService, p *rbac.RBAC, c *CacheService, py *PaymentService, q *queue.QueManager) *UserService {
+	return &UserService{r: r, es: es, sms: sms, p: p, c: c, py: py, q: q}
 }
 
 func (s *UserService) Save(m *models.User, columns ...string) error {
@@ -93,16 +97,28 @@ func (s *UserService) FindUser(u *models.User, checkActive bool) (m *models.User
 }
 
 func (s *UserService) DeleteUser(id int64) error {
-	u, err := s.r.FindById(id, false)
+	m, err := s.r.FindById(id, false)
 	if err != nil {
 		return err
 	}
-	u.Delete()
-	return s.Save(u)
+	// cannot delete user if he has active subscriptions
+	if s.py.CustomerHasActiveSubscriptions(m.CustomerID) {
+		return internal.ErrUserHasActiveSubscriptions
+	}
+
+	m.Delete()
+	err = s.Save(m)
+
+	err1 := s.EnqueueCreateOrUpdateCustomer(m.ID)
+	if err1 != nil {
+		logs.Error(err1)
+	}
+
+	return err
 }
 
 func (s *UserService) MakeAdmin(username string) error {
-	if !kernel.App.IsCLI {
+	if !kernel.App.IsCLI() {
 		return internal.ErrForbidden
 	}
 	u, err := s.FindUser(&models.User{Username: username}, true)
@@ -153,7 +169,31 @@ func (s *UserService) SignUp(m *models.User) (err error) {
 	if err != nil {
 		return
 	}
-	// @todo add a worker
+
+	err1 := s.EnqueueCreateOrUpdateCustomer(m.ID)
+	if err1 != nil {
+		logs.Error(err1)
+	}
+
+	return
+}
+
+func (s *UserService) EnqueueCreateOrUpdateCustomer(id int64) error {
+	if s.q != nil {
+		return s.q.Enqueue(workers.PaymentType, workers.PaymentReq{
+			Command: workers.CommandCustomerCreateUpdate,
+			UserID:  id,
+		})
+	}
+	return s.CreateOrUpdateCustomer(id)
+}
+
+func (s *UserService) CreateOrUpdateCustomer(id int64) (err error) {
+	m, err := s.r.FindUnfilteredById(id)
+	if err != nil {
+		return
+	}
+	// create payment customer
 	cus := &models.Customer{}
 	if m.CustomerID != "" {
 		cus.ID = m.CustomerID
@@ -162,15 +202,13 @@ func (s *UserService) SignUp(m *models.User) (err error) {
 		cus, err = s.py.CreateCustomer(m)
 	}
 	if err != nil {
-		logs.Error("Error getting payment customer ID %v", err)
-		return
+		return fmt.Errorf("error getting payment customer ID %v", err)
 	}
 	m.CustomerID = cus.ID
 	err = s.Save(m)
 	if err != nil {
-		logs.Error("Error saving user %v", err)
+		return fmt.Errorf("error saving user %v", err)
 	}
-
 	return
 }
 
@@ -197,6 +235,14 @@ func (s *UserService) SignUpSocial(m *models.User) (err error) {
 	}
 	// send welcome email
 	err = s.es.WelcomeEmail(m.GetFullName(), m.Email)
+	if err != nil {
+		logs.Error(err)
+	}
+
+	err = s.EnqueueCreateOrUpdateCustomer(m.ID)
+	if err != nil {
+		logs.Error(err)
+	}
 
 	return
 }
@@ -262,6 +308,11 @@ func (s *UserService) VerifyMobile(code string, m *models.User) (err error) {
 	}
 	m.VerifyMobile()
 	err = s.Save(m)
+
+	err1 := s.EnqueueCreateOrUpdateCustomer(m.ID)
+	if err1 != nil {
+		logs.Error(err1)
+	}
 
 	return
 }
@@ -386,6 +437,12 @@ func (s *UserService) UpdateProfile(m *models.User) (*models.User, error) {
 		// send verify email link
 		err = s.es.VerifyUserEmail(m.GetFullName(), m.Email, m.GetEmailVerificationURL())
 	}
+
+	err1 := s.EnqueueCreateOrUpdateCustomer(m.ID)
+	if err1 != nil {
+		logs.Error(err1)
+	}
+
 	return m, err
 }
 
@@ -408,7 +465,12 @@ func (s *UserService) UpdateUser(m, admin *models.User) (*models.User, error) {
 		return nil, err
 	}
 
-	return m, err
+	err1 := s.EnqueueCreateOrUpdateCustomer(m.ID)
+	if err1 != nil {
+		logs.Error(err1)
+	}
+
+	return m, nil
 }
 
 func (s *UserService) RecoveryQuestions(r *models.Login) (*models.RecoveryQuestions, error) {

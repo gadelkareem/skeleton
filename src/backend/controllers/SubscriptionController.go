@@ -21,6 +21,8 @@ func (c *SubscriptionController) CreateSubscription() {
     s, err := c.C.PaymentService.CreateSubscription(r)
     c.handleError(err)
 
+    go c.auditLog(models.Log{Action: "CreateSubscription"})
+
     c.json(s)
 }
 
@@ -34,6 +36,8 @@ func (c *SubscriptionController) UpdateSubscription() {
     s, err := c.C.PaymentService.UpdateSubscription(r)
     c.handleError(err)
 
+    go c.auditLog(models.Log{Action: "UpdateSubscription"})
+
     c.json(s)
 }
 
@@ -42,6 +46,8 @@ func (c *SubscriptionController) CancelSubscription(id string) {
     c.AssertCustomerHasSubscription(c.user.CustomerID, id)
     err := c.C.PaymentService.CancelSubscription(id, c.user.CustomerID)
     c.handleError(err)
+
+    go c.auditLog(models.Log{Action: "CancelSubscription"})
 
     c.SendStatus(http.StatusNoContent)
 }

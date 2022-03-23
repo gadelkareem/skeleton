@@ -86,7 +86,7 @@ func (c *dev) delUser(username string) {
 
 func (c *dev) Help() {
 	fmt.Printf(`
-Usage: proxycloud dev [options] ...
+Usage: skeleton dev [options] ...
 
     Dev commands
 

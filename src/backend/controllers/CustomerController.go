@@ -1,11 +1,11 @@
 package controllers
 
 import (
-    "backend/models"
+	"backend/models"
 )
 
 type CustomerController struct {
-    ApiController
+	ApiController
 }
 
 //
@@ -19,27 +19,27 @@ type CustomerController struct {
 
 // @router /:id [PATCH]
 func (c *CustomerController) UpdateCustomer() {
-    r := new(models.Customer)
-    c.parseRequest(r)
+	r := new(models.Customer)
+	c.parseRequest(r)
 
-    r, err := c.C.PaymentService.UpdateCustomer(r, nil)
-    c.handleError(err)
+	r, err := c.C.PaymentService.UpdateCustomer(r, nil)
+	c.handleError(err)
 
-    c.json(r)
+	c.json(r)
 }
 
 // @router /:id/payment-methods [get]
 func (c *CustomerController) ListPaymentMethods(id string) {
-    b, _ := c.GetBool("resetCache")
-    ms := c.C.PaymentService.PaymentMethods(id, b)
+	b, _ := c.GetBool("resetCache")
+	ms := c.C.PaymentService.PaymentMethods(id, b)
 
-    c.json(ms)
+	c.json(ms)
 }
 
 // @router /:id/subscription [get]
 func (c *CustomerController) CustomerSubscription(id string) {
-    s, err := c.C.PaymentService.ActiveSubscription(id)
-    c.handleError(err)
+	s, err := c.C.PaymentService.ActiveSubscription(id)
+	c.handleError(err)
 
-    c.json(s)
+	c.json(s)
 }

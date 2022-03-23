@@ -31,7 +31,7 @@
               cols="6"
               md="3"
             >
-              <term-card :card="price" />
+              <term-card :card="price" :disabled="subscription && price.id === subscription.price_id" />
             </v-col>
           </v-row>
         </v-container>
@@ -46,6 +46,13 @@ import ProductAPI from '@@/api/product'
 export default {
   name: 'SelectPlan',
   components: { PlanCard, TermCard },
+  props: {
+    subscription: {
+      type: Object,
+      required: false,
+      default: null
+    }
+  },
   data: () => ({
     tiers: [],
     selectedTier: 1,

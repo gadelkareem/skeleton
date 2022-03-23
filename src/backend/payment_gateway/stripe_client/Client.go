@@ -2,6 +2,7 @@ package stripe_client
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"backend/internal"
 	"backend/kernel"
@@ -74,26 +75,26 @@ func (c *Client) CreateCustomer(u *models.User) (*models.Customer, error) {
 	return &models.Customer{ID: cr.ID}, err
 }
 
-func (c *Client) CreateSubscriptionIntent(priceID, customerID string) (*models.Subscription, error) {
-	sps := &stripe.SubscriptionParams{
-		Customer: stripe.String(customerID),
-		Items: []*stripe.SubscriptionItemsParams{
-			{
-				Price: stripe.String(priceID),
-			},
-		},
-		PaymentBehavior: stripe.String("default_incomplete"),
-	}
-	sps.AddExpand("latest_invoice.payment_intent")
-	ss, err := sub.New(sps)
-	if err != nil {
-		return nil, err
-	}
-	return &models.Subscription{
-		ID:                        ss.ID,
-		PaymentIntentClientSecret: ss.LatestInvoice.PaymentIntent.ClientSecret,
-	}, nil
-}
+// func (c *Client) CreateSubscriptionIntent(priceID, customerID string) (*models.Subscription, error) {
+// 	sps := &stripe.SubscriptionParams{
+// 		Customer: stripe.String(customerID),
+// 		Items: []*stripe.SubscriptionItemsParams{
+// 			{
+// 				Price: stripe.String(priceID),
+// 			},
+// 		},
+// 		PaymentBehavior: stripe.String("default_incomplete"),
+// 	}
+// 	sps.AddExpand("latest_invoice.payment_intent")
+// 	ss, err := sub.New(sps)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return &models.Subscription{
+// 		ID:                        ss.ID,
+// 		PaymentIntentClientSecret: ss.LatestInvoice.PaymentIntent.ClientSecret,
+// 	}, nil
+// }
 
 func (c *Client) CreateSubscription(s *models.Subscription) (*models.Subscription, error) {
 	sps := &stripe.SubscriptionParams{
@@ -143,7 +144,6 @@ func (c *Client) UpdateSubscription(s *models.Subscription) (*models.Subscriptio
 	if ss.LatestInvoice != nil && ss.LatestInvoice.PaymentIntent != nil {
 		s.PaymentIntentClientSecret = ss.LatestInvoice.PaymentIntent.ClientSecret
 	}
-	go c.refundSubscription(ss)
 
 	return s, err
 }
@@ -266,6 +266,10 @@ func (c *Client) Webhook(m *models.PaymentEvent, s payment_gateway.PaymentServic
 		err = json.Unmarshal(e.Data.Raw, &invoice)
 		if err != nil {
 			return nil, err
+		}
+
+		if invoice.PaymentIntent == nil {
+			return nil, fmt.Errorf("invoice %s does not have a payment intent", invoice.ID)
 		}
 
 		pi, _ := paymentintent.Get(

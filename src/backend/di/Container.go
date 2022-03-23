@@ -49,7 +49,7 @@ func (c *Container) commonInit() {
 	c.DB = kernel.NewDB()
 
 	c.UserRepository = models.NewUserRepository(c.DB, 0)
-	c.UserService = services.NewUserService(c.UserRepository, c.EmailService, c.SMSService, c.RBAC, c.CacheService, c.PaymentService)
+	c.UserService = services.NewUserService(c.UserRepository, c.EmailService, c.SMSService, c.RBAC, c.CacheService, c.PaymentService, c.QueManager)
 
 	c.JWTService = services.NewJWTService(kernel.App.Config.String("hmacKey"), c.UserService)
 	c.AuthenticatorService = services.NewAuthenticatorService(c.UserService)
@@ -61,7 +61,9 @@ func (c *Container) commonInit() {
 func (c *Container) init() {
 	c.Cache = kernel.Cache()
 	c.CacheService = services.NewCacheService(c.Cache, true)
-	c.initQue()
+	if !kernel.App.IsCLI() {
+		c.initQue()
+	}
 	c.EmailService = services.NewEmailService(kernel.SMTPDialer(), nil, c.QueManager)
 	c.SMSService = services.NewSMSService(&http.Client{}, c.QueManager)
 	c.RateLimiter = limiter.NewRateLimiter(cachita.Memory(), nil)
@@ -101,5 +103,6 @@ func (c *Container) initWorkers() {
 	c.QueManager.AddWorker(
 		workers.NewSendMail(c.EmailService),
 		workers.NewSendSMS(c.SMSService),
+		workers.NewPayment(c.PaymentService, c.UserService),
 	)
 }

@@ -65,5 +65,15 @@ export default {
       tiers.push(t)
     }
     return tiers.sort((a, b) => (a.price > b.price) ? 1 : ((b.price > a.price) ? -1 : 0))
+  },
+  formatMoney (m) {
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'EUR',
+      minimumFractionDigits: 0
+
+    })
+
+    return formatter.format(m)
   }
 }

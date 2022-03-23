@@ -1,8 +1,8 @@
 <template>
   <v-card class="center-box price-card">
     <v-card-title
-      primary-title
       class="price-header justify-center"
+      primary-title
     >
       <h5 class="text-xs-center headline">{{ card.title }}</h5>
       <div class="small-title text-xs-center body-1"> {{ card.subheader }}</div>
@@ -16,7 +16,7 @@
     <v-card-text class="pa-4">
       <div class="card-pricing">
         <h2 class="price text-xs-center display-2">
-          € {{ card.price }}
+          {{ formatMoney(card.price) }}
         </h2>
         <h6 class="title">
           / mo
@@ -34,17 +34,21 @@
     </v-card-text>
     <div class="text-center pa-4">
       <v-btn
+        :disabled="card.disabled"
         :outlined="card.buttonVariant === 'outlined'"
+        :to="`/dashboard/subscription/plans/?plan=`+card.priceID"
         block
         color="primary"
-        :disabled="card.disabled"
-        :to="`/dashboard/subscription/plans/?plan=`+card.priceID"
       >
         {{ card.buttonText }}
       </v-btn>
     </div>
   </v-card>
 </template>
+
+<style lang="sass" scoped>
+@import './card-styles'
+</style>
 
 <script>
 export default {

@@ -9,10 +9,10 @@
       :plan="plan"
       :show-add-payment-method="Boolean(plan)"
       :subscription="subscription"
-      @setPaymentMethod="setPaymentMethod"
-      @updateAlert="updateAlert"
       @addConfirmedPaymentMethods="addConfirmedPaymentMethods"
       @setPaymentIntent="setPaymentIntent"
+      @setPaymentMethod="setPaymentMethod"
+      @updateAlert="updateAlert"
     />
   </span>
 </template>
@@ -62,7 +62,7 @@ export default {
     setPaymentMethod (pm) {
       this.selectedPaymentMethod = pm
       this.$emit('setPaymentMethod', pm)
-      console.log('selectedPaymentMethodID', this.selectedPaymentMethod.id)
+      console.log('selectedPaymentMethodID', this.selectedPaymentMethod?.id)
     }
   }
 }

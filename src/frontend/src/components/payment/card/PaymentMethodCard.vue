@@ -6,21 +6,22 @@
     @change="$emit('setPaymentMethodID', pm.id)"
   >
     <v-card
+      :elevation="active? 9: 0"
+      class="center-box card"
+      height="150"
       outlined
       shaped
-      class="center-box card"
-      :elevation="active? 9: 0"
-      height="150"
       width="300"
       @click="toggle"
     >
+      <confirm-modal ref="confirm" />
       <div>
         <img
+          :alt="pm.card.brand"
           :src="`/images/icons/payment/`+ pm.card.brand +`.svg`"
-          width="40"
           height="30"
           style="float:right"
-          :alt="pm.card.brand"
+          width="40"
         >
       </div>
       <v-card-title>{{ pm.billing_details.name }}</v-card-title>
@@ -33,16 +34,16 @@
         <v-spacer />
         <v-btn
           v-if="!pm.is_default && showDelete"
-          x-small
-          fab
+          :elevation="active? 9: 0"
           :ripple="false"
           class="no-bg-btn"
-          :elevation="active? 9: 0"
-          @click="$emit('deletePaymentMethod',pm.id)"
+          fab
+          x-small
+          @click="deletePaymentMethod"
         >
           <v-icon
-            color="error"
             class="mx-1"
+            color="error"
           >
             mdi-close
           </v-icon>
@@ -53,9 +54,10 @@
 </template>
 
 <script>
-
+import ConfirmModal from '@@/components/base/ConfirmModal'
 export default {
   name: 'PaymentMethodCard',
+  components: { ConfirmModal },
   props: {
     pm: {
       type: Object,
@@ -64,6 +66,18 @@ export default {
     showDelete: {
       type: Boolean,
       default: true
+    }
+  },
+  methods: {
+    deletePaymentMethod () {
+      this.$refs.confirm.open(
+        'Delete Payment Method',
+        'Are you sure you want to delete your payment method?'
+      ).then((confirm) => {
+        if (confirm) {
+          this.$emit('deletePaymentMethod', this.pm.id)
+        }
+      })
     }
   }
 }

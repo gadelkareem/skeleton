@@ -1,21 +1,22 @@
 <template>
   <v-item v-slot="{ active, toggle }" active-class="active-card">
     <v-card
-      class="center-box price-card text-wrap card"
+      :disabled="disabled"
       :elevation="active? 9: 0"
+      class="center-box price-card text-wrap"
       min-width="50"
       @click="toggle"
     >
       <v-card-title
-        primary-title
         class="justify-center "
+        primary-title
       >
         <h5 class="text-xs-center headline text-wrap">{{ title }}</h5>
       </v-card-title>
       <v-card-text v-if="card.unit_amount" class="pa-4">
         <div class="card-pricing">
           <span class=" text-xs-center display-2">
-            € {{ price }}
+            {{ formatMoney(price) }}
           </span>
           <span class="title interval">
             / {{ interval }}
@@ -25,6 +26,9 @@
     </v-card>
   </v-item>
 </template>
+<style lang="sass" scoped>
+@import './card-styles'
+</style>
 <script>
 export default {
   name: 'TermCard',
@@ -32,6 +36,10 @@ export default {
     card: {
       type: Object,
       required: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {

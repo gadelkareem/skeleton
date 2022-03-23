@@ -9,7 +9,7 @@
       :success="success"
       :success-txt="successTxt"
     />
-    <select-plan v-show="step === 0 && !displaySubscription" ref="selectPlan" @updateAlert="updateAlert" @updatePlan="updatePlan" />
+    <select-plan v-show="step === 0 && !displaySubscription" ref="selectPlan" :subscription="subscription" @updateAlert="updateAlert" @updatePlan="updatePlan" />
     <select-payment-method
       v-if="plan"
       v-show="step === 1 && !displaySubscription"
@@ -21,7 +21,7 @@
       @updateAlert="updateAlert"
     />
     <subscribe
-      v-if="plan && paymentMethod"
+      v-if="plan && (paymentMethod || displaySubscription)"
       v-show="step === 2 || displaySubscription"
       ref="subscribe"
       :checkout="!displaySubscription"
@@ -55,7 +55,7 @@
               <v-card-text>
                 <template>
                   <span class=" text-xs-center display-2 checkout-price">
-                    € {{ Math.abs(newInvoice.total) }}
+                    {{ formatMoney(Math.abs(newInvoice.total)) }}
                   </span>
                 </template>
               </v-card-text>
@@ -74,7 +74,7 @@
                 </template>
                 <template v-else>
                   <span class=" text-xs-center display-2 checkout-price">
-                    € {{ plan.priceAmount }}
+                    {{ formatMoney(plan.priceAmount) }}
                   </span>
                   <span class="title interval">
                     / {{ plan.interval }}
@@ -160,10 +160,21 @@ export default {
       this.step--
     },
     async nextStep () {
+      this.updateAlert()
       const s = this.step + 1
       if (s > 3) { return }
       try {
         switch (s) {
+          case 1:
+            if (this.subscription && this.subscription.price_id === this.plan.priceID) {
+              throw new Error('You are already subscribed to this plan')
+            }
+            break
+          case 2:
+            if (!this.paymentMethod) {
+              throw new Error('Please select a payment method')
+            }
+            break
           case 3:
             await this.$refs.selectPaymentMethod.confirmCard()
             if (!this.$refs.selectPaymentMethod.isPaymentMethodConfirmed(this.paymentMethod.id)) {
@@ -196,20 +207,16 @@ export default {
       this.paymentMethod = pm
     },
     async subscribe () {
-      // if (this.subscription) {
-      //   this.updateAlert({ success: true, successTxt: 'Your subscription has been updated successfully' })
-      //   return
-      // }
       const s = {
         price_id: this.plan.priceID,
         customer_id: this.user.customer_id,
-        payment_method_id: this.paymentMethod.id
-        // id: this.paymentIntent.id
+        payment_method_id: this.paymentMethod.id,
+        id: this.paymentIntent?.id
       }
       const s1 = this.subscription ? {
-        id: this.subscription.id,
-        old_price_id: this.subscription.price_id
-        // item_id: this.paymentIntent.item_id,
+        id: this.subscription.id
+        // old_price_id: this.subscription.price_id
+        // item_id: this.paymentIntent?.item_id
       } : {}
       await this.$store.dispatch('loading/start')
       await SubscriptionAPI.createOrUpdate({ ...s, ...s1 })
@@ -275,7 +282,7 @@ export default {
         id: this.subscription.id,
         price_id: this.plan.priceID,
         customer_id: this.user.customer_id,
-        old_price_id: this.subscription.price_id,
+        // old_price_id: this.subscription.price_id,
         item_id: this.subscription.item_id
       })
         .then((r) => {
@@ -293,3 +300,26 @@ export default {
   }
 }
 </script>
+<style  lang="sass">
+#create-subscription
+  counter-reset: steps
+  .step__number
+    display: inline-block
+    width: 2em
+    height: 2em
+    border: 2px solid var(--v-primary-base)
+    border-radius: 50%
+    line-height: 2em
+    text-align: center
+    font-weight: 500
+    margin-right: 0.5em
+
+  .step__number:before
+    content: counter(steps)
+    counter-increment: steps
+  .checkout-price
+    color: var(--v-primary-base)
+  .active-card
+    border: 1px solid var(--v-primary-base)
+    opacity: 100% !important
+</style>

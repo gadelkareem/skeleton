@@ -19,6 +19,7 @@
               v-if="showAddPaymentMethod"
               @listPaymentMethods="listPaymentMethods"
               @setPaymentMethodID="setPaymentMethodID"
+              @updateAlert="updateAlert"
             />
           </div>
         </v-row>
@@ -98,7 +99,7 @@ export default {
       if (this.subscription) {
         sub = { ...sub,
           id: this.subscription.id,
-          old_price_id: this.subscription.price_id,
+          // old_price_id: this.subscription.price_id,
           item_id: this.subscription.item_id,
           payment_method_id: this.selectedPaymentMethodID
         }
@@ -150,6 +151,7 @@ export default {
           if (id === this.selectedPaymentMethodID) {
             this.selectedPaymentMethodID = ''
           }
+          this.$emit('setPaymentMethod', null)
           this.listPaymentMethods()
           return r
         })

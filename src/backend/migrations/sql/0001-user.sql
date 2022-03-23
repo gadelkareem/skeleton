@@ -39,8 +39,7 @@ CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS s_users_unique_username_idx ON pu
 CREATE INDEX CONCURRENTLY IF NOT EXISTS s_users_first_name_idx ON public.s_users (first_name);
 
 CREATE INDEX CONCURRENTLY users_trgm_at_idx ON public.s_users
-    USING GIST ((username || ' ' || email || ' ' || coalesce(first_name,'') || ' ' || coalesce(last_name,'')) gist_trgm_ops);
-
+    USING GIST ((username || ' ' || email || ' ' || coalesce (first_name,'') || ' ' || coalesce (last_name,'')) gist_trgm_ops);
 
 
 -- +migrate Down

@@ -1,26 +1,22 @@
 <template>
   <v-container>
+    <alert
+      :errors="errors"
+      :success="success"
+      :success-txt="successTxt"
+    />
     <v-row>
-      <alert
-        :errors="errors"
-        :success="success"
-        :success-txt="successTxt"
-      />
       <div>
-        <payment-methods @updateAlert="updateAlert" />
-      </div>
-      <div class="float-left ma-2">
-        <add-payment-method />
+        <payment-methods :show-add-payment-method="true" @updateAlert="updateAlert" />
       </div>
     </v-row>
   </v-container>
 </template>
 <script>
-import PaymentMethods from '@@/components/payment/PaymentMethods'
+import PaymentMethods from '@@/components/payment/paymentMethods'
 import Alert from '@@/components/base/Alert'
-import AddPaymentMethod from '@@/components/payment/AddPaymentMethod'
 export default {
-  components: { PaymentMethods, Alert, AddPaymentMethod },
+  components: { PaymentMethods, Alert },
   layout: 'Dashboard',
   data () {
     return {

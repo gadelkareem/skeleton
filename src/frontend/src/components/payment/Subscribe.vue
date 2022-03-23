@@ -2,8 +2,8 @@
   <span>
     <v-row justify="center">
       <material-card
-        class="pa-6"
         :width="$vuetify.breakpoint.smAndDown ? '65%' : '40%'"
+        class="pa-6"
       >
         <template v-slot:heading>
           <div class="display-2 font-weight-light">
@@ -25,10 +25,10 @@
               <v-col>
                 <v-card
                   v-if="plan.tier"
+                  class="ma-0"
                   outlined
                   shaped
                   width="300"
-                  class="ma-0"
                 >
                   <v-card-title>{{ plan.tier.title }}</v-card-title>
                   <v-card-text>
@@ -51,14 +51,14 @@
               </v-col>
               <v-col>
                 <v-card
+                  class="ma-0"
                   outlined
                   shaped
                   width="300"
-                  class="ma-0"
                 >
                   <v-card-text>
                     <span class=" text-xs-center display-2 checkout-price">
-                      € {{ newInvoice.total }}
+                      {{ formatMoney(newInvoice.total) }}
                     </span>
                   </v-card-text>
                 </v-card>
@@ -70,10 +70,10 @@
               </v-col>
               <v-col>
                 <v-card
+                  class="ma-0"
                   outlined
                   shaped
                   width="300"
-                  class="ma-0"
                 >
                   <v-card-text>
                     <template v-if="plan.price && !plan.priceAmount">
@@ -83,7 +83,7 @@
                     </template>
                     <template v-else>
                       <span class=" text-xs-center display-2 checkout-price">
-                        € {{ plan.priceAmount }}
+                        {{ formatMoney(plan.priceAmount) }}
                       </span>
                       <span class="title interval">
                         / {{ plan.interval }}
@@ -93,7 +93,7 @@
                 </v-card>
               </v-col>
             </v-row>
-            <v-row class="mt-5" align="center">
+            <v-row v-if="paymentMethod" align="center" class="mt-5">
               <v-col>
                 <h5>Payment Method:</h5>
               </v-col>
@@ -108,10 +108,11 @@
         </v-card-text>
         <v-card-actions v-if="!checkout">
           <v-spacer />
-          <v-btn class="error" :loading="$store.state.loading.status" @click="$emit('cancelSubscription')">
+          <confirm-modal ref="confirm" />
+          <v-btn :loading="$store.state.loading.status" class="error" @click="cancelSubscription">
             Cancel Subscription
           </v-btn>
-          <v-btn class="primary" :loading="$store.state.loading.status" @click="$emit('setChangeSubscription')">
+          <v-btn :loading="$store.state.loading.status" class="primary" @click="$emit('setChangeSubscription')">
             Change Current Plan
           </v-btn>
         </v-card-actions>
@@ -121,10 +122,11 @@
 <script>
 import MaterialCard from '@@/components/base/MaterialCard'
 import PaymentMethodCard from '@@/components/payment/card/PaymentMethodCard'
+import ConfirmModal from '@@/components/base/ConfirmModal'
 
 export default {
   name: 'Subscribe',
-  components: { PaymentMethodCard, MaterialCard },
+  components: { PaymentMethodCard, MaterialCard, ConfirmModal },
   props: {
     plan: {
       type: Object,
@@ -132,7 +134,8 @@ export default {
     },
     paymentMethod: {
       type: Object,
-      required: true
+      required: false,
+      default: null
     },
     checkout: {
       type: Boolean,
@@ -147,6 +150,19 @@ export default {
   },
   mounted () {
     this.$store.dispatch('page/title', this.checkout ? 'checkout' : 'Current Plan')
+  },
+  methods: {
+    cancelSubscription () {
+      this.$refs.confirm.open(
+        'Cancel Subscription',
+        'Are you sure you want to cancel your subscription?'
+      ).then((confirm) => {
+        if (confirm) {
+          this.$emit('cancelSubscription')
+        }
+      })
+    }
+
   }
 }
 </script>

@@ -195,10 +195,10 @@ func (s *CacheService) Invalidate(k string) (err error) {
 // }
 
 func (s *CacheService) log(f interface{}, v ...interface{}) {
-    if s.debug {
-        logs.Error(f, v...)
-    }
-    return
+	if s.debug {
+		logs.Error(f, v...)
+	}
+	return
 }
 
 func (s *CacheService) Key(i interface{}, p **paginator.Paginator, params ...interface{}) (k string, err error) {
