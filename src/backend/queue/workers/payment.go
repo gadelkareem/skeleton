@@ -13,7 +13,7 @@ type paymentCommand int
 const (
 	PaymentType                                = "payment"
 	CommandCustomerCreateUpdate paymentCommand = iota // 0
-	CommandCustomer                                  // 1
+	CommandCustomer                                   // 1
 )
 
 type paymentService interface {

@@ -1,60 +1,60 @@
 package controllers
 
 import (
-    "net/http"
+	"net/http"
 
-    "backend/internal"
-    "backend/models"
+	"backend/internal"
+	"backend/models"
 )
 
 type SubscriptionController struct {
-    ApiController
+	ApiController
 }
 
 // @router / [post]
 func (c *SubscriptionController) CreateSubscription() {
-    r := new(models.Subscription)
-    c.parseRequest(r)
-    c.AssertCustomer(r.CustomerID)
-    c.validate(r)
+	r := new(models.Subscription)
+	c.parseRequest(r)
+	c.AssertCustomer(r.CustomerID)
+	c.validate(r)
 
-    s, err := c.C.PaymentService.CreateSubscription(r)
-    c.handleError(err)
+	s, err := c.C.PaymentService.CreateSubscription(r)
+	c.handleError(err)
 
-    go c.auditLog(models.Log{Action: "CreateSubscription"})
+	go c.auditLog(models.Log{Action: "CreateSubscription"})
 
-    c.json(s)
+	c.json(s)
 }
 
 // @router /:id [patch]
 func (c *SubscriptionController) UpdateSubscription() {
-    r := new(models.Subscription)
-    c.parseRequest(r)
-    c.AssertCustomerHasSubscription(r.CustomerID, r.ID)
-    c.validate(r)
+	r := new(models.Subscription)
+	c.parseRequest(r)
+	c.AssertCustomerHasSubscription(r.CustomerID, r.ID)
+	c.validate(r)
 
-    s, err := c.C.PaymentService.UpdateSubscription(r)
-    c.handleError(err)
+	s, err := c.C.PaymentService.UpdateSubscription(r)
+	c.handleError(err)
 
-    go c.auditLog(models.Log{Action: "UpdateSubscription"})
+	go c.auditLog(models.Log{Action: "UpdateSubscription"})
 
-    c.json(s)
+	c.json(s)
 }
 
 // @router /:id [delete]
 func (c *SubscriptionController) CancelSubscription(id string) {
-    c.AssertCustomerHasSubscription(c.user.CustomerID, id)
-    err := c.C.PaymentService.CancelSubscription(id, c.user.CustomerID)
-    c.handleError(err)
+	c.AssertCustomerHasSubscription(c.user.CustomerID, id)
+	err := c.C.PaymentService.CancelSubscription(id, c.user.CustomerID)
+	c.handleError(err)
 
-    go c.auditLog(models.Log{Action: "CancelSubscription"})
+	go c.auditLog(models.Log{Action: "CancelSubscription"})
 
-    c.SendStatus(http.StatusNoContent)
+	c.SendStatus(http.StatusNoContent)
 }
 
 func (c *SubscriptionController) AssertCustomerHasSubscription(customerID string, subscriptionID string) {
-    c.AssertCustomer(customerID)
-    if !c.C.PaymentService.CustomerHasSubscription(customerID, subscriptionID) {
-        c.handleError(internal.ErrForbidden)
-    }
+	c.AssertCustomer(customerID)
+	if !c.C.PaymentService.CustomerHasSubscription(customerID, subscriptionID) {
+		c.handleError(internal.ErrForbidden)
+	}
 }
