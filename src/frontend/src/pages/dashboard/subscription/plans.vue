@@ -321,5 +321,5 @@ export default {
     color: var(--v-primary-base)
   .active-card
     border: 1px solid var(--v-primary-base)
-    opacity: 100% !important
+    opacity: 1 !important
 </style>
