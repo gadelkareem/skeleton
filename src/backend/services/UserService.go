@@ -118,7 +118,7 @@ func (s *UserService) DeleteUser(id int64) error {
 }
 
 func (s *UserService) MakeAdmin(username string) error {
-	if !kernel.App.IsCLI() {
+	if !kernel.App.IsCLI {
 		return internal.ErrForbidden
 	}
 	u, err := s.FindUser(&models.User{Username: username}, true)

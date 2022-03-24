@@ -61,7 +61,7 @@ func (c *Container) commonInit() {
 func (c *Container) init() {
 	c.Cache = kernel.Cache()
 	c.CacheService = services.NewCacheService(c.Cache, true)
-	if !kernel.App.IsCLI() {
+	if !kernel.App.IsCLI {
 		c.initQue()
 	}
 	c.EmailService = services.NewEmailService(kernel.SMTPDialer(), nil, c.QueManager)
