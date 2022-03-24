@@ -20,39 +20,3 @@
 .list-no-bullets
   list-style: none
 
-#create-subscription
-  counter-reset: steps
-  .step__number
-    display: inline-block
-    width: 2em
-    height: 2em
-    border: 2px solid var(--v-primary-base)
-    border-radius: 50%
-    line-height: 2em
-    text-align: center
-    font-weight: 500
-    margin-right: 0.5em
-
-  .step__number:before
-    content: counter(steps)
-    counter-increment: steps
-  .checkout-price
-    color: var(--v-primary-base)
-  .card
-    padding: $spacing3
-    opacity: 0.6 !important
-    background: #fff
-  .active-card
-    border: 1px solid var(--v-primary-base)
-    opacity: 1 !important
-
-  .price
-    &-card
-      text-align: center
-      min-height: 6em
-      .interval
-        +palette-text-secondary
-
-  .active-card
-    border: 1px solid var(--v-primary-base)
-    opacity: 1 !important
