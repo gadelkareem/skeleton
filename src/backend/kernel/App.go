@@ -234,8 +234,8 @@ func (a *app) RunCommand() {
 			cmd.Help()
 			os.Exit(0)
 		}
-		cmd.Run(args[2:])
 		a.IsCLI = true
+		cmd.Run(args[2:])
 		os.Exit(0)
 	}
 }
