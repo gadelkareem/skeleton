@@ -13,7 +13,7 @@
   </v-container>
 </template>
 <script>
-import PaymentMethods from '@@/components/payment/paymentMethods'
+import PaymentMethods from '@@/components/payment/PaymentMethods'
 import Alert from '@@/components/base/Alert'
 export default {
   components: { PaymentMethods, Alert },
