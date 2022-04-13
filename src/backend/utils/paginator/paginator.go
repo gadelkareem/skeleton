@@ -10,10 +10,10 @@ import (
 )
 
 type Paginator struct {
-	Models                                       []interface{}
-	Filter, uri                                  string
-	Size, Limit, Offset, currentPage, totalPages int
-	Sort                                         map[string]string
+	Models                           []interface{}
+	Filter, uri                      string
+	Size, Limit, Offset, currentPage int
+	Sort                             map[string]string
 }
 
 const (
@@ -63,6 +63,13 @@ func NewPaginator(pg map[string]int, sort, filter, uri string) *Paginator {
 	return p
 }
 
+func (p *Paginator) Optimize() {
+	if p.Limit == -1 {
+		p.Limit = len(p.Models)
+		p.Size = len(p.Models)
+	}
+}
+
 func (p *Paginator) Links() *jsonapi.Links {
 	pg := fmt.Sprintf("%s%s?page[size]=%d", kernel.App.APIURL, p.uri, kernel.ListLimit)
 	l := jsonapi.Links{
@@ -84,7 +91,6 @@ func (p *Paginator) Meta() *jsonapi.Meta {
 		"total":  p.Size,
 		"size":   p.Limit,
 		"before": p.CurrentPage(),
-		"after":  p.CurrentPage() + 1,
 	}
 	sort := ""
 	for c, d := range p.Sort {
@@ -93,15 +99,17 @@ func (p *Paginator) Meta() *jsonapi.Meta {
 		}
 		sort += c
 	}
+	if p.CurrentPage()+1 > p.TotalPages() {
+		pg["after"] = 0
+	} else {
+		pg["after"] = p.CurrentPage() + 1
+	}
+
 	return &jsonapi.Meta{"page": pg, "sort": sort, "filter": p.Filter}
 }
 
 func (p *Paginator) TotalPages() int {
-	if p.totalPages != 0 {
-		return p.totalPages
-	}
-	p.totalPages = int(math.Ceil(float64(p.Size) / float64(p.Limit)))
-	return p.totalPages
+	return int(math.Ceil(float64(p.Size) / float64(p.Limit)))
 }
 
 func (p *Paginator) CurrentPage() int {
@@ -109,4 +117,22 @@ func (p *Paginator) CurrentPage() int {
 		p.currentPage = 1
 	}
 	return p.currentPage
+}
+
+func (p *Paginator) Slice() {
+	p.Size = len(p.Models)
+	limit := p.Limit
+	if limit < 0 || limit > p.Size {
+		limit = p.Size
+	}
+	if p.Offset < -1 {
+		p.Offset = 0
+	} else if p.Offset > p.Size {
+		p.Offset = limit
+	}
+	limit += p.Offset + 1
+	if limit > p.Size {
+		limit = p.Size
+	}
+	p.Models = p.Models[p.Offset:limit]
 }

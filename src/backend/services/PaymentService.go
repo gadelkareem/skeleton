@@ -1,12 +1,11 @@
 package services
 
 import (
-	"fmt"
-
 	"backend/internal"
 	"backend/models"
 	"backend/payment_gateway"
 	"backend/utils/paginator"
+	"fmt"
 	"github.com/astaxie/beego/logs"
 )
 
@@ -37,7 +36,7 @@ func (s *PaymentService) CreateSubscription(sub *models.Subscription) (m *models
 
 	m, err = s.p.CreateSubscription(sub)
 
-	go s.InvalidateCacheModel(sub, sub.CustomerID)
+	go s.InvalidateCustomer(sub.CustomerID)
 
 	return
 }
@@ -52,13 +51,17 @@ func (s *PaymentService) Products() (ms []*models.Product, err error) {
 	if err != nil {
 		return nil, err
 	}
-	go s.c.Put(&ms, k, nil, s.cacheTag(ms, ""))
+	go s.c.Put(&ms, k, nil, s.c.interfaceType(ms))
 
 	return
 }
 
-func (s *PaymentService) InvalidateCacheModel(m models.BaseInterface, customerID string) {
-	s.c.InvalidateModel(m, s.cacheTag(m, customerID))
+func (s *PaymentService) InvalidateCacheModel(m models.BaseInterface) {
+	s.c.InvalidateModel(m)
+}
+
+func (s *PaymentService) InvalidateCustomer(customerID string) {
+	_ = s.c.InvalidateTags(s.CustomerCacheTag(customerID))
 }
 
 func (s *PaymentService) ActiveSubscription(customerID string) (*models.Subscription, error) {
@@ -93,7 +96,7 @@ func (s *PaymentService) Subscriptions(customerID string) (ms []*models.Subscrip
 	ms = s.p.Subscriptions(customerID)
 
 	if len(ms) > 0 {
-		go s.c.Put(&ms, k, nil, s.cacheTag(ms, customerID))
+		go s.c.Put(&ms, k, nil, s.CustomerCacheTag(customerID))
 	}
 
 	return
@@ -125,8 +128,8 @@ func (s *PaymentService) CustomerHasActiveSubscriptions(customerID string) bool 
 	return customerID != "" && len(s.ActiveSubscriptions(customerID)) > 0
 }
 
-func (s PaymentService) cacheTag(i interface{}, customerID string) string {
-	return fmt.Sprintf("%s_%s", s.c.interfaceType(i), customerID)
+func (s PaymentService) CustomerCacheTag(customerID string) string {
+	return fmt.Sprintf("CustomerID_%s", customerID)
 }
 
 func (s *PaymentService) UpdateSubscription(sub *models.Subscription) (m *models.Subscription, err error) {
@@ -135,14 +138,14 @@ func (s *PaymentService) UpdateSubscription(sub *models.Subscription) (m *models
 		return nil, internal.ErrSubscriptionNotUpdated
 	}
 	m, err = s.p.UpdateSubscription(sub)
-	go s.InvalidateCacheModel(sub, sub.CustomerID)
+	go s.InvalidateCustomer(sub.CustomerID)
 
 	return m, err
 }
 
 func (s *PaymentService) CancelSubscription(subscriptionID, customerID string) error {
 	_, err := s.p.CancelSubscription(subscriptionID)
-	go s.InvalidateCacheModel(&models.Subscription{ID: subscriptionID}, customerID)
+	go s.InvalidateCustomer(customerID)
 
 	return err
 }
@@ -152,7 +155,7 @@ func (s *PaymentService) UpdateDefaultPaymentMethod(paymentMethodID string, subs
 	if err != nil {
 		return err
 	}
-	_, err = s.UpdateSubscription(&models.Subscription{ID: subscriptionID, PaymentMethodId: paymentMethodID})
+	_, err = s.UpdateSubscription(&models.Subscription{ID: subscriptionID, PaymentMethodID: paymentMethodID})
 	return err
 }
 
@@ -170,7 +173,7 @@ func (s *PaymentService) UpdateCustomer(cus *models.Customer, u *models.User) (*
 	if err != nil {
 		return nil, err
 	}
-	go s.InvalidateCacheModel(m, m.ID)
+	go s.InvalidateCustomer(m.ID)
 	return m, nil
 }
 
@@ -184,16 +187,14 @@ func (s *PaymentService) Customer(id string) (*models.Customer, error) {
 	if err != nil {
 		return nil, err
 	}
-	go s.c.Put(m, cID, nil, s.cacheTag(m, m.ID))
+	go s.c.Put(m, cID, nil, s.CustomerCacheTag(m.ID))
 
 	return m, nil
 }
 
 func (s *PaymentService) PaymentMethods(customerID string, resetCache bool) (ms []*models.PaymentMethod) {
 	k, _ := s.c.Key(&ms, nil, customerID)
-	if resetCache {
-		s.InvalidateCacheModel(&models.PaymentMethod{}, customerID)
-	} else {
+	if !resetCache {
 		_, _ = s.c.Get(&ms, nil, customerID)
 		if len(ms) > 0 {
 			return
@@ -214,9 +215,64 @@ func (s *PaymentService) PaymentMethods(customerID string, resetCache bool) (ms 
 		}
 	}
 
-	go s.c.Put(&ms, k, nil, s.cacheTag(ms, customerID))
+	go s.c.Put(&ms, k, nil, s.CustomerCacheTag(customerID))
 
 	return
+}
+
+func (s *PaymentService) CustomerInvoices(customerID string) (ms []*models.Invoice, err error) {
+	k, _ := s.c.Get(&ms, nil, customerID)
+	if len(ms) > 0 {
+		return
+	}
+
+	ms, err = s.p.ListInvoices(customerID)
+	if err != nil || len(ms) < 1 {
+		return
+	}
+
+	go s.c.Put(&ms, k, nil, s.CustomerCacheTag(customerID))
+
+	return
+}
+
+func (s *PaymentService) PaginateInvoices(customerID string, p *paginator.Paginator) (*paginator.Paginator, error) {
+	ms, err := s.CustomerInvoices(customerID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, m := range ms {
+		p.Models = append(p.Models, m)
+	}
+	p.Slice()
+
+	return p, nil
+}
+
+func (s *PaymentService) PaginateProducts(p *paginator.Paginator) (*paginator.Paginator, error) {
+	ms, err := s.Products()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, m := range ms {
+		p.Models = append(p.Models, m)
+	}
+	p.Slice()
+
+	return p, nil
+}
+
+func (s *PaymentService) PaginatePaymentMethods(customerID string, resetCache bool, p *paginator.Paginator) *paginator.Paginator {
+	ms := s.PaymentMethods(customerID, resetCache)
+
+	for _, m := range ms {
+		p.Models = append(p.Models, m)
+	}
+	p.Slice()
+
+	return p
 }
 
 func (s *PaymentService) CustomerHasPaymentMethod(customerID string, paymentMethodID string) bool {
@@ -233,7 +289,7 @@ func (s *PaymentService) CustomerHasPaymentMethod(customerID string, paymentMeth
 func (s *PaymentService) subscriptionHasPaymentMethod(customerID string, paymentMethodID string) bool {
 	ms := s.Subscriptions(customerID)
 	for _, m := range ms {
-		if m.PaymentMethodId == paymentMethodID {
+		if m.PaymentMethodID == paymentMethodID {
 			return true
 		}
 	}
@@ -242,14 +298,14 @@ func (s *PaymentService) subscriptionHasPaymentMethod(customerID string, payment
 }
 
 func (s *PaymentService) DeletePaymentMethod(id, customerID string) (err error) {
-	ms := s.PaymentMethods(customerID, false)
+	ms := s.PaymentMethods(customerID, true)
 	for _, m := range ms {
 		if m.ID == id {
-			if m.IsDefault == true || s.subscriptionHasPaymentMethod(customerID, id) {
+			if s.subscriptionHasPaymentMethod(customerID, id) {
 				return internal.ErrPaymentMethodDeletionNotAllowed
 			}
 			err = s.p.DeletePaymentMethods(id)
-			go s.InvalidateCacheModel(m, customerID)
+			go s.InvalidateCustomer(customerID)
 
 			return
 		}
@@ -258,8 +314,8 @@ func (s *PaymentService) DeletePaymentMethod(id, customerID string) (err error) 
 }
 
 func (s *PaymentService) AttachPaymentMethod(customerID string, om *models.PaymentMethod) (m *models.PaymentMethod, err error) {
-	ms := s.PaymentMethods(customerID, false)
-	if len(ms) > PaymentMethodCountLimit-1 {
+	ms := s.PaymentMethods(customerID, true)
+	if len(ms) >= PaymentMethodCountLimit {
 		return nil, internal.ErrPaymentMethodLimitExceeded
 	}
 	for _, pm := range ms {
@@ -269,9 +325,18 @@ func (s *PaymentService) AttachPaymentMethod(customerID string, om *models.Payme
 			return nil, internal.ErrPaymentMethodExists
 		}
 	}
+	if len(ms) == 0 {
+		om.IsDefault = true
+	}
 	m, err = s.p.AttachPaymentMethod(customerID, om)
+	if len(ms) == 0 {
+		_, err = s.UpdateCustomer(&models.Customer{ID: customerID, DefaultPaymentMethodID: om.ID}, nil)
+		if err != nil {
+			return
+		}
+	}
 
-	go s.InvalidateCacheModel(om, customerID)
+	go s.InvalidateCustomer(customerID)
 
 	return
 }
@@ -283,4 +348,16 @@ func (s *PaymentService) paymentMethodPaginator() *paginator.Paginator {
 func (s *PaymentService) UpcomingInvoice(sub *models.Subscription) (*models.Invoice, error) {
 	return s.p.UpcomingInvoice(sub)
 
+}
+
+func ProductPrice(ps []*models.Product, priceID string) (total int64) {
+	for _, p := range ps {
+		for _, price := range p.Prices {
+			if price.ID == priceID {
+				total = price.UnitAmount
+				return
+			}
+		}
+	}
+	return
 }

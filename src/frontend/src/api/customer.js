@@ -11,10 +11,13 @@ export default {
   update (customer) {
     return api.patch('customer', customer)
   },
-  listPaymentMethods (id, resetCache) {
+  customerPaymentMethods (id, resetCache) {
     return api.get('customers/' + id + '/payment-methods', { resetCache })
   },
   customerSubscription (id) {
     return api.get('customers/' + id + '/subscription')
+  },
+  customerInvoices (id) {
+    return api.get('customers/' + id + '/invoices')
   }
 }

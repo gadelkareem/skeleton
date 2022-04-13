@@ -43,7 +43,7 @@ export default {
     options.sortBy = Array.isArray(options.sortBy) ? options.sortBy : [options.sortBy]
     options.sortDesc = Array.isArray(options.sortDesc) ? options.sortDesc : [options.sortDesc]
     for (const i in options.sortBy) {
-      if (options.sortBy[i]) {
+      if (options.sortBy[i] && Object.prototype.toString.call(options.sortBy[i]) === '[object String]') {
         sort += options.sortDesc[i] ? '-' : ''
         sort += options.sortBy[i]
       }

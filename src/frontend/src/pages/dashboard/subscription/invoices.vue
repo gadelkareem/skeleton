@@ -4,46 +4,56 @@
     tag="section"
   >
     <v-row justify="center">
-      <material-card
-        class="pa-6"
-        min-width="100%"
+      <paginator
+        ref="paginator"
+        :headers="headers"
+        :model="`customers/${user.customer_id}/invoices`"
+        :show-search="false"
+        icon="mdi-file-document-outline"
+        title="Invoices"
       >
-        <template v-slot:heading>
-          <div class="display-2 font-weight-light">
-            Credit Card
-          </div>
-          <div class="subtitle-1 font-weight-light">
-            Add your credit card
-          </div>
+        <template #item.created="{item}">
+          {{ (new Date(item.created*1000)).toLocaleDateString() }}
         </template>
-
-        <section
-          id="pricing"
-          class="space-top"
-        >
-          <payment-card />
-        </section>
-      </material-card>
+        <template #item.total="{item}">
+          {{ formatMoney(Math.abs(item.total/100)) }}
+        </template>
+        <template #item.invoice_pdf="{item}">
+          <a v-if="item.status !== 'draft'" :href="item.invoice_pdf">
+            Download
+          </a>
+        </template>
+      </paginator>
     </v-row>
   </v-container>
 </template>
 
 <script>
-// import MaterialCard from '@@/components/base/MaterialCard'
-// import PaymentCard from '@@/components/payment/PaymentCard'
+import Paginator from '@@/components/helpers/Paginator'
 
 export default {
-  // components: { PaymentCard, MaterialCard },
+  components: { Paginator },
   layout: 'Dashboard',
+  data () {
+    return {
+      headers: [
+        { text: 'Date', value: 'created', sortable: false },
+        // { text: 'ID', align: 'start', value: 'id', sortable: false },
+        { text: 'Status', value: 'status', sortable: false },
+        { text: 'Amount', value: 'total', sortable: false },
+        { text: 'Download', value: 'invoice_pdf', sortable: false }
+      ]
+    }
+  },
 
   computed: {
-
+    user () {
+      return this.$store.getters['user/user']
+    }
   },
   mounted () {
-    this.$store.dispatch('page/title', 'Plans')
-  },
-  methods: {
-
+    this.$store.dispatch('page/title', 'Invoices')
+    // this.listInvoices()
   }
 }
 </script>

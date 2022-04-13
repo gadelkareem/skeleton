@@ -121,7 +121,7 @@ export default {
     },
     listPaymentMethods (resetCache) {
       this.$store.dispatch('loading/start')
-      CustomerAPI.listPaymentMethods(this.user.customer_id, !!resetCache)
+      CustomerAPI.customerPaymentMethods(this.user.customer_id, !!resetCache)
         .then((r) => {
           this.paymentMethods = r.data
           for (const pm of this.paymentMethods) {
@@ -136,7 +136,10 @@ export default {
           return r
         })
         .catch((err) => {
-          this.updateAlert({ errors: this.parseError(err) })
+          err = this.parseError(err)
+          if (err[0].status !== '404') {
+            this.updateAlert({ errors: err })
+          }
         })
         .finally(() => {
           this.$store.dispatch('loading/finish')

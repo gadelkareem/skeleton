@@ -66,6 +66,8 @@ func (c *dev) newUser(username, pass string) {
 		}
 		return
 	}
+	u, err = c.s.FindUser(&models.User{Username: username}, false)
+	h.PanicOnError(err)
 
 	u.Activate()
 	u.VerifyMobile()

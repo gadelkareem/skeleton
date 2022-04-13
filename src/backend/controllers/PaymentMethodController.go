@@ -27,12 +27,12 @@ func (c *PaymentMethodController) CreatePaymentMethod() {
 	r := new(models.PaymentMethod)
 	c.parseRequest(r)
 	c.validate(r)
-	pm, err := c.C.PaymentService.AttachPaymentMethod(c.user.CustomerID, r)
+	_, err := c.C.PaymentService.AttachPaymentMethod(c.user.CustomerID, r)
 	c.handleError(err)
 
 	go c.auditLog(models.Log{Action: "CreatePaymentMethod"})
 
-	c.json(pm)
+	c.SendStatus(http.StatusCreated)
 }
 
 func (c *PaymentMethodController) AssertCustomerHasPaymentMethod(customerID string, paymentMethodID string) {

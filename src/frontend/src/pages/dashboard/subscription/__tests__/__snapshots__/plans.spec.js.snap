@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`plans.vue should match snapshot 1`] = `
+<section class="container container--fluid" id="create-subscription"><span> <!----> <!----></span> <span style="display: none;"><h3><span class="step__number"></span>
+  Select A Plan
+  </h3>
+  <div class="v-item-group theme--light">
+    <div class="container">
+      <div class="row"></div>
+    </div>
+  </div>
+  <!---->
+  </span>
+  <!---->
+  <!---->
+  <div class="spacer" style="margin-top: 200px;"></div>
+  <!---->
+</section>
+`;

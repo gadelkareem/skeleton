@@ -46,7 +46,7 @@ func TestUserController_SignUp(t *testing.T) {
 	tests.AssertValidationError(t, w.Body, "Email.Unique", "Email already exists in our system.")
 
 	tests.CheckEmailRetry(t, sub)
-
+	assert.NotEmpty(t, u.CustomerID)
 }
 
 func TestUserController_VerifyEmail(t *testing.T) {
@@ -477,11 +477,7 @@ func TestUserController_ReadNotification(t *testing.T) {
 	t.Parallel()
 
 	// add notification
-	u, tk := tests.UserWithToken(true)
-	r := models.Notification{CreatedAt: time.Now().UnixNano(), Message: gofakeit.Sentence(6)}
-	r.ID = h.Md5(fmt.Sprintf("%s%d", r.Message, r.CreatedAt))
-	u.Notifications = append(u.Notifications, r)
-	tests.SaveUser(t, u)
+	u, tk, r := addUserNotification(t)
 
 	tests.ApiRequest(&tests.Request{T: t,
 		Method:    http.MethodPatch,
@@ -490,11 +486,23 @@ func TestUserController_ReadNotification(t *testing.T) {
 		AuthToken: tk,
 		Status:    http.StatusOK})
 	u = tests.RefreshUser(t, u, true)
-
+	found := false
 	for _, n := range u.Notifications {
 		if n.Message == r.Message {
 			assert.NotEmpty(t, n.ReadReceiptAt)
+			found = true
+			break
 		}
 	}
+	assert.True(t, found)
 
+}
+
+func addUserNotification(t *testing.T) (u *models.User, tk string, r models.Notification) {
+	u, tk = tests.UserWithToken(true)
+	r = models.Notification{CreatedAt: time.Now().UnixNano(), Message: gofakeit.Sentence(6)}
+	r.ID = h.Md5(fmt.Sprintf("%s%d", r.Message, r.CreatedAt))
+	u.Notifications = append(u.Notifications, &r)
+	tests.SaveUser(t, u)
+	return
 }

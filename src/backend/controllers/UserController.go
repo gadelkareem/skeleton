@@ -168,6 +168,7 @@ func (c *UserController) RecoveryQuestions() {
 	c.SendStatus(http.StatusOK)
 }
 
+//@todo should get
 // @router /:id/notifications [patch]
 func (c *UserController) ReadNotification() {
 	r := new(models.Notification)

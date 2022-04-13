@@ -100,6 +100,7 @@ export default {
       this.$store.dispatch('loading/start')
       ProductAPI.list()
         .then((r) => {
+          console.log(r)
           this.tiers = this.formatTiers(r.data)
           this.$nextTick(() => {
             this.setPlan(this.$route.query.plan)
@@ -111,6 +112,9 @@ export default {
         .finally(() => {
           this.$store.dispatch('loading/finish')
         })
+    },
+    updateAlert (v) {
+      this.$emit('updateAlert', v)
     }
   }
 }

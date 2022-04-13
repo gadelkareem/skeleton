@@ -83,6 +83,7 @@ func (c *Container) initCommands() {
 }
 
 func (c *Container) InitTest() {
+	c.initQue()
 	c.commonInit()
 }
 

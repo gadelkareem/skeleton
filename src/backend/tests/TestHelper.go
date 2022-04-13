@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
+	"github.com/gadelkareem/cachita"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -25,7 +26,6 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/brianvoe/gofakeit/v6"
-	"github.com/gadelkareem/cachita"
 	h "github.com/gadelkareem/go-helpers"
 	"github.com/google/jsonapi"
 	"github.com/stretchr/testify/assert"
@@ -68,7 +68,6 @@ func initCacheService(c *di.Container) {
 }
 
 func FailOnErr(t *testing.T, err error) {
-	assert.Empty(t, err)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -165,6 +164,9 @@ func User(active bool) *models.User {
 	}
 	u.MakeNew()
 	err := C.UserService.Save(u)
+	if err == internal.ErrUsernameExists || err == internal.ErrEmailExists {
+		return User(active)
+	}
 	h.PanicOnError(err)
 
 	u.Password = pass
@@ -197,6 +199,12 @@ func ReadToken(t *testing.T, b []byte) *models.AuthToken {
 	FailOnErr(t, err)
 	assert.NotEmpty(t, tk.Token)
 	return tk
+}
+
+func ReadModel(t *testing.T, b []byte, i interface{}) {
+	err := jsonapi.UnmarshalPayload(bytes.NewBuffer(b), i)
+	FailOnErr(t, err)
+	return
 }
 
 func Login(t *testing.T, username, password string) *httptest.ResponseRecorder {
@@ -234,4 +242,9 @@ func SaveUser(t *testing.T, u *models.User) {
 	err := C.UserService.Save(u)
 	FailOnErr(t, err)
 	C.CacheService.InvalidateModel(u)
+}
+
+func WaitForCustomerCache(id string) {
+	time.Sleep(time.Millisecond * 500)
+	C.PaymentService.InvalidateCustomer(id)
 }

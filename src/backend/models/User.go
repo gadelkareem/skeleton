@@ -45,7 +45,7 @@ type (
 		SocialLogin                 bool              `pg:"social_login" jsonapi:"attr,social_login" fake:"skip"`
 		Language                    string            `valid:"MaxSize(100);Alpha" pg:"language" jsonapi:"attr,language" fake:"{regex:[A-Z]{2}}"`
 		Address                     Address           `pg:"address" jsonapi:"attr,address"`
-		Notifications               []Notification    `pg:"notifications" jsonapi:"attr,notifications" fakesize:"10"`
+		Notifications               []*Notification   `pg:"notifications" jsonapi:"relation,notifications" fakesize:"10" json:"notifications"`
 		AuthenticatorEnabled        bool              `pg:"authenticator_enabled" jsonapi:"attr,authenticator_enabled" json:"enabled" fake:"skip"`
 		AuthenticatorSecret         string            `pg:"authenticator_secret" json:"-" fake:"skip"`
 		Country                     string            `valid:"MaxSize(100)" pg:"country" jsonapi:"attr,country" fake:"??"`
@@ -225,7 +225,7 @@ func (m *User) AddNotification(msg string, u string) {
 		}
 	}
 	nt.ID = h.Md5(fmt.Sprintf("%s%d", nt.Message, nt.CreatedAt))
-	m.Notifications = append(m.Notifications, nt)
+	m.Notifications = append(m.Notifications, &nt)
 	return
 }
 
@@ -240,7 +240,7 @@ func (m *User) ReadNotification(n *Notification) {
 }
 
 func (m *User) CleanNotifications() {
-	var ns []Notification
+	var ns []*Notification
 	if len(m.Notifications) < 5 {
 		return
 	}

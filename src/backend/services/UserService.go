@@ -126,7 +126,7 @@ func (s *UserService) MakeAdmin(username string) error {
 		return err
 	}
 	u.MakeAdmin()
-	return s.Save(u)
+	return s.Save(u, "roles")
 }
 
 func (s *UserService) Authenticate(username, password string) (m *models.User, err error) {
@@ -136,7 +136,7 @@ func (s *UserService) Authenticate(username, password string) (m *models.User, e
 
 func (s *UserService) UpdateLoginAt(m *models.User) error {
 	m.LastLoginAt = time.Now()
-	return s.Save(m)
+	return s.Save(m, "last_login_at")
 }
 
 func (s *UserService) SignUp(m *models.User) (err error) {
@@ -154,7 +154,7 @@ func (s *UserService) SignUp(m *models.User) (err error) {
 	m.GenerateEmailVerificationHash()
 	m.SetDefaultAvatar()
 	m.AddNotification("Welcome to Skeleton!", "/dashboard/home/")
-	err = s.Save(m)
+	err = s.Save(m, "password", "email_verify_hash", "avatar", "notifications")
 	if err != nil {
 		switch err.Error() {
 		case internal.ErrEmailExists.Error():
@@ -205,7 +205,7 @@ func (s *UserService) CreateOrUpdateCustomer(id int64) (err error) {
 		return fmt.Errorf("error getting payment customer ID %v", err)
 	}
 	m.CustomerID = cus.ID
-	err = s.Save(m)
+	err = s.Save(m, "customer_id")
 	if err != nil {
 		return fmt.Errorf("error saving user %v", err)
 	}
@@ -223,6 +223,7 @@ func (s *UserService) SignUpSocial(m *models.User) (err error) {
 	m.SetDefaultAvatar()
 	m.SocialLogin = true
 	m.AddNotification("Welcome to Skeleton!", "/dashboard/home/")
+	err = s.Save(m, "password", "avatar", "notifications", "social_login", "email_verify_hash", "active")
 	err = s.Save(m)
 	if err != nil {
 		switch err.Error() {
@@ -264,7 +265,7 @@ func (s *UserService) VerifyEmail(email, verificationHash string) error {
 	}
 
 	m.Activate()
-	err = s.Save(m)
+	err = s.Save(m, "active", "email_verify_hash")
 	if err != nil {
 		return err
 	}
@@ -286,7 +287,7 @@ func (s *UserService) SendVerifySMS(m *models.User) (err error) {
 	}
 	m.GenerateVerifyMobileCode()
 	m.AddNotification("Verify your mobile", "/dashboard/account/verify-mobile/")
-	err = s.Save(m)
+	err = s.Save(m, "mobile_verify_code", "mobile_verify_created_at", "notifications")
 	if err != nil {
 		return
 	}
@@ -307,7 +308,7 @@ func (s *UserService) VerifyMobile(code string, m *models.User) (err error) {
 		return internal.ErrInvalidSMSCode
 	}
 	m.VerifyMobile()
-	err = s.Save(m)
+	err = s.Save(m, "mobile_verified", "mobile_verify_code", "mobile_verify_created_at")
 
 	err1 := s.EnqueueCreateOrUpdateCustomer(m.ID)
 	if err1 != nil {
@@ -339,7 +340,7 @@ func (s *UserService) ForgotPassword(email, username string) (err error) {
 	}
 
 	m.GenerateForgotPasswordHash()
-	err = s.Save(m)
+	err = s.Save(m, "forgot_password_hash", "forgot_password_hash_created_at")
 	if err != nil {
 		return err
 	}
@@ -363,6 +364,7 @@ func (s *UserService) ResetPassword(email, forgotPasswordHash, pass string) erro
 		return internal.ErrInvalidResetPassHash
 	}
 	m.ForgotPasswordHash = ""
+	m.ForgotPasswordHashCreatedAt = time.Time{}
 	m.Password = pass
 	err = s.r.ValidateUser(m)
 	if err != nil {
@@ -370,7 +372,7 @@ func (s *UserService) ResetPassword(email, forgotPasswordHash, pass string) erro
 	}
 	m.HashPass()
 
-	err = s.Save(m)
+	err = s.Save(m, "password_hash", "forgot_password_hash", "forgot_password_hash_created_at")
 	if err != nil {
 		return err
 	}
@@ -394,7 +396,7 @@ func (s *UserService) UpdatePassword(u *models.User, oldPass, pass string) error
 	}
 	m.HashPass()
 
-	err = s.Save(m)
+	err = s.Save(m, "password_hash")
 	if err != nil {
 		return err
 	}
@@ -500,14 +502,14 @@ func (s *UserService) SaveRecoveryQuestions(m *models.User, r *models.RecoveryQu
 		return err
 	}
 
-	return s.Save(m)
+	return s.Save(m, "recovery_questions_set", "recovery_questions")
 }
 
 func (s *UserService) ReadNotification(m *models.User, r *models.Notification) error {
 	m.ReadNotification(r)
 	m.CleanNotifications()
 
-	return s.Save(m)
+	return s.Save(m, "notifications")
 }
 
 func (s *UserService) DisableMFA(r *models.DisableMFA) error {
@@ -522,7 +524,7 @@ func (s *UserService) DisableMFA(r *models.DisableMFA) error {
 	u.DisableAuthenticator()
 	u.UnVerifyMobile()
 
-	return s.Save(u)
+	return s.Save(u, "authenticator_enabled", "mobile_verified", "authenticator_secret")
 }
 
 func (s *UserService) validateAndFind(m *models.User, checkActive bool) (u *models.User, err error) {

@@ -1,18 +1,18 @@
 <template>
   <material-card
-    icon="mdi-account-group"
+    :icon="icon"
     :title="title"
     class="px-5 py-3"
   >
-    <v-card-title>
+    <v-card-title v-if="showSearch">
       <v-spacer />
       <v-text-field
         v-model="filter"
         append-icon="mdi-magnify"
+        clearable
+        hide-details
         label="Search"
         single-line
-        hide-details
-        clearable
         @change="search"
         @click:clear="clear"
       />
@@ -23,9 +23,9 @@
     <v-data-table
       :headers="headers"
       :items="items"
+      :loading="$store.state.loading.status"
       :options.sync="options"
       :server-items-length="total"
-      :loading="$store.state.loading.status"
       @click:row="$emit('rowClicked', $event)"
     >
       <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
@@ -50,6 +50,14 @@ export default {
     model: {
       type: String,
       default: ''
+    },
+    icon: {
+      type: String,
+      default: 'mdi-account-group'
+    },
+    showSearch: {
+      type: Boolean,
+      default: true
     },
     headers: {
       type: Array,
@@ -106,6 +114,7 @@ export default {
       this.$store.dispatch('loading/start')
       Api.fetch(this.model, query)
         .then((r) => {
+          // console.log(r)
           this.items = r.data
           if (r.meta.page) {
             this.total = r.meta.page.total || 0

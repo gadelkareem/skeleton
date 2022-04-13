@@ -22,9 +22,10 @@ type (
 		CreatePaymentMethod(*models.PaymentMethod) (*models.PaymentMethod, error)
 		PaymentMethod(string) (*models.PaymentMethod, error)
 		UpdateSubscription(*models.Subscription) (*models.Subscription, error)
+		ListInvoices(string) ([]*models.Invoice, error)
 	}
 	PaymentService interface {
 		UpdateDefaultPaymentMethod(string, string, string) error
-		InvalidateCacheModel(models.BaseInterface, string)
+		InvalidateCacheModel(models.BaseInterface)
 	}
 )

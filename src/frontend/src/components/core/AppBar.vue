@@ -79,11 +79,11 @@
           v-on="on"
         >
           <v-badge
-            color="red"
-            overlap
-            bordered
             :content="unreadNotifications"
             :value="unreadNotifications"
+            bordered
+            color="red"
+            overlap
           >
             <!--            <template v-slot:badge>-->
             <!--              <span>{{ notifications.length }}</span>-->
@@ -146,7 +146,7 @@ export default {
       return this.$store.getters['user/user']
     },
     notifications () {
-      let n = this.user.notifications || []
+      let n = this.user.notifications.data || []
       n = n.sort((a, b) => (a.created_at > b.created_at) ? -1 : ((b.created_at > a.created_at) ? 1 : 0))
       return n || []
     },

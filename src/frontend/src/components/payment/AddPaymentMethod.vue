@@ -181,11 +181,9 @@ export default {
         })
           .then((r) => {
             this.success = true
-            const id = r.data.id
-            this.$emit('setPaymentMethodID', id)
-            this.$emit('listPaymentMethods', true)
             this.$refs.form.reset()
             this.card.clear()
+            this.$emit('listPaymentMethods', true)
             this.dialog = false
           })
           .catch((err) => {
@@ -214,7 +212,7 @@ export default {
       //     const id = r.paymentIntent.payment_method
       //     this.$emit('setPaymentMethodID', id)
       //     this.$emit('addConfirmedPaymentMethods', id)
-      //     this.$emit('listPaymentMethods', true)
+      //     this.$emit('customerPaymentMethods', true)
       //     this.$refs.form.reset()
       //     this.card.clear()
       //   }

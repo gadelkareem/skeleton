@@ -1,13 +1,15 @@
 package controllers
 
+import "backend/kernel"
+
 type ProductController struct {
 	ApiController
 }
 
 // @router / [get]
 func (c *ProductController) GetProducts() {
-	ms, err := c.C.PaymentService.Products()
+	p, err := c.C.PaymentService.PaginateProducts(c.paginator(kernel.ListLimit))
 	c.handleError(err)
 
-	c.json(ms)
+	c.jsonMany(p)
 }

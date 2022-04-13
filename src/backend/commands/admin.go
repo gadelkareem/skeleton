@@ -19,9 +19,6 @@ func NewAdmin(s *services.UserService) kernel.Command {
 
 func (c *admin) Run(args []string) {
 	if len(args) > 1 {
-		if args[0] == "make-admin" {
-			c.makeAdmin(args[1])
-		}
 		switch args[0] {
 		case "make-admin":
 			c.makeAdmin(args[1])
@@ -45,7 +42,7 @@ func (c *admin) activateUser(username string) {
 	u, err := c.s.FindUser(&models.User{Username: username}, true)
 	h.PanicOnError(err)
 	u.Activate()
-	err = c.s.Save(u)
+	err = c.s.Save(u, "active", "email_verify_hash")
 	h.PanicOnError(err)
 	fmt.Printf("User %s is now an active\n", username)
 }

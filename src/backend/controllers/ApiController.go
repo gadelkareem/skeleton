@@ -99,6 +99,7 @@ func (c *ApiController) jsonMany(p *paginator.Paginator) {
 	pl, err := jsonapi.Marshal(p.Models)
 	c.handleError(err)
 	py := pl.(*jsonapi.ManyPayload)
+	p.Optimize()
 	py.Links = p.Links()
 	py.Meta = p.Meta()
 
@@ -193,8 +194,8 @@ func (c *ApiController) auditLog(l models.Log) {
 	c.C.AuditLogService.AddAuditLog(l)
 }
 
-func (c *ApiController) paginator(size int) *paginator.Paginator {
-	page := map[string]int{"size": size, "after": 1}
+func (c *ApiController) paginator(limit int) *paginator.Paginator {
+	page := map[string]int{"size": limit, "after": 1}
 	err := c.Ctx.Input.Bind(&page, "page")
 	c.logOnError(err)
 	return paginator.NewPaginator(page, c.readString("sort"), c.readString("filter"), c.Ctx.Input.URI())

@@ -25,12 +25,12 @@ type (
 		Name        string   `json:"name"  jsonapi:"attr,name"`
 		Description string   `json:"description" jsonapi:"attr,description"`
 		Subheader   string   `json:"subheader" jsonapi:"attr,subheader"`
-		Prices      []*Price `jsonapi:"attr,prices"`
+		Prices      []*Price `json:"prices" jsonapi:"relation,prices"`
 	}
 	Price struct {
-		ID         string          `json:"id" jsonapi:"primary,prices"`
-		Recurring  *PriceRecurring `json:"recurring" jsonapi:"attr,recurring"`
-		UnitAmount int64           `json:"unit_amount" jsonapi:"attr,unit_amount"`
+		ID         string         `json:"id" jsonapi:"primary,prices"`
+		Recurring  PriceRecurring `json:"recurring" jsonapi:"attr,recurring"`
+		UnitAmount int64          `json:"unit_amount" jsonapi:"attr,unit_amount"`
 	}
 	PriceRecurring struct {
 		Interval        string `json:"interval" jsonapi:"attr,interval"`
@@ -45,7 +45,7 @@ type (
 		ItemID                    string             `json:"item_id" jsonapi:"attr,item_id"`
 		CustomerID                string             `json:"customer_id" jsonapi:"attr,customer_id" valid:"Required;MaxSize(100)"`
 		CreatePaymentIntent       bool               `json:"create_payment_intent" jsonapi:"attr,create_payment_intent"`
-		PaymentMethodId           string             `json:"payment_method_id" jsonapi:"attr,payment_method_id"`
+		PaymentMethodID           string             `json:"payment_method_id" jsonapi:"attr,payment_method_id"`
 		PaymentBehavior           string             `json:"payment_behavior" jsonapi:"attr,payment_behavior"`
 		Status                    SubscriptionStatus `json:"status" jsonapi:"attr,status"`
 	}
@@ -59,10 +59,10 @@ type (
 	}
 	PaymentMethod struct {
 		Base
-		ID   string             `json:"id" jsonapi:"primary,payment-methods" valid:"Required;MaxSize(100)"`
+		ID   string             `json:"id" jsonapi:"primary,payment-methods" valid:"Required;MaxSize(100)" fake:"???????????"`
 		Card *PaymentMethodCard `json:"card" jsonapi:"attr,card" valid:"Required"`
 		// Ideal            *PaymentMethodIdeal            `json:"ideal"`
-		Type           string          `json:"type" jsonapi:"attr,type"`
+		Type           string          `json:"type" jsonapi:"attr,type" fake:"card"`
 		IsDefault      bool            `json:"is_default" jsonapi:"attr,is_default"`
 		BillingDetails *BillingDetails `json:"billing_details" jsonapi:"attr,billing_details"`
 	}
@@ -70,24 +70,28 @@ type (
 		ID string `json:"id" jsonapi:"primary,tokens"`
 	}
 	PaymentMethodCard struct {
-		Brand string `json:"brand" jsonapi:"attr,brand"`
-		Token string `json:"token" jsonapi:"attr,token"`
+		Brand string `json:"brand" jsonapi:"attr,brand" fake:"{creditcardtype}"`
+		Token string `json:"token" jsonapi:"attr,token" fake:"???????????????????????????"`
 		// Checks            *PaymentMethodCardChecks            `json:"checks"`
-		ExpMonth    uint64 `json:"exp_month"`
-		ExpYear     uint64 `json:"exp_year"`
-		Fingerprint string `json:"fingerprint"`
+		ExpMonth    uint64 `json:"exp_month" fake:"{number:1,12}" jsonapi:"attr,exp_month"`
+		ExpYear     uint64 `json:"exp_year" fake:"{number:2023,2030}" jsonapi:"attr,exp_year"`
+		Fingerprint string `json:"fingerprint" fake:"???????????????????????????" jsonapi:"attr,fingerprint"`
 		// Funding           CardFunding                         `json:"funding"`
-		Last4 string `json:"last4"`
+		Last4 string `json:"last4"  fake:"####" jsonapi:"attr,last4"`
 		// Networks          *PaymentMethodCardNetworks          `json:"networks"`
 		// ThreeDSecureUsage *PaymentMethodCardThreeDSecureUsage `json:"three_d_secure_usage"`
 		// Wallet            *PaymentMethodCardWallet            `json:"wallet"`
 	}
 	BillingDetails struct {
-		Name string `json:"name" jsonapi:"attr,name"`
+		Name string `json:"name" jsonapi:"attr,name" fake:"{firstname} {lastname}"`
 	}
 	Invoice struct {
-		ID    string `json:"id" jsonapi:"primary,invoices"`
-		Total int64  `json:"total" jsonapi:"attr,total"`
+		ID          string `json:"id" jsonapi:"primary,invoices"`
+		Total       int64  `json:"total" jsonapi:"attr,total"`
+		InvoicePDF  string `json:"invoice_pdf" jsonapi:"attr,invoice_pdf"`
+		Description string `json:"description" jsonapi:"attr,description"`
+		Status      string `json:"status" jsonapi:"attr,status"`
+		Created     int64  `json:"created" jsonapi:"attr,created"`
 	}
 )
 

@@ -11,9 +11,9 @@
             <v-col
               v-for="(tier, index) in tiers"
               :key="index"
-              md="4"
-              sm="tier.title === 'enterpris' ? 12 : 4"
               class="px-5"
+              md="4"
+              sm="tier.title === 'enterprise' ? 12 : 4"
             >
               <pricing-card
                 :card="tier"
@@ -26,8 +26,8 @@
   </v-container>
 </template>
 
-<style scoped lang="scss">
-@import './pricing-style';
+<style lang="sass" scoped>
+@import './pricing-style'
 </style>
 
 <script>
@@ -51,6 +51,7 @@ export default {
       this.$store.dispatch('loading/start')
       ProductAPI.list()
         .then((r) => {
+          console.log(r)
           this.tiers = this.formatTiers(r.data)
         })
         .catch((err) => {

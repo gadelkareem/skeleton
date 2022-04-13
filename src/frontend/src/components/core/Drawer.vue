@@ -131,6 +131,10 @@ export default {
           {
             title: 'Payment Methods',
             to: '/dashboard/subscription/payment-methods/'
+          },
+          {
+            title: 'Invoices',
+            to: '/dashboard/subscription/invoices/'
           }
         ]
       },

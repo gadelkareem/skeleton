@@ -42,7 +42,7 @@ func (c *Client) ListProducts() (pl []*models.Product, err error) {
 			pr := &models.Price{
 				ID:         sp.ID,
 				UnitAmount: sp.UnitAmount,
-				Recurring: &models.PriceRecurring{
+				Recurring: models.PriceRecurring{
 					Interval:        string(sp.Recurring.Interval),
 					IntervalCount:   sp.Recurring.IntervalCount,
 					TrialPeriodDays: sp.Recurring.TrialPeriodDays,
@@ -58,6 +58,23 @@ func (c *Client) ListProducts() (pl []*models.Product, err error) {
 			Prices:      prl,
 		}
 		pl = append(pl, p)
+	}
+	return
+}
+
+func (c *Client) ListInvoices(customerID string) (il []*models.Invoice, err error) {
+	pi := invoice.List(&stripe.InvoiceListParams{ListParams: stripe.ListParams{Single: true}, Customer: stripe.String(customerID)})
+	sprl := pi.InvoiceList().Data
+	for _, spr := range sprl {
+		p := &models.Invoice{
+			ID:          spr.ID,
+			Total:       spr.Total,
+			InvoicePDF:  spr.InvoicePDF,
+			Status:      string(spr.Status),
+			Created:     spr.Created,
+			Description: spr.Description,
+		}
+		il = append(il, p)
 	}
 	return
 }
@@ -105,8 +122,8 @@ func (c *Client) CreateSubscription(s *models.Subscription) (*models.Subscriptio
 			},
 		},
 	}
-	if s.PaymentMethodId != "" {
-		sps.DefaultPaymentMethod = stripe.String(s.PaymentMethodId)
+	if s.PaymentMethodID != "" {
+		sps.DefaultPaymentMethod = stripe.String(s.PaymentMethodID)
 	} else if s.CreatePaymentIntent {
 		s.PaymentBehavior = "default_incomplete"
 		sps.PaymentBehavior = stripe.String(s.PaymentBehavior)
@@ -117,7 +134,7 @@ func (c *Client) CreateSubscription(s *models.Subscription) (*models.Subscriptio
 		return nil, err
 	}
 	s.ID = ss.ID
-	if s.PaymentMethodId == "" && ss.LatestInvoice != nil && ss.LatestInvoice.PaymentIntent != nil {
+	if s.PaymentMethodID == "" && ss.LatestInvoice != nil && ss.LatestInvoice.PaymentIntent != nil {
 		s.PaymentIntentClientSecret = ss.LatestInvoice.PaymentIntent.ClientSecret
 	}
 	return s, nil
@@ -125,7 +142,7 @@ func (c *Client) CreateSubscription(s *models.Subscription) (*models.Subscriptio
 
 func (c *Client) UpdateSubscription(s *models.Subscription) (*models.Subscription, error) {
 	sps := &stripe.SubscriptionParams{
-		DefaultPaymentMethod: stripe.String(s.PaymentMethodId),
+		DefaultPaymentMethod: stripe.String(s.PaymentMethodID),
 		CancelAtPeriodEnd:    stripe.Bool(false),
 		ProrationBehavior:    stripe.String(string(stripe.SubscriptionProrationBehaviorAlwaysInvoice)),
 	}
@@ -224,7 +241,7 @@ func (c *Client) subscription(id string) (*stripe.Subscription, error) {
 //         PriceID:         i.Price.ID,
 //         ItemID:          i.ID,
 //         CustomerID:      s.Customer.ID,
-//         PaymentMethodId: paymentMethodID,
+//         PaymentMethodID: paymentMethodID,
 //     }, nil
 // }
 
@@ -247,7 +264,7 @@ func (c *Client) Subscriptions(customerID string) (ss []*models.Subscription) {
 			m.ItemID = i.ID
 		}
 		if s.DefaultPaymentMethod != nil {
-			m.PaymentMethodId = s.DefaultPaymentMethod.ID
+			m.PaymentMethodID = s.DefaultPaymentMethod.ID
 		}
 		ss = append(ss, m)
 	}
@@ -287,7 +304,7 @@ func (c *Client) Webhook(m *models.PaymentEvent, s payment_gateway.PaymentServic
 		if err != nil {
 			return nil, err
 		}
-		s.InvalidateCacheModel(&models.Product{ID: p.ID}, "")
+		s.InvalidateCacheModel(&models.Product{ID: p.ID})
 		return nil, err
 	default:
 		return nil, internal.ErrNotImplemented

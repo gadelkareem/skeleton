@@ -30,7 +30,7 @@ func (c *SubscriptionController) CreateSubscription() {
 func (c *SubscriptionController) UpdateSubscription() {
 	r := new(models.Subscription)
 	c.parseRequest(r)
-	c.AssertCustomerHasSubscription(r.CustomerID, r.ID)
+	c.assertCustomerHasSubscription(r.CustomerID, r.ID)
 	c.validate(r)
 
 	s, err := c.C.PaymentService.UpdateSubscription(r)
@@ -43,7 +43,7 @@ func (c *SubscriptionController) UpdateSubscription() {
 
 // @router /:id [delete]
 func (c *SubscriptionController) CancelSubscription(id string) {
-	c.AssertCustomerHasSubscription(c.user.CustomerID, id)
+	c.assertCustomerHasSubscription(c.user.CustomerID, id)
 	err := c.C.PaymentService.CancelSubscription(id, c.user.CustomerID)
 	c.handleError(err)
 
@@ -52,7 +52,7 @@ func (c *SubscriptionController) CancelSubscription(id string) {
 	c.SendStatus(http.StatusNoContent)
 }
 
-func (c *SubscriptionController) AssertCustomerHasSubscription(customerID string, subscriptionID string) {
+func (c *SubscriptionController) assertCustomerHasSubscription(customerID string, subscriptionID string) {
 	c.AssertCustomer(customerID)
 	if !c.C.PaymentService.CustomerHasSubscription(customerID, subscriptionID) {
 		c.handleError(internal.ErrForbidden)

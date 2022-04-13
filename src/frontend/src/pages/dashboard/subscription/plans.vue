@@ -243,7 +243,7 @@ export default {
         })
         .catch((err) => {
           err = this.parseError(err)
-          if (err[0].status !== '404') { this.errors = this.parseError(err) }
+          if (err[0].status !== '404') { this.errors = err }
           this.step = 0
         })
         .finally(() => {

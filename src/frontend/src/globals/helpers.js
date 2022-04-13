@@ -50,13 +50,13 @@ export default {
   formatTiers (products) {
     const tiers = []
     for (const p of products) {
-      const price = p.prices[0].recurring.interval === 'month' ? p.prices[0] : p.prices[1]
+      const price = p.prices.data[0].recurring.interval === 'month' || !p.prices.data[1] ? p.prices.data[0] : p.prices.data[1]
       const t = {
         title: p.name,
         subheader: p.subheader,
         priceID: price.id,
         price: price.unit_amount / 100,
-        prices: p.prices,
+        prices: p.prices.data,
         description: p.description.split(','),
         buttonText: 'Signup',
         buttonVariant: 'outlined',
