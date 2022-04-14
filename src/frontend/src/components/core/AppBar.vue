@@ -79,11 +79,11 @@
           v-on="on"
         >
           <v-badge
-            color="red"
-            overlap
-            bordered
             :content="unreadNotifications"
             :value="unreadNotifications"
+            bordered
+            color="red"
+            overlap
           >
             <!--            <template v-slot:badge>-->
             <!--              <span>{{ notifications.length }}</span>-->
@@ -110,7 +110,7 @@
               <v-list-item-title class="text-wrap" v-text="n.message" />
             </v-list-item-content>
             <v-list-item-icon>
-              <v-icon :color="n.read_receipt ? '#cdcdcd': 'blue'">mdi-circle</v-icon>
+              <v-icon :color="n.read_receipt_at ? '#cdcdcd': 'blue'">mdi-circle</v-icon>
             </v-list-item-icon>
           </v-list-item>
         </div>
@@ -146,12 +146,12 @@ export default {
       return this.$store.getters['user/user']
     },
     notifications () {
-      let n = this.user.notifications || []
+      let n = this.user.notifications.data || []
       n = n.sort((a, b) => (a.created_at > b.created_at) ? -1 : ((b.created_at > a.created_at) ? 1 : 0))
       return n || []
     },
     unreadNotifications () {
-      return this.notifications.filter(n => !n.read_receipt).length
+      return this.notifications.filter(n => !n.read_receipt_at).length
     }
   },
   methods: {
@@ -162,12 +162,11 @@ export default {
       if (n.url.includes('://')) { location.href = n.url } else { this.$router.push(n.url) }
     },
     read (n) {
-      if (n.read_receipt) {
+      if (n.read_receipt_at) {
         return
       }
       UserAPI.readNotification(this.user.id, {
-        id: n.id,
-        read_receipt: true
+        id: n.id
       })
         .then((r) => {
           this.$store.dispatch('user/fetchUser', this.user.id)

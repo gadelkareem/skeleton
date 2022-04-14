@@ -1,0 +1,42 @@
+package controllers
+
+import (
+	"net/http"
+
+	"backend/internal"
+	"backend/models"
+)
+
+type PaymentMethodController struct {
+	ApiController
+}
+
+// @router /:id [delete]
+func (c *PaymentMethodController) DeletePaymentMethod(id string) {
+	c.AssertCustomerHasPaymentMethod(c.user.CustomerID, id)
+	err := c.C.PaymentService.DeletePaymentMethod(id, c.user.CustomerID)
+	c.handleError(err)
+
+	go c.auditLog(models.Log{Action: "DeletePaymentMethod"})
+
+	c.SendStatus(http.StatusNoContent)
+}
+
+// @router / [post]
+func (c *PaymentMethodController) CreatePaymentMethod() {
+	r := new(models.PaymentMethod)
+	c.parseRequest(r)
+	c.validate(r)
+	_, err := c.C.PaymentService.AttachPaymentMethod(c.user.CustomerID, r)
+	c.handleError(err)
+
+	go c.auditLog(models.Log{Action: "CreatePaymentMethod"})
+
+	c.SendStatus(http.StatusCreated)
+}
+
+func (c *PaymentMethodController) AssertCustomerHasPaymentMethod(customerID string, paymentMethodID string) {
+	if !c.C.PaymentService.CustomerHasPaymentMethod(customerID, paymentMethodID) {
+		c.handleError(internal.ErrForbidden)
+	}
+}

@@ -21,7 +21,7 @@
           :errors="errors"
           :success="success"
           :info="info"
-          success-text="Successful!"
+          success-txt="Successful!"
         />
         <v-form
           ref="form"

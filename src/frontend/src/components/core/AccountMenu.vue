@@ -4,11 +4,14 @@
       <v-btn
         icon
         tile
+        elevation="3"
+        style="background-color: transparent !important"
+        width="40"
+        height="40"
         v-on="on"
       >
         <v-avatar
           size="40"
-          class="elevation-3"
           color="#013163"
           tile
         >

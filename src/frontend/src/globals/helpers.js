@@ -46,5 +46,34 @@ export default {
   },
   eraseCookie (name) {
     document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+  },
+  formatTiers (products) {
+    const tiers = []
+    for (const p of products) {
+      const price = p.prices.data[0].recurring.interval === 'month' || !p.prices.data[1] ? p.prices.data[0] : p.prices.data[1]
+      const t = {
+        title: p.name,
+        subheader: p.subheader,
+        priceID: price.id,
+        price: price.unit_amount / 100,
+        prices: p.prices.data,
+        description: p.description.split(','),
+        buttonText: 'Signup',
+        buttonVariant: 'outlined',
+        disabled: p.subheader !== 'open'
+      }
+      tiers.push(t)
+    }
+    return tiers.sort((a, b) => (a.price > b.price) ? 1 : ((b.price > a.price) ? -1 : 0))
+  },
+  formatMoney (m) {
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'EUR',
+      minimumFractionDigits: 0
+
+    })
+
+    return formatter.format(m)
   }
 }

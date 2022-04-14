@@ -1,22 +1,20 @@
 -- +migrate Up
 
-CREATE TABLE public.audit_log (
-	id bigserial PRIMARY KEY,
-	log JSONB,
-	created_at timestamp WITH time zone,
-	updated_at timestamp WITH time zone
+CREATE TABLE public.audit_log
+(
+    id         bigserial PRIMARY KEY,
+    log        JSONB,
+    created_at timestamp WITH time zone,
+    updated_at timestamp WITH time zone
 );
 
 -- +migrate StatementBegin
-CREATE OR REPLACE FUNCTION jsonb_values (jsonb)
+CREATE
+OR REPLACE FUNCTION jsonb_values (jsonb)
 	RETURNS text
 	AS $func$
-	SELECT
-		string_agg(value, '|')
-	FROM
-		jsonb_each_text($1)
-$func$
-LANGUAGE sql
+SELECT string_agg(value, '|')
+FROM jsonb_each_text($1) $func$ LANGUAGE sql
 IMMUTABLE;
 -- +migrate StatementEnd
 

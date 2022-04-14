@@ -18,7 +18,7 @@
         <alert
           :errors="errors"
           :success="success"
-          success-text="Successful!"
+          success-txt="Successful!"
         />
         <v-row v-if="user.recovery_questions_set" align="center" justify="center" class="mt-5">
           <p class="display-1 ma-10">

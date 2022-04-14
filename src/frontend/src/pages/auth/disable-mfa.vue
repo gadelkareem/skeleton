@@ -25,7 +25,7 @@
         <alert
           :errors="errors"
           :success="success"
-          success-text="2-step verification has been disabled successfully!"
+          success-txt="2-step verification has been disabled successfully!"
         />
         <v-form
           v-if="!showQuestions"

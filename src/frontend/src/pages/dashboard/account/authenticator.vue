@@ -20,7 +20,7 @@
           :errors="errors"
           :success="success"
           :info="info"
-          :success-text="successText"
+          :success-txt="successTxt"
         />
         <v-row v-if="!user.recovery_questions_set" align="center" justify="center" class="mt-5">
           <p class="display-1 ma-10">
@@ -117,7 +117,7 @@ export default {
   data: () => ({
     errors: [],
     success: false,
-    successText: '',
+    successTxt: '',
     info: '',
     code: null,
     img: '',
@@ -148,9 +148,9 @@ export default {
       UserAPI.authenticator(this.user.id, { enable, code: this.code })
         .then(() => {
           this.success = true
-          this.successText = '2-step verification ' + (enable ? 'enabled' : 'disabled') + ' successfully!'
+          this.successTxt = '2-step verification ' + (enable ? 'enabled' : 'disabled') + ' successfully!'
           if (enable) {
-            this.successText += '|Your 2-step seed is: ' + this.seed
+            this.successTxt += '|Your 2-step seed is: ' + this.seed
           }
           this.code = null
           this.$store.dispatch('user/fetchUser', this.user.id)

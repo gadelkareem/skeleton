@@ -137,10 +137,18 @@ exports[`update-profile.vue should match snapshot 1`] = `
               </div>
             </div>
             <div class="col-md-4 col-12">
-              <div class="v-input purple-input theme--light v-text-field">
+              <div class="v-input purple-input theme--light v-text-field v-select">
                 <div class="v-input__control">
-                  <div class="v-input__slot">
-                    <div class="v-text-field__slot"><label for="input-35" class="v-label theme--light" style="left: 0px; position: absolute;">City</label><input id="input-35" type="text"></div>
+                  <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-35" class="v-input__slot">
+                    <div class="v-select__slot"><label for="input-35" class="v-label theme--light" style="left: 0px; position: absolute;">Country</label>
+                      <div class="v-select__selections"><input id="input-35" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                      <div class="v-input__append-inner">
+                        <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                      </div><input type="hidden">
+                    </div>
+                    <div class="v-menu">
+                      <!---->
+                    </div>
                   </div>
                   <div class="v-text-field__details">
                     <div class="v-messages theme--light">
@@ -154,7 +162,7 @@ exports[`update-profile.vue should match snapshot 1`] = `
               <div class="v-input purple-input theme--light v-text-field">
                 <div class="v-input__control">
                   <div class="v-input__slot">
-                    <div class="v-text-field__slot"><label for="input-38" class="v-label theme--light" style="left: 0px; position: absolute;">Postal Code</label><input id="input-38" type="text"></div>
+                    <div class="v-text-field__slot"><label for="input-40" class="v-label theme--light" style="left: 0px; position: absolute;">Postal Code</label><input id="input-40" type="text"></div>
                   </div>
                   <div class="v-text-field__details">
                     <div class="v-messages theme--light">
@@ -167,9 +175,9 @@ exports[`update-profile.vue should match snapshot 1`] = `
             <div class="col-md-4 col-12">
               <div class="v-input theme--light v-text-field v-select">
                 <div class="v-input__control">
-                  <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-41" class="v-input__slot">
-                    <div class="v-select__slot"><label for="input-41" class="v-label theme--light" style="left: 0px; position: absolute;">Language</label>
-                      <div class="v-select__selections"><input id="input-41" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                  <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-43" class="v-input__slot">
+                    <div class="v-select__slot"><label for="input-43" class="v-label theme--light" style="left: 0px; position: absolute;">Language</label>
+                      <div class="v-select__selections"><input id="input-43" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
                       <div class="v-input__append-inner">
                         <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
                       </div><input type="hidden">

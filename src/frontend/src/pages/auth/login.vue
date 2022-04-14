@@ -20,7 +20,7 @@
         <alert
           :errors="errors"
           :success="success"
-          success-text="Successfully logged in!"
+          success-txt="Successfully logged in!"
         />
         <template v-if="!mfa">
           <v-form

@@ -20,7 +20,7 @@
         <alert
           :errors="errors"
           :success="success"
-          success-text="An email with password reset instructions was sent to your email box!"
+          success-txt="An email with password reset instructions was sent to your email box!"
         />
         <v-form
           ref="form"

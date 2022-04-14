@@ -47,7 +47,7 @@
                 >
                   <figure class="img">
                     <img
-                      :src="require('@@/static/screenshots/4.png')"
+                      :src="require('@@/static/screenshots/4.jpg')"
                       alt="img"
                     >
                   </figure>
@@ -79,7 +79,7 @@
               >
                 <figure class="img">
                   <img
-                    :src="require('@@/static/screenshots/1.png')"
+                    :src="require('@@/static/screenshots/1.jpg')"
                     alt="img"
                   >
                 </figure>
@@ -106,6 +106,21 @@
                 <p class="text">
                   JSON Web Tokens (JWT) based authentication. JSON REST API based on jsonapi.org standard. Social login using Facebook, LinkedIn, Google, Github.
                 </p>
+              </u-animate>
+            </div>
+          </v-col>
+          <v-col
+            md="12"
+            class="px-12"
+            cols="12"
+          >
+            <div class="feature-item">
+              <u-animate
+                name="fadeInRight"
+                delay="0.5s"
+                duration="0.6s"
+              >
+                <pricing />
               </u-animate>
             </div>
           </v-col>
@@ -151,14 +166,13 @@
                   class="mx-auto"
                   shaped
                 >
-                  <v-carousel hide-delimiters height="auto">
+                  <v-carousel hide-delimiters height="820" width="1440" cycle>
                     <v-carousel-item
-                      v-for="n in 15"
+                      v-for="n in 21"
                       :key="n"
-                      :src="require(`@@/static/screenshots/${n}.png`)"
+                      :src="require(`@@/static/screenshots/${n}.jpg`)"
                       reverse-transition="fade-transition"
-                      transition="fade-transition"
-                      position="fit"
+                      contain
                     />
                   </v-carousel>
                 </v-card>
@@ -177,11 +191,13 @@
 
 <script>
 import imgAPI from '@@/static/images/imgAPI'
+import Pricing from '@@/components/home/Pricing/Pricing'
 import ScrollWrap from '../ScrollWrap'
 
 export default {
   name: 'MoreFeature',
   components: {
+    Pricing,
     ScrollWrap
   },
   data () {

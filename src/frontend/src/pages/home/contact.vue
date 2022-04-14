@@ -20,7 +20,7 @@
         <alert
           :errors="errors"
           :success="success"
-          success-text="Your Message was successfully sent to us! |We will get back to you ASAP!"
+          success-txt="Your Message was successfully sent to us! |We will get back to you ASAP!"
         />
         <template>
           <v-form

@@ -24,7 +24,7 @@
       v-if="success"
       type="success"
     >
-      <div v-for="s in split(successText)" :key="s">
+      <div v-for="s in split(successTxt)" :key="s">
         {{ s }}
       </div>
     </v-alert>
@@ -48,7 +48,7 @@ export default {
       type: Boolean,
       default: false
     },
-    successText: {
+    successTxt: {
       type: String,
       default: ''
     },

@@ -5,7 +5,7 @@
     :dark="barColor !== 'rgba(228, 226, 226, 1), rgba(255, 255, 255, 0.7)'"
     :right="$vuetify.rtl"
     :src="barImage"
-    mobile-break-point="960"
+    mobile-breakpoint="960"
     app
     width="auto"
   >
@@ -116,6 +116,25 @@ export default {
           {
             title: 'Delete Account',
             to: '/dashboard/account/delete-account/'
+          }
+        ]
+      },
+      {
+        icon: 'mdi-credit-card',
+        title: 'Subscription',
+        group: 'subscription',
+        children: [
+          {
+            title: 'Plans',
+            to: '/dashboard/subscription/plans/'
+          },
+          {
+            title: 'Payment Methods',
+            to: '/dashboard/subscription/payment-methods/'
+          },
+          {
+            title: 'Invoices',
+            to: '/dashboard/subscription/invoices/'
           }
         ]
       },

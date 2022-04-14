@@ -1,11 +1,9 @@
 <template>
   <v-container>
     <h3 class="display-2 text-center mb-4">
-      Pricing and Plan
+      Pricing and Plan <strong>( Demo )</strong>
     </h3>
-    <p class="body-1 text-center mb-4">
-      Curabitur egestas consequat lorem, vel fermentum augue porta id.
-    </p>
+    <p class="body-1 text-center mb-4" />
     <div class="pricing-wrap">
       <v-row justify="center">
         <v-col md="9">
@@ -13,9 +11,9 @@
             <v-col
               v-for="(tier, index) in tiers"
               :key="index"
-              md="4"
-              sm="tier.title === 'enterpris' ? 12 : 4"
               class="px-5"
+              md="4"
+              sm="tier.title === 'enterprise' ? 12 : 4"
             >
               <pricing-card
                 :card="tier"
@@ -28,11 +26,12 @@
   </v-container>
 </template>
 
-<style scoped lang="scss">
-@import './pricing-style';
+<style lang="sass" scoped>
+@import './pricing-style'
 </style>
 
 <script>
+import ProductAPI from '@@/api/product'
 import PricingCard from '../Cards/PricingCard'
 
 export default {
@@ -41,45 +40,26 @@ export default {
   },
   data () {
     return {
-      tiers: [
-        {
-          title: 'Free',
-          price: '0',
-          description: [
-            '10 users included',
-            '2 GB of storage',
-            'Help center access',
-            'Email support'
-          ],
-          buttonText: 'Sign up for free',
-          buttonVariant: 'outlined'
-        },
-        {
-          title: 'Pro',
-          subheader: 'Most popular',
-          price: '15',
-          description: [
-            '20 users included',
-            '10 GB of storage',
-            'Help center access',
-            'Priority email support'
-          ],
-          buttonText: 'Get started',
-          buttonVariant: 'contained'
-        },
-        {
-          title: 'Enterprise',
-          price: '30',
-          description: [
-            '50 users included',
-            '30 GB of storage',
-            'Help center access',
-            'Phone & email support'
-          ],
-          buttonText: 'Contact us',
-          buttonVariant: 'outlined'
-        }
-      ]
+      tiers: []
+    }
+  },
+  mounted () {
+    this.fetchProducts()
+  },
+  methods: {
+    fetchProducts () {
+      this.$store.dispatch('loading/start')
+      ProductAPI.list()
+        .then((r) => {
+          console.log(r)
+          this.tiers = this.formatTiers(r.data)
+        })
+        .catch((err) => {
+          this.errors = this.parseError(err)
+        })
+        .finally(() => {
+          this.$store.dispatch('loading/finish')
+        })
     }
   }
 }

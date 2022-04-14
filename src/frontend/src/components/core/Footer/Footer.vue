@@ -150,11 +150,6 @@ export default {
           'https://github.com/gadelkareem/skeleton',
           'https://gitlab.com/gadelkareem/skeleton'
         ]
-      },
-      {
-        title: 'Legal',
-        description: ['Privacy Policy'],
-        link: ['/legal/privacy-policy/', '/legal/tos/', '/legal/gdpr/', '/legal/cookie_policy/', '/legal/use_policy/']
       }
     ]
   }),

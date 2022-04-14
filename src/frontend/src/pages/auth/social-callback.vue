@@ -16,7 +16,7 @@
         <alert
           :errors="errors"
           :success="success"
-          success-text="You have successfully logged in!"
+          success-txt="You have successfully logged in!"
         />
         <v-alert v-if="!success && !errors" type="info">
           Please wait while logging you into the system...

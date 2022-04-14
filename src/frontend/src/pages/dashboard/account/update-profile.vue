@@ -20,7 +20,7 @@
         <alert
           :errors="errors"
           :success="success"
-          success-text="Successful!"
+          success-txt="Successful!"
         />
         <v-form
           ref="form"
@@ -35,8 +35,8 @@
               >
                 <v-text-field
                   v-model.trim="user.username"
-                  label="User Name"
                   disabled
+                  label="User Name"
                 />
               </v-col>
               <v-col
@@ -44,16 +44,16 @@
                 md="6"
               >
                 <v-text-field
+                  class="purple-input"
+                  disabled
                   label="Password"
                   type="password"
                   value="password"
-                  class="purple-input"
-                  disabled
                 />
                 <v-btn
-                  text
                   color="blue darken-1"
                   small
+                  text
                   to="/dashboard/account/change-password/"
                 >
                   Change password
@@ -66,8 +66,8 @@
                 <v-text-field
                   v-model.trim="user.email"
                   :rules="[$validator.required, $validator.email]"
-                  label="Email Address"
                   class="purple-input"
+                  label="Email Address"
                 />
               </v-col>
               <v-col
@@ -77,15 +77,15 @@
                 <v-text-field
                   ref="mobile"
                   v-model.trim="user.mobile"
-                  label="Mobile"
-                  class="purple-input"
                   :rules="[$validator.mobile]"
+                  class="purple-input"
+                  label="Mobile"
                 />
                 <v-btn
                   v-if="user.mobile && !user.mobile_verified"
-                  text
                   color="blue darken-1"
                   small
+                  text
                   to="/dashboard/account/verify-mobile/"
                 >
                   Verify your mobile number
@@ -99,8 +99,8 @@
                 <v-text-field
                   v-model.trim="user.first_name"
                   :rules="[$validator.name]"
-                  label="First Name"
                   class="purple-input"
+                  label="First Name"
                 />
               </v-col>
 
@@ -111,16 +111,16 @@
                 <v-text-field
                   v-model.trim="user.last_name"
                   :rules="[$validator.name]"
-                  label="Last Name"
                   class="purple-input"
+                  label="Last Name"
                 />
               </v-col>
 
               <v-col cols="12">
                 <v-text-field
                   v-model.trim="user.address.street"
-                  label="Street Address"
                   class="purple-input"
+                  label="Street Address"
                 />
               </v-col>
 
@@ -130,8 +130,8 @@
               >
                 <v-text-field
                   v-model.trim="user.address.city"
-                  label="City"
                   class="purple-input"
+                  label="City"
                 />
               </v-col>
 
@@ -139,10 +139,13 @@
                 cols="12"
                 md="4"
               >
-                <v-text-field
-                  v-model.trim="user.country"
-                  label="City"
+                <v-select
+                  v-model="user.country"
+                  :items="countries"
                   class="purple-input"
+                  item-text="name"
+                  item-value="code"
+                  label="Country"
                 />
               </v-col>
 
@@ -169,14 +172,14 @@
                 />
               </v-col>
               <v-col
-                cols="12"
                 class="text-right"
+                cols="12"
               >
                 <v-btn
-                  color="info"
-                  class="mr-0"
-                  type="submit"
                   :loading="$store.state.loading.status"
+                  class="mr-0"
+                  color="info"
+                  type="submit"
                 >
                   Update Profile
                 </v-btn>
@@ -248,6 +251,9 @@ export default {
       get () {
         return this.$store.getters['user/user']
       }
+    },
+    countries () {
+      return this.initData().countries
     }
   },
   mounted () {
@@ -257,6 +263,9 @@ export default {
     }
   },
   methods: {
+    // sanitizeMobile () {
+    //   this.user.mobile = this.user.mobile.replaceAll(/[^0-9+]/g, '')
+    // },
     submit () {
       if (!this.$refs.form.validate()) {
         return

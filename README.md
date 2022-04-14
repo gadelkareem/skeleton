@@ -75,7 +75,7 @@ docker exec -it skeleton_backend_1 /bin/bash -c "go test -v ./... -count=1 | sor
     - HEROKU_API_KEY: Your free [Heroku API KEY](https://dashboard.heroku.com/account)
     - PROD_CONFIG_SECRET_FILE (optional): Base64 encoded string of the `./src/backend/conf/app.prod.ini.secret` file. Use the [./src/backend/conf/app.dev.ini.secret.example](./src/backend/conf/app.dev.ini.secret.example) as an example. 
     ```bash 
-    echo "$PROD_SECRET_FILE_CONTENTS" | base64
+    cat "$PROD_CONFIG_SECRET_FILE" | base64
     ```
 - [Run Gitlab pipeline](https://docs.gitlab.com/ee/ci/pipelines/#run-a-pipeline-manually).
 - Navigate to [your Heroku apps](https://dashboard.heroku.com/apps) to open your app URL.
@@ -98,6 +98,8 @@ cd src/backend
 go test -v ./... -count=1 | sort -u
 #extra
 go test -v backend/controllers -count=1 -debug=7 -run  TestUserController_VerifyMobile
+#colourfull
+go test -v ./... -count=1 | sed ''/PASS/s//(printf "\033[32mPASS\033[0m")/'' | sed ''/FAIL/s//(printf "\033[31mFAIL\033[0m")/''
 ```
 ## Frontend
 ```bash

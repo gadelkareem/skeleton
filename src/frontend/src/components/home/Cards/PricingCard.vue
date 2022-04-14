@@ -1,13 +1,13 @@
 <template>
   <v-card class="center-box price-card">
     <v-card-title
-      primary-title
       class="price-header justify-center"
+      primary-title
     >
       <h5 class="text-xs-center headline">{{ card.title }}</h5>
-      <div class="small-title text-xs-center body-1"> {{ card.subheader }}</div>
+      <div class="small-title text-xs-center body-1" />
       <v-icon
-        v-if="card.title === 'Pro'"
+        v-if="card.title.includes('Premium')"
         class="icon"
       >
         mdi-star-outline
@@ -16,7 +16,7 @@
     <v-card-text class="pa-4">
       <div class="card-pricing">
         <h2 class="price text-xs-center display-2">
-          $ {{ card.price }}
+          {{ formatMoney(card.price) }}
         </h2>
         <h6 class="title">
           / mo
@@ -34,11 +34,11 @@
     </v-card-text>
     <div class="text-center pa-4">
       <v-btn
+        :disabled="card.disabled"
         :outlined="card.buttonVariant === 'outlined'"
+        :to="`/dashboard/subscription/plans/?plan=`+card.priceID"
         block
         color="primary"
-        :disabled="card.disabled"
-        :to="card.link"
       >
         {{ card.buttonText }}
       </v-btn>
@@ -46,7 +46,7 @@
   </v-card>
 </template>
 
-<style scoped lang="sass">
+<style lang="sass" scoped>
 @import './card-styles'
 </style>
 

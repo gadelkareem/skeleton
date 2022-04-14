@@ -1,498 +1,584 @@
 package services
 
 import (
-    "strings"
-    "time"
+	"fmt"
+	"strings"
+	"time"
 
-    "backend/internal"
-    "backend/kernel"
-    "backend/models"
-    "backend/rbac"
-    "backend/utils/paginator"
-    h "github.com/gadelkareem/go-helpers"
+	"backend/internal"
+	"backend/kernel"
+	"backend/models"
+	"backend/queue"
+	"backend/queue/workers"
+	"backend/rbac"
+	"backend/utils/paginator"
+	"github.com/astaxie/beego/logs"
+	h "github.com/gadelkareem/go-helpers"
 )
 
 type (
-    UserService struct {
-        r   *models.UserRepository
-        es  *EmailService
-        sms *SMSService
-        p   *rbac.RBAC
-        c   *CacheService
-    }
+	UserService struct {
+		r   *models.UserRepository
+		es  *EmailService
+		sms *SMSService
+		p   *rbac.RBAC
+		c   *CacheService
+		py  *PaymentService
+		q   *queue.QueManager
+	}
 )
 
-func NewUserService(r *models.UserRepository, es *EmailService, sms *SMSService, p *rbac.RBAC, c *CacheService) *UserService {
-    return &UserService{r: r, es: es, sms: sms, p: p, c: c}
+func NewUserService(r *models.UserRepository, es *EmailService, sms *SMSService, p *rbac.RBAC, c *CacheService, py *PaymentService, q *queue.QueManager) *UserService {
+	return &UserService{r: r, es: es, sms: sms, p: p, c: c, py: py, q: q}
 }
 
 func (s *UserService) Save(m *models.User, columns ...string) error {
-    err := s.r.Save(m, columns...)
-    if err != nil {
-        return err
-    }
-    go s.c.InvalidateModel(m)
-    return nil
+	err := s.r.Save(m, columns...)
+	if err != nil {
+		return err
+	}
+	go s.c.InvalidateModel(m)
+	return nil
 }
 
 func (s *UserService) getCacheUser(params ...interface{}) (m *models.User, cID string) {
-    m = models.NewEmptyUser()
-    cID, _ = s.c.Get(m, nil, params...)
-    if m == nil || m.ID == 0 {
-        m = nil
-    }
-    return m, cID
+	m = models.NewEmptyUser()
+	cID, _ = s.c.Get(m, nil, params...)
+	if m == nil || m.ID == 0 {
+		m = nil
+	}
+	return m, cID
 }
 
 func (s *UserService) cacheUser(m *models.User, cID string, tags ...string) {
-    go s.c.Put(m, cID, nil, tags...)
+	go s.c.Put(m, cID, nil, tags...)
 }
 
 func (s *UserService) UserById(id int64) (m *models.User, err error) {
-    m, cID := s.getCacheUser(id)
-    if m != nil {
-        return
-    }
+	m, cID := s.getCacheUser(id)
+	if m != nil {
+		return
+	}
 
-    m, err = s.r.FindById(id, true)
-    if err != nil {
-        return
-    }
+	m, err = s.r.FindById(id, true)
+	if err != nil {
+		return
+	}
 
-    go s.cacheUser(m, cID)
+	go s.cacheUser(m, cID)
 
-    return
+	return
 }
 
 func (s *UserService) FindUser(u *models.User, checkActive bool) (m *models.User, err error) {
-    m, cID := s.getCacheUser(u)
-    if m != nil && (!checkActive || m.Active) {
-        return
-    }
+	m, cID := s.getCacheUser(u)
+	if m != nil && (!checkActive || m.Active) {
+		return
+	}
 
-    if u.ID != 0 {
-        m, err = s.r.FindById(u.ID, checkActive)
-    } else if u.Email != "" {
-        m, err = s.r.FindByEmail(u.Email, checkActive)
-    } else if u.Username != "" {
-        m, err = s.r.FindByUsername(u.Username, checkActive)
-    }
+	if u.ID != 0 {
+		m, err = s.r.FindById(u.ID, checkActive)
+	} else if u.Email != "" {
+		m, err = s.r.FindByEmail(u.Email, checkActive)
+	} else if u.Username != "" {
+		m, err = s.r.FindByUsername(u.Username, checkActive)
+	}
 
-    if err != nil {
-        return nil, err
-    }
-    if m == nil {
-        return nil, internal.ErrNotFound
-    }
+	if err != nil {
+		return nil, err
+	}
+	if m == nil {
+		return nil, internal.ErrNotFound
+	}
 
-    go s.cacheUser(m, cID)
+	go s.cacheUser(m, cID)
 
-    return m, nil
+	return m, nil
 }
 
 func (s *UserService) DeleteUser(id int64) error {
-    u, err := s.r.FindById(id, false)
-    if err != nil {
-        return err
-    }
-    u.Delete()
-    return s.Save(u)
+	m, err := s.r.FindById(id, false)
+	if err != nil {
+		return err
+	}
+	// cannot delete user if he has active subscriptions
+	if s.py.CustomerHasActiveSubscriptions(m.CustomerID) {
+		return internal.ErrUserHasActiveSubscriptions
+	}
+
+	m.Delete()
+	err = s.Save(m)
+
+	err1 := s.EnqueueCreateOrUpdateCustomer(m.ID)
+	if err1 != nil {
+		logs.Error(err1)
+	}
+
+	return err
 }
 
 func (s *UserService) MakeAdmin(username string) error {
-    if !kernel.App.IsCLI {
-        return internal.ErrForbidden
-    }
-    u, err := s.FindUser(&models.User{Username: username}, true)
-    if err != nil {
-        return err
-    }
-    u.MakeAdmin()
-    return s.Save(u)
+	if !kernel.App.IsCLI {
+		return internal.ErrForbidden
+	}
+	u, err := s.FindUser(&models.User{Username: username}, true)
+	if err != nil {
+		return err
+	}
+	u.MakeAdmin()
+	return s.Save(u, "roles")
 }
 
 func (s *UserService) Authenticate(username, password string) (m *models.User, err error) {
-    m, err = s.r.CheckPassword(username, password)
-    return m, err
+	m, err = s.r.CheckPassword(username, password)
+	return m, err
 }
 
 func (s *UserService) UpdateLoginAt(m *models.User) error {
-    m.LastLoginAt = time.Now()
-    return s.Save(m)
+	m.LastLoginAt = time.Now()
+	return s.Save(m, "last_login_at")
 }
 
 func (s *UserService) SignUp(m *models.User) (err error) {
-    err = s.r.ValidateUser(m)
-    if err != nil {
-        return
-    }
-    if m.Password == "" {
-        return internal.ValidationError("Password.Required", "Password cannot be empty.")
-    }
-    if h.InArray(m.Username, models.ForbiddenUsernames) {
-        return internal.ValidationError("Username", "Username is not allowed.")
-    }
-    m.HashPass()
-    m.GenerateEmailVerificationHash()
-    m.SetDefaultAvatar()
-    m.AddNotification("Welcome to Skeleton!", "/dashboard/home/")
-    err = s.Save(m)
-    if err != nil {
-        switch err.Error() {
-        case internal.ErrEmailExists.Error():
-            return internal.ValidationError("Email.Unique", "Email already exists in our system.")
-        case internal.ErrUsernameExists.Error():
-            return internal.ValidationError("Username.Unique", "Username already exists in our system.")
-        }
-        return
-    }
-    // send verify email link
-    err = s.es.VerifyUserEmail(m.GetFullName(), m.Email, m.GetEmailVerificationURL())
+	err = s.r.ValidateUser(m)
+	if err != nil {
+		return
+	}
+	if m.Password == "" {
+		return internal.ValidationError("Password.Required", "Password cannot be empty.")
+	}
+	if h.InArray(m.Username, models.ForbiddenUsernames) {
+		return internal.ValidationError("Username", "Username is not allowed.")
+	}
+	m.HashPass()
+	m.GenerateEmailVerificationHash()
+	m.SetDefaultAvatar()
+	m.AddNotification("Welcome to Skeleton!", "/dashboard/home/")
+	err = s.Save(m, "password", "email_verify_hash", "avatar", "notifications")
+	if err != nil {
+		switch err.Error() {
+		case internal.ErrEmailExists.Error():
+			return internal.ValidationError("Email.Unique", "Email already exists in our system.")
+		case internal.ErrUsernameExists.Error():
+			return internal.ValidationError("Username.Unique", "Username already exists in our system.")
+		}
+		return
+	}
+	// send verify email link
+	err = s.es.VerifyUserEmail(m.GetFullName(), m.Email, m.GetEmailVerificationURL())
+	if err != nil {
+		return
+	}
 
-    return
+	err1 := s.EnqueueCreateOrUpdateCustomer(m.ID)
+	if err1 != nil {
+		logs.Error(err1)
+	}
+
+	return
+}
+
+func (s *UserService) EnqueueCreateOrUpdateCustomer(id int64) error {
+	if s.q != nil {
+		return s.q.Enqueue(workers.PaymentType, workers.PaymentReq{
+			Command: workers.CommandCustomerCreateUpdate,
+			UserID:  id,
+		})
+	}
+	return s.CreateOrUpdateCustomer(id)
+}
+
+func (s *UserService) CreateOrUpdateCustomer(id int64) (err error) {
+	m, err := s.r.FindUnfilteredById(id)
+	if err != nil {
+		return
+	}
+	// create payment customer
+	cus := &models.Customer{}
+	if m.CustomerID != "" {
+		cus.ID = m.CustomerID
+		cus, err = s.py.UpdateCustomer(cus, m)
+	} else {
+		cus, err = s.py.CreateCustomer(m)
+	}
+	if err != nil {
+		return fmt.Errorf("error getting payment customer ID %v", err)
+	}
+	m.CustomerID = cus.ID
+	err = s.Save(m, "customer_id")
+	if err != nil {
+		return fmt.Errorf("error saving user %v", err)
+	}
+	return
 }
 
 func (s *UserService) SignUpSocial(m *models.User) (err error) {
-    err = s.r.ValidateUser(m)
-    if err != nil {
-        return
-    }
-    m.Password = h.RandomString(10)
-    m.HashPass()
-    m.Activate()
-    m.SetDefaultAvatar()
-    m.SocialLogin = true
-    m.AddNotification("Welcome to Skeleton!", "/dashboard/home/")
-    err = s.Save(m)
-    if err != nil {
-        switch err.Error() {
-        case internal.ErrEmailExists.Error():
-            return internal.ValidationError("Email.Unique", "Email already exists in our system.")
-        case internal.ErrUsernameExists.Error():
-            return internal.ValidationError("Username.Unique", "Username already exists in our system.")
-        }
-        return
-    }
-    // send welcome email
-    err = s.es.WelcomeEmail(m.GetFullName(), m.Email)
+	err = s.r.ValidateUser(m)
+	if err != nil {
+		return
+	}
+	m.Password = h.RandomString(10)
+	m.HashPass()
+	m.Activate()
+	m.SetDefaultAvatar()
+	m.SocialLogin = true
+	m.AddNotification("Welcome to Skeleton!", "/dashboard/home/")
+	err = s.Save(m, "password", "avatar", "notifications", "social_login", "email_verify_hash", "active")
+	err = s.Save(m)
+	if err != nil {
+		switch err.Error() {
+		case internal.ErrEmailExists.Error():
+			return internal.ValidationError("Email.Unique", "Email already exists in our system.")
+		case internal.ErrUsernameExists.Error():
+			return internal.ValidationError("Username.Unique", "Username already exists in our system.")
+		}
+		return
+	}
+	// send welcome email
+	err = s.es.WelcomeEmail(m.GetFullName(), m.Email)
+	if err != nil {
+		logs.Error(err)
+	}
 
-    return
+	err = s.EnqueueCreateOrUpdateCustomer(m.ID)
+	if err != nil {
+		logs.Error(err)
+	}
+
+	return
 }
 
 func (s *UserService) VerifyEmail(email, verificationHash string) error {
-    m, err := s.FindUser(&models.User{Email: email}, false)
-    if err != nil {
-        if err == internal.ErrNotFound {
-            return internal.ErrInvalidActivationCode
-        }
-        return err
-    }
-    if m.Active {
-        return internal.ErrEmailAlreadyVerified
-    }
+	m, err := s.FindUser(&models.User{Email: email}, false)
+	if err != nil {
+		if err == internal.ErrNotFound {
+			return internal.ErrInvalidActivationCode
+		}
+		return err
+	}
+	if m.Active {
+		return internal.ErrEmailAlreadyVerified
+	}
 
-    if !m.IsValidEmailVerificationHash(verificationHash) {
-        return internal.ErrInvalidActivationCode
-    }
+	if !m.IsValidEmailVerificationHash(verificationHash) {
+		return internal.ErrInvalidActivationCode
+	}
 
-    m.Activate()
-    err = s.Save(m)
-    if err != nil {
-        return err
-    }
+	m.Activate()
+	err = s.Save(m, "active", "email_verify_hash")
+	if err != nil {
+		return err
+	}
 
-    if m.LastLoginAt.IsZero() {
-        // send welcome email
-        err = s.es.WelcomeEmail(m.GetFullName(), m.Email)
-    }
+	if m.LastLoginAt.IsZero() {
+		// send welcome email
+		err = s.es.WelcomeEmail(m.GetFullName(), m.Email)
+	}
 
-    return err
+	return err
 }
 
 func (s *UserService) SendVerifySMS(m *models.User) (err error) {
-    if !m.RecoveryQuestionsSet {
-        return internal.ErrRecoveryQuestionNotSet
-    }
-    if m.Mobile == "" {
-        return internal.ErrMobileRequired
-    }
-    m.GenerateVerifyMobileCode()
-    m.AddNotification("Verify your mobile", "/dashboard/account/verify-mobile/")
-    err = s.Save(m)
-    if err != nil {
-        return
-    }
+	if !m.RecoveryQuestionsSet {
+		return internal.ErrRecoveryQuestionNotSet
+	}
+	if m.Mobile == "" {
+		return internal.ErrMobileRequired
+	}
+	m.GenerateVerifyMobileCode()
+	m.AddNotification("Verify your mobile", "/dashboard/account/verify-mobile/")
+	err = s.Save(m, "mobile_verify_code", "mobile_verify_created_at", "notifications")
+	if err != nil {
+		return
+	}
 
-    err = s.sms.Enqueue(m.Mobile, m.MobileVerifyCode)
+	err = s.sms.Enqueue(m.Mobile, m.MobileVerifyCode)
 
-    return
+	return
 }
 
 func (s *UserService) VerifyMobile(code string, m *models.User) (err error) {
-    if !m.RecoveryQuestionsSet {
-        return internal.ErrRecoveryQuestionNotSet
-    }
-    if m.MobileVerified {
-        return internal.ErrMobileAlreadyVerified
-    }
-    if !m.IsValidMobileCode(code) {
-        return internal.ErrInvalidSMSCode
-    }
-    m.VerifyMobile()
-    err = s.Save(m)
+	if !m.RecoveryQuestionsSet {
+		return internal.ErrRecoveryQuestionNotSet
+	}
+	if m.MobileVerified {
+		return internal.ErrMobileAlreadyVerified
+	}
+	if !m.IsValidMobileCode(code) {
+		return internal.ErrInvalidSMSCode
+	}
+	m.VerifyMobile()
+	err = s.Save(m, "mobile_verified", "mobile_verify_code", "mobile_verify_created_at")
 
-    return
+	err1 := s.EnqueueCreateOrUpdateCustomer(m.ID)
+	if err1 != nil {
+		logs.Error(err1)
+	}
+
+	return
 }
 
 func (s *UserService) ForgotPassword(email, username string) (err error) {
-    m := models.NewEmptyUser()
-    if email != "" {
-        m.Email = email
-    } else if username == "" {
-        return internal.ErrEmailRequired // username and email are empty
-    } else {
-        m.Username = username
-    }
-    m, err = s.FindUser(m, true)
-    if err != nil {
-        return err
-    }
-    if m == nil {
-        return internal.ErrEmailNotExist
-    }
-    // reset pass hash should not be regenerated within 2 hours
-    if m.ForgotPasswordHash != "" && m.UpdatedAt.After(time.Now().Add(-2*time.Hour)) {
-        return internal.ErrResetPasswordAlreadyGenerated
-    }
+	m := models.NewEmptyUser()
+	if email != "" {
+		m.Email = email
+	} else if username == "" {
+		return internal.ErrEmailRequired // username and email are empty
+	} else {
+		m.Username = username
+	}
+	m, err = s.FindUser(m, true)
+	if err != nil {
+		return err
+	}
+	if m == nil {
+		return internal.ErrEmailNotExist
+	}
+	// reset pass hash should not be regenerated within 2 hours
+	if m.ForgotPasswordHash != "" && m.UpdatedAt.After(time.Now().Add(-2*time.Hour)) {
+		return internal.ErrResetPasswordAlreadyGenerated
+	}
 
-    m.GenerateForgotPasswordHash()
-    err = s.Save(m)
-    if err != nil {
-        return err
-    }
+	m.GenerateForgotPasswordHash()
+	err = s.Save(m, "forgot_password_hash", "forgot_password_hash_created_at")
+	if err != nil {
+		return err
+	}
 
-    // send reset password link
-    err = s.es.ForgotPasswordEmail(m)
+	// send reset password link
+	err = s.es.ForgotPasswordEmail(m)
 
-    return err
+	return err
 }
 
 func (s *UserService) ResetPassword(email, forgotPasswordHash, pass string) error {
-    m, err := s.FindUser(&models.User{Email: email}, false)
-    if err != nil {
-        return err
-    }
-    if m == nil {
-        return internal.ErrEmailNotExist
-    }
+	m, err := s.FindUser(&models.User{Email: email}, false)
+	if err != nil {
+		return err
+	}
+	if m == nil {
+		return internal.ErrEmailNotExist
+	}
 
-    if !m.IsValidForgotPasswordHash(forgotPasswordHash) {
-        return internal.ErrInvalidResetPassHash
-    }
-    m.ForgotPasswordHash = ""
-    m.Password = pass
-    err = s.r.ValidateUser(m)
-    if err != nil {
-        return err
-    }
-    m.HashPass()
+	if !m.IsValidForgotPasswordHash(forgotPasswordHash) {
+		return internal.ErrInvalidResetPassHash
+	}
+	m.ForgotPasswordHash = ""
+	m.ForgotPasswordHashCreatedAt = time.Time{}
+	m.Password = pass
+	err = s.r.ValidateUser(m)
+	if err != nil {
+		return err
+	}
+	m.HashPass()
 
-    err = s.Save(m)
-    if err != nil {
-        return err
-    }
+	err = s.Save(m, "password_hash", "forgot_password_hash", "forgot_password_hash_created_at")
+	if err != nil {
+		return err
+	}
 
-    return err
+	return err
 }
 
 func (s *UserService) UpdatePassword(u *models.User, oldPass, pass string) error {
-    if oldPass == pass {
-        return internal.ValidationError("Password.Password", "Both old and new passwords are the same.")
-    }
-    m, err := s.r.CheckPassword(u.Username, oldPass)
-    if err != nil {
-        return err
-    }
+	if oldPass == pass {
+		return internal.ValidationError("Password.Password", "Both old and new passwords are the same.")
+	}
+	m, err := s.r.CheckPassword(u.Username, oldPass)
+	if err != nil {
+		return err
+	}
 
-    m.Password = pass
-    err = s.r.ValidateUser(m)
-    if err != nil {
-        return err
-    }
-    m.HashPass()
+	m.Password = pass
+	err = s.r.ValidateUser(m)
+	if err != nil {
+		return err
+	}
+	m.HashPass()
 
-    err = s.Save(m)
-    if err != nil {
-        return err
-    }
+	err = s.Save(m, "password_hash")
+	if err != nil {
+		return err
+	}
 
-    return err
+	return err
 }
 
 func (s *UserService) UpdateProfile(m *models.User) (*models.User, error) {
-    err := s.r.ValidateUser(m)
-    if err != nil {
-        return nil, err
-    }
-    u, err := s.FindUser(m, true)
-    if err != nil {
-        return nil, err
-    }
-    cls := []string{"email", "first_name", "last_name", "language", "address", "country"}
-    if m.Email != u.Email {
-        m.GenerateEmailVerificationHash()
-        if strings.Contains(m.AvatarURL, "www.gravatar.com") {
-            m.AvatarURL = ""
-            m.SetDefaultAvatar()
-        }
-        m.Active = false
-        cls = append(cls, "email_verify_hash", "email_verify_created_at", "active", "avatar_url")
-    }
-    if m.Mobile != u.Mobile {
-        m.UnVerifyMobile()
-        m.GenerateVerifyMobileCode()
-        cls = append(cls, "mobile", "mobile_verified", "mobile_verify_created_at", "mobile_verify_code")
-    }
-    err = s.Save(m, cls...)
-    if err != nil {
-        if err.Error() == internal.ErrEmailExists.Error() {
-            return nil, internal.ValidationError("Email.Unique", "Email already exists in our system.")
-        }
-        return nil, err
-    }
-    if m.Email != u.Email {
-        // send verify email link
-        err = s.es.VerifyUserEmail(m.GetFullName(), m.Email, m.GetEmailVerificationURL())
-    }
-    return m, err
+	err := s.r.ValidateUser(m)
+	if err != nil {
+		return nil, err
+	}
+	u, err := s.FindUser(m, true)
+	if err != nil {
+		return nil, err
+	}
+	cls := []string{"email", "first_name", "last_name", "language", "address", "country"}
+	if m.Email != u.Email {
+		m.GenerateEmailVerificationHash()
+		if strings.Contains(m.AvatarURL, "www.gravatar.com") {
+			m.AvatarURL = ""
+			m.SetDefaultAvatar()
+		}
+		m.Active = false
+		cls = append(cls, "email_verify_hash", "email_verify_created_at", "active", "avatar_url")
+	}
+	if m.Mobile != u.Mobile {
+		m.UnVerifyMobile()
+		m.GenerateVerifyMobileCode()
+		cls = append(cls, "mobile", "mobile_verified", "mobile_verify_created_at", "mobile_verify_code")
+	}
+	err = s.Save(m, cls...)
+	if err != nil {
+		if err.Error() == internal.ErrEmailExists.Error() {
+			return nil, internal.ValidationError("Email.Unique", "Email already exists in our system.")
+		}
+		return nil, err
+	}
+	if m.Email != u.Email {
+		// send verify email link
+		err = s.es.VerifyUserEmail(m.GetFullName(), m.Email, m.GetEmailVerificationURL())
+	}
+
+	err1 := s.EnqueueCreateOrUpdateCustomer(m.ID)
+	if err1 != nil {
+		logs.Error(err1)
+	}
+
+	return m, err
 }
 
 func (s *UserService) UpdateUser(m, admin *models.User) (*models.User, error) {
-    if !s.p.HasPermission(admin, "users_edit") {
-        return nil, internal.ErrForbidden
-    }
-    _, err := s.validateAndFind(m, false)
-    if err != nil {
-        return nil, err
-    }
-    cls := []string{"username", "password_hash", "email", "first_name", "last_name",
-        "mobile", "language", "address", "country", "avatar_url", "active", "authenticator_enabled"}
+	if !s.p.HasPermission(admin, "users_edit") {
+		return nil, internal.ErrForbidden
+	}
+	_, err := s.validateAndFind(m, false)
+	if err != nil {
+		return nil, err
+	}
+	cls := []string{"username", "password_hash", "email", "first_name", "last_name",
+		"mobile", "language", "address", "country", "avatar_url", "active", "authenticator_enabled"}
 
-    if m.Password != "" {
-        m.HashPass()
-    }
-    err = s.Save(m, cls...)
-    if err != nil {
-        return nil, err
-    }
+	if m.Password != "" {
+		m.HashPass()
+	}
+	err = s.Save(m, cls...)
+	if err != nil {
+		return nil, err
+	}
 
-    return m, err
+	err1 := s.EnqueueCreateOrUpdateCustomer(m.ID)
+	if err1 != nil {
+		logs.Error(err1)
+	}
+
+	return m, nil
 }
 
 func (s *UserService) RecoveryQuestions(r *models.Login) (*models.RecoveryQuestions, error) {
-    u, err := s.Authenticate(r.Username, r.Password)
-    if err != nil {
-        return nil, err
-    }
+	u, err := s.Authenticate(r.Username, r.Password)
+	if err != nil {
+		return nil, err
+	}
 
-    if !u.RecoveryQuestionsSet {
-        return nil, internal.ErrNotFound
-    }
+	if !u.RecoveryQuestionsSet {
+		return nil, internal.ErrNotFound
+	}
 
-    rc := new(models.RecoveryQuestions)
-    for q := range u.RecoveryQuestions {
-        rc.Questions = append(rc.Questions, &models.RecoveryQuestion{Question: q})
-    }
+	rc := new(models.RecoveryQuestions)
+	for q := range u.RecoveryQuestions {
+		rc.Questions = append(rc.Questions, &models.RecoveryQuestion{Question: q})
+	}
 
-    return rc, nil
+	return rc, nil
 }
 
 func (s *UserService) SaveRecoveryQuestions(m *models.User, r *models.RecoveryQuestions) error {
-    if m.RecoveryQuestionsSet {
-        return internal.ErrRecoveryChangeDisallowed
-    }
-    err := m.AddRecoveryQuestions(r.Questions)
-    if err != nil {
-        return err
-    }
+	if m.RecoveryQuestionsSet {
+		return internal.ErrRecoveryChangeDisallowed
+	}
+	err := m.AddRecoveryQuestions(r.Questions)
+	if err != nil {
+		return err
+	}
 
-    return s.Save(m)
+	return s.Save(m, "recovery_questions_set", "recovery_questions")
 }
 
 func (s *UserService) ReadNotification(m *models.User, r *models.Notification) error {
-    m.ReadNotification(r)
-    m.CleanNotifications()
+	m.ReadNotification(r)
+	m.CleanNotifications()
 
-    return s.Save(m)
+	return s.Save(m, "notifications")
 }
 
 func (s *UserService) DisableMFA(r *models.DisableMFA) error {
-    u, err := s.Authenticate(r.Username, r.Password)
-    if err != nil {
-        return err
-    }
-    b := u.IsValidRecoveryQuestions(r.RecoveryQuestions)
-    if !b {
-        return internal.ErrBadRecoveryAnswers
-    }
-    u.DisableAuthenticator()
-    u.UnVerifyMobile()
+	u, err := s.Authenticate(r.Username, r.Password)
+	if err != nil {
+		return err
+	}
+	b := u.IsValidRecoveryQuestions(r.RecoveryQuestions)
+	if !b {
+		return internal.ErrBadRecoveryAnswers
+	}
+	u.DisableAuthenticator()
+	u.UnVerifyMobile()
 
-    return s.Save(u)
+	return s.Save(u, "authenticator_enabled", "mobile_verified", "authenticator_secret")
 }
 
 func (s *UserService) validateAndFind(m *models.User, checkActive bool) (u *models.User, err error) {
-    err = s.r.ValidateUser(m)
-    if err != nil {
-        return
-    }
-    u, err = s.FindUser(m, checkActive)
-    if err != nil {
-        return nil, err
-    }
-    return
+	err = s.r.ValidateUser(m)
+	if err != nil {
+		return
+	}
+	u, err = s.FindUser(m, checkActive)
+	if err != nil {
+		return nil, err
+	}
+	return
 }
 
 func (s *UserService) PaginateUsers(p *paginator.Paginator) (*paginator.Paginator, error) {
-    var err error
-    var ms []*models.User
+	var err error
+	var ms []*models.User
 
-    p.Sort = s.sanitizeSort(p.Sort)
-    // caching
-    id, _ := s.c.Get(&ms, &p)
-    if len(ms) > 0 {
-        var msi []interface{}
-        for _, m := range ms {
-            msi = append(msi, m)
-        }
-        p.Models = msi
-        return p, nil
-    }
+	p.Sort = s.sanitizeSort(p.Sort)
+	// caching
+	id, _ := s.c.Get(&ms, &p)
+	if len(ms) > 0 {
+		var msi []interface{}
+		for _, m := range ms {
+			msi = append(msi, m)
+		}
+		p.Models = msi
+		return p, nil
+	}
 
-    ms, p.Size, err = s.r.Paginate(p.Filter, p.Sort, p.Offset, p.Limit, []string{
-        "id", "first_name", "last_name", "email", "username", "country", "address",
-    })
-    if err != nil {
-        return p, err
-    }
-    for _, m := range ms {
-        p.Models = append(p.Models, m)
-    }
+	ms, p.Size, err = s.r.Paginate(p.Filter, p.Sort, p.Offset, p.Limit, []string{
+		"id", "first_name", "last_name", "email", "username", "country", "address",
+	})
+	if err != nil {
+		return p, err
+	}
+	for _, m := range ms {
+		p.Models = append(p.Models, m)
+	}
 
-    go s.c.Put(p.Models, id, &*p)
+	go s.c.Put(p.Models, id, &*p)
 
-    return p, nil
+	return p, nil
 }
 
 func (s *UserService) sanitizeSort(sort map[string]string) map[string]string {
-    sort2 := make(map[string]string)
-    for c, d := range sort {
-        c = strings.ToLower(c)
-        if c != "id" && c != "first_name" && c != "last_name" && c != "email" && c != "username" {
-            c = "id"
-        }
-        sort2[c] = d
-    }
+	sort2 := make(map[string]string)
+	for c, d := range sort {
+		c = strings.ToLower(c)
+		if c != "id" && c != "first_name" && c != "last_name" && c != "email" && c != "username" {
+			c = "id"
+		}
+		sort2[c] = d
+	}
 
-    return sort2
+	return sort2
 }

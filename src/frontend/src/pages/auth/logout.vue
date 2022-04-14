@@ -16,7 +16,7 @@
         <alert
           :errors="errors"
           :success="success"
-          success-text="You have successfully logged out!"
+          success-txt="You have successfully logged out!"
         />
         <v-alert v-if="!success && !errors" type="info">
           Please wait while logging you out of the system.

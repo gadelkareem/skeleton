@@ -20,7 +20,7 @@
         <alert
           :errors="errors"
           :success="success"
-          success-text="Successfully registered!| Check your email for instructions on how to activate your account."
+          success-txt="Successfully registered!| Check your email for instructions on how to activate your account."
         />
         <v-form
           ref="form"

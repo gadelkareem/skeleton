@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`payment-methods.vue should match snapshot 1`] = `
+<div class="container"><span> <!----> <!----></span>
+  <div class="row">
+    <div>
+      <div class="container">
+        <div class="v-item-group theme--light">
+          <div class="container">
+            <div class="row">
+              <div class="float-left ma-2">
+                <div role="dialog" class="v-dialog__container"><button type="button" class="mt-7 v-btn v-btn--is-elevated v-btn--has-bg theme--dark v-size--x-large white" style="height: 150px; width: 300px;" role="button" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-plus theme--dark green--text" style="font-size: 40px;"></i> Add Credit Card
+    </span></button>
+                  <!---->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

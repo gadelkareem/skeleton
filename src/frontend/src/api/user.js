@@ -29,10 +29,10 @@ export default {
     })
   },
   get (id) {
-    return api.fetch('users/' + id)
+    return api.get('users/' + id)
   },
   list (params) {
-    return api.fetch('user', params)
+    return api.get('user', params)
   },
   update (user) {
     return api.patch('user', user)

@@ -16,7 +16,7 @@
         <alert
           :errors="errors"
           :success="success"
-          success-text="Your email has been successfully verified!"
+          success-txt="Your email has been successfully verified!"
         />
         <v-alert v-if="!success && !errors" type="info">
           Please wait while verifying your email.
