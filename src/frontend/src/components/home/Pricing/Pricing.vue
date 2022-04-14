@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <h3 class="display-2 text-center mb-4">
-      Pricing and Plan
+      Pricing and Plan <strong>( Demo )</strong>
     </h3>
     <p class="body-1 text-center mb-4" />
     <div class="pricing-wrap">

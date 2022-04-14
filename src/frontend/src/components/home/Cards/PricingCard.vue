@@ -5,7 +5,7 @@
       primary-title
     >
       <h5 class="text-xs-center headline">{{ card.title }}</h5>
-      <div class="small-title text-xs-center body-1"> {{ card.subheader }}</div>
+      <div class="small-title text-xs-center body-1" />
       <v-icon
         v-if="card.title.includes('Premium')"
         class="icon"

@@ -153,11 +153,11 @@ export default {
         this.$store.dispatch('loading/finish')
         return
       }
-      if (!this.user.mobile) {
-        this.updateAlert({ errors: [{ title: 'Please add your mobile number.' }] })
-        this.$store.dispatch('loading/finish')
-        return
-      }
+      // if (!this.user.mobile) {
+      //   this.updateAlert({ errors: [{ title: 'Please add your mobile number.' }] })
+      //   this.$store.dispatch('loading/finish')
+      //   return
+      // }
       this.updateAlert()
       this.$store.dispatch('loading/start')
       this.stripe.createPaymentMethod({
@@ -165,8 +165,8 @@ export default {
         card: this.card,
         billing_details: {
           name: this.name,
-          email: this.user.email,
-          phone: this.user.mobile
+          email: this.user.email
+          // phone: this.user.mobile
           // address: this.address
         }
       }).then(function (r) {

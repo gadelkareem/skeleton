@@ -60,7 +60,7 @@ export default {
         description: p.description.split(','),
         buttonText: 'Signup',
         buttonVariant: 'outlined',
-        disabled: p.subheader !== 'Open'
+        disabled: p.subheader !== 'open'
       }
       tiers.push(t)
     }
