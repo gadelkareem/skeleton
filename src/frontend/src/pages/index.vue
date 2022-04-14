@@ -81,6 +81,11 @@
   left: 0
   transform: translateY(50%)
   border-radius: 0 0 100% 100%
+.theme--dark
+  .home-hero
+    background-color: #1e1e1e
+  .home-hero::after
+    background-color: #1e1e1e
 
 </style>
 
