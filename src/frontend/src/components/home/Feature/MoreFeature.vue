@@ -161,21 +161,31 @@
                 duration="0.6s"
                 delay="0.5s"
               >
-                <v-card
-                  elevation="24"
-                  class="mx-auto"
-                  shaped
-                >
-                  <v-carousel hide-delimiters height="820" width="1440" cycle>
-                    <v-carousel-item
-                      v-for="n in 21"
-                      :key="n"
-                      :src="require(`@@/static/screenshots/${n}.jpg`)"
-                      reverse-transition="fade-transition"
-                      contain
-                    />
-                  </v-carousel>
-                </v-card>
+                <div class="carousel-container">
+                  <v-card
+                    elevation="24"
+                    class="mx-auto"
+                    shaped
+                  >
+                    <v-carousel
+                      hide-delimiters
+                      height="auto"
+                      width="1440"
+                      max-height="820"
+                      cycle
+                      eager
+                    >
+                      <v-carousel-item
+                        v-for="n in 21"
+                        :key="n"
+                        eager
+                        :src="require(`@@/static/screenshots/${n}.jpg`)"
+                        reverse-transition="fade-transition"
+                        contain
+                      />
+                    </v-carousel>
+                  </v-card>
+                </div>
               </u-animate>
             </div>
           </v-col>

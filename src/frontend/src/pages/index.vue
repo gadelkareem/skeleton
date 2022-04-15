@@ -7,7 +7,7 @@
           <v-container>
             <v-container fluid fill-height class="home-hero">
               <v-layout justify-center align-center column pa-5 mt-10>
-                <img :src="require($vuetify.theme.dark ? '@@/static/logo-dark.svg' : '@@/static/logo.svg')" width="500">
+                <img :src="require($vuetify.theme.dark ? '@@/static/logo-dark.svg' : '@@/static/logo.svg')">
               </v-layout>
             </v-container>
           </v-container>
@@ -71,16 +71,20 @@
     position: relative
 .home-hero
   background-color: #eaeaea
-.home-hero::after
-  content: ""
-  position: absolute
-  height: 90px
-  width: 100%
-  background-color: #eaeaea
-  bottom: 0
-  left: 0
-  transform: translateY(50%)
-  border-radius: 0 0 100% 100%
+  img
+    width: 80%
+    max-width: 500px
+    padding-bottom: 45px
+  &:after
+    content: ""
+    position: absolute
+    height: 90px
+    width: 100%
+    background-color: #eaeaea
+    bottom: 0
+    left: 0
+    transform: translateY(50%)
+    border-radius: 0 0 100% 100%
 .theme--dark
   .home-hero
     background-color: #1e1e1e
