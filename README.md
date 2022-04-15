@@ -8,11 +8,12 @@
 [![pipeline status](https://gitlab.com/gadelkareem/skeleton/badges/master/pipeline.svg)](https://gitlab.com/gadelkareem/skeleton/commits/master) <a href="https://github.com/gadelkareem/skeleton"><img src="https://github.githubassets.com/images/modules/logos_page/Octocat.png" width="25" height="25" alt="Github Mirror"></a> <a href="https://gitlab.com/gadelkareem/skeleton"><img src="https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png" width="30" height="30" alt="Github Mirror"></a>
 
 
-A complete Golang and Nuxt boilerplate for your project with backend API, frontend, tests and CI/CD pipelines.
+A complete Golang and Nuxt boilerplate for your project with Subscription management system, backend API, frontend, tests and CI/CD pipelines.
 
 ## [Demo](https://skeleton-gadelkareem.herokuapp.com/)
 
 ## Features
+- Subscription management system using [Stripe](https://stripe.com/) API.
 - Backend written in [Golang](https://golang.org/) using [Beego framework](https://beego.me/).
 - Frontend written in [NodeJS](https://nodejs.org/en/) using [NUXT](https://nuxtjs.org/) and [Vue.js](https://vuejs.org/) frameworks.
 - Material design using [Vuetify](https://vuetifyjs.com/).
