@@ -30,7 +30,7 @@
             Dev env & CI/CD included
           </h5>
           <p class="body-1">
-            Automated development initialization using Docker compose and init file. Complete CI/CD pipelines including tests using GitLab .gitlab-ci.yml file. Deploy to Heroku using few easy steps.
+            Automated development initialization using Docker compose and init file. Complete CI/CD pipelines including tests using GitLab .gitlab-ci.yml file. Deploy to Render using few easy steps.
           </p>
         </div>
       </v-col>

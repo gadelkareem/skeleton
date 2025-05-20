@@ -15,7 +15,7 @@ func TestCommonController_Contact(t *testing.T) {
 	sub := fmt.Sprintf("[Contact] Message from %s", r.Name)
 	tests.ExpectEmail(t,
 		"",
-		[]string{"sender@skeleton-gadelkareem.herokuapp.com"},
+		[]string{"sender@skeleton-gadelkareem.onrender.com"},
 		sub,
 		"")
 

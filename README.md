@@ -1,16 +1,16 @@
 <p align="center">
-    <a href="https://skeleton-gadelkareem.herokuapp.com/">
+    <a href="https://skeleton-gadelkareem.onrender.com/">
         <img src="./binary/logo/logo.svg" width="400" alt="Skeleton">
     </a>
 </p>
 
-# [Skeleton](https://skeleton-gadelkareem.herokuapp.com/)
+# [Skeleton](https://skeleton-gadelkareem.onrender.com/)
 [![pipeline status](https://gitlab.com/gadelkareem/skeleton/badges/master/pipeline.svg)](https://gitlab.com/gadelkareem/skeleton/commits/master) <a href="https://github.com/gadelkareem/skeleton"><img src="https://github.githubassets.com/images/modules/logos_page/Octocat.png" width="25" height="25" alt="Github Mirror"></a> <a href="https://gitlab.com/gadelkareem/skeleton"><img src="https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png" width="30" height="30" alt="Github Mirror"></a>
 
 
 A complete Golang and Nuxt boilerplate for your project with Subscription management system, backend API, frontend, tests and CI/CD pipelines.
 
-## [Demo](https://skeleton-gadelkareem.herokuapp.com/)
+## [Demo](https://skeleton-gadelkareem.onrender.com/)
 
 ## Features
 - Subscription management system using [Stripe](https://stripe.com/) API.
@@ -31,7 +31,7 @@ A complete Golang and Nuxt boilerplate for your project with Subscription manage
 - [Fully featured admin dashboard](./src/frontend/src/pages/dashboard) based on [Vuetify Material Dashboard](https://demos.creative-tim.com/vuetify-material-dashboard/?partner=116160&ref=vuetifyjs.com#/).
 - [Beautiful home page](./src/frontend/src/pages/index.vue) based on [Veluxi Starter](https://github.com/ilhammeidi/veluxi-starter).
 - [Complete CI/CD pipelines](https://gitlab.com/gadelkareem/skeleton/-/pipelines) including tests using [GitLab .gitlab-ci.yml](.gitlab-ci.yml) file.
-- [Deploy to Heroku](#deploy-to-heroku) using few easy steps.
+- [Deploy to Render](#deploy-to-render) using few easy steps.
 - Automated development initialization using [Docker compose](./docker-compose.yml) and [init file](./init.sh).
 - Application Cache using [Cachita](https://github.com/gadelkareem/cachita) with support for memory, Redis, database and file cache.
 - [Dependency injection](./src/backend/di/Container.go).
@@ -70,16 +70,16 @@ docker exec -it skeleton_backend_1 /bin/bash -c "go test -v ./... -count=1 | sor
 ```
 
 
-## Deploy to Heroku
+## Deploy to Render
 - [Fork the Skeleton repository on Gitlab](https://gitlab.com/gadelkareem/skeleton/-/forks/new)
 - Add the following CI/CD environment variables in [your Gitlab's CI/CD settings section](https://gitlab.com/help/ci/variables/README#custom-environment-variables):
-    - HEROKU_API_KEY: Your free [Heroku API KEY](https://dashboard.heroku.com/account)
-    - PROD_CONFIG_SECRET_FILE (optional): Base64 encoded string of the `./src/backend/conf/app.prod.ini.secret` file. Use the [./src/backend/conf/app.dev.ini.secret.example](./src/backend/conf/app.dev.ini.secret.example) as an example. 
-    ```bash 
+    - PROD_CONFIG_SECRET_FILE (optional): Base64 encoded string of the `./src/backend/conf/app.prod.ini.secret` file. Use the [./src/backend/conf/app.dev.ini.secret.example](./src/backend/conf/app.dev.ini.secret.example) as an example.
+    ```bash
     cat "$PROD_CONFIG_SECRET_FILE" | base64
     ```
 - [Run Gitlab pipeline](https://docs.gitlab.com/ee/ci/pipelines/#run-a-pipeline-manually).
-- Navigate to [your Heroku apps](https://dashboard.heroku.com/apps) to open your app URL.
+- Create a new Web Service on [Render](https://render.com/) and connect it to your repository.
+- Use the provided `render.yaml` to create the required services on Render.
 - For more information, check [.gitlab-ci.yml](.gitlab-ci.yml) to review how the production container is being generated in the pipelines.
 - Optionally you can also push your final image to Docker Hub by adding your username and password as CI/CD environment variables:
     - DOCKER_HUB_USER: docker hub username

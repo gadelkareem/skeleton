@@ -25,9 +25,9 @@
           <ul>
             <li>
               <b>Us, We, Our</b> - Skeleton is the publisher and
-              operator of the web site&nbsp;<a href="/">http://skeleton-gadelkareem.herokuapp.com</a>,
-              and is referred to as “skeleton-gadelkareem.herokuapp.com”. “us”, “we”, “our”, “ours”,
-              etc. refer to Skeleton Holdings Corporation. “The SITE” or “SITE” refers to&nbsp;<a href="/">http://skeleton-gadelkareem.herokuapp.com</a>.
+              operator of the web site&nbsp;<a href="/">http://skeleton-gadelkareem.onrender.com</a>,
+              and is referred to as “skeleton-gadelkareem.onrender.com”. “us”, “we”, “our”, “ours”,
+              etc. refer to Skeleton Holdings Corporation. “The SITE” or “SITE” refers to&nbsp;<a href="/">http://skeleton-gadelkareem.onrender.com</a>.
             </li>
             <li>
               <b>You, the User</b>&nbsp;- This Policy will refer to the user as “you” or “yours”, etc.
@@ -284,7 +284,7 @@
       </h2>
       <p>
         We may send you periodic announcements including the details of our existing and new programs.
-        You may opt out of these announcements by contacting&nbsp;<a href="mailto:remove@skeleton-gadelkareem.herokuapp.com">remove@skeleton-gadelkareem.herokuapp.com</a>&nbsp;or
+        You may opt out of these announcements by contacting&nbsp;<a href="mailto:remove@skeleton-gadelkareem.onrender.com">remove@skeleton-gadelkareem.onrender.com</a>&nbsp;or
         by clicking the opt-out link at the bottom of these emails. If you opt out of these marketing
         emails, you may still receive system notices and other information that is specifically related
         to your account.

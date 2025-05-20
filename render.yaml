@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: skeleton
+    env: docker
+    dockerfilePath: docker/Dockerfile.gitlab
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: PROD_CONFIG_SECRET_FILE
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: skeleton-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: skeleton-redis
+          property: connectionString
+
+  - type: redis
+    name: skeleton-redis
+    plan: free
+
+  - type: psql
+    name: skeleton-db
+    plan: free
