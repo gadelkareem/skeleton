@@ -125,14 +125,16 @@ func (p *Paginator) Slice() {
 	if limit < 0 || limit > p.Size {
 		limit = p.Size
 	}
-	if p.Offset < -1 {
+	if p.Offset < 0 {
 		p.Offset = 0
 	} else if p.Offset > p.Size {
-		p.Offset = limit
+		p.Offset = p.Size
 	}
-	limit += p.Offset + 1
-	if limit > p.Size {
-		limit = p.Size
+	// Calculate the boundary for slicing. 'end' ensures that the slice does not exceed the array bounds,
+	// preventing off-by-one errors.
+	end := p.Offset + limit
+	if end > p.Size {
+		end = p.Size
 	}
-	p.Models = p.Models[p.Offset:limit]
+	p.Models = p.Models[p.Offset:end]
 }
