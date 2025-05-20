@@ -5,7 +5,7 @@
 </p>
 
 # [Skeleton](https://skeleton-gadelkareem.onrender.com/)
-[![pipeline status](https://gitlab.com/gadelkareem/skeleton/badges/master/pipeline.svg)](https://gitlab.com/gadelkareem/skeleton/commits/master) <a href="https://github.com/gadelkareem/skeleton"><img src="https://github.githubassets.com/images/modules/logos_page/Octocat.png" width="25" height="25" alt="Github Mirror"></a> <a href="https://gitlab.com/gadelkareem/skeleton"><img src="https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png" width="30" height="30" alt="Github Mirror"></a>
+[![CI](https://github.com/gadelkareem/skeleton/actions/workflows/ci.yml/badge.svg)](https://github.com/gadelkareem/skeleton/actions/workflows/ci.yml) <a href="https://github.com/gadelkareem/skeleton"><img src="https://github.githubassets.com/images/modules/logos_page/Octocat.png" width="25" height="25" alt="Github Mirror"></a> <a href="https://gitlab.com/gadelkareem/skeleton"><img src="https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png" width="30" height="30" alt="Github Mirror"></a>
 
 
 A complete Golang and Nuxt boilerplate for your project with Subscription management system, backend API, frontend, tests and CI/CD pipelines.
@@ -30,7 +30,7 @@ A complete Golang and Nuxt boilerplate for your project with Subscription manage
 - [Nice Email templates](./src/backend/services/EmailService.go) using [Hermes](https://github.com/matcornic/hermes).
 - [Fully featured admin dashboard](./src/frontend/src/pages/dashboard) based on [Vuetify Material Dashboard](https://demos.creative-tim.com/vuetify-material-dashboard/?partner=116160&ref=vuetifyjs.com#/).
 - [Beautiful home page](./src/frontend/src/pages/index.vue) based on [Veluxi Starter](https://github.com/ilhammeidi/veluxi-starter).
-- [Complete CI/CD pipelines](https://gitlab.com/gadelkareem/skeleton/-/pipelines) including tests using [GitLab .gitlab-ci.yml](.gitlab-ci.yml) file.
+- [Complete CI/CD pipelines](https://github.com/gadelkareem/skeleton/actions) including tests using [GitHub Actions workflow](.github/workflows/ci.yml) file.
 - [Deploy to Render](#deploy-to-render) using few easy steps.
 - Automated development initialization using [Docker compose](./docker-compose.yml) and [init file](./init.sh).
 - Application Cache using [Cachita](https://github.com/gadelkareem/cachita) with support for memory, Redis, database and file cache.
@@ -71,16 +71,16 @@ docker exec -it skeleton_backend_1 /bin/bash -c "go test -v ./... -count=1 | sor
 
 
 ## Deploy to Render
-- [Fork the Skeleton repository on Gitlab](https://gitlab.com/gadelkareem/skeleton/-/forks/new)
-- Add the following CI/CD environment variables in [your Gitlab's CI/CD settings section](https://gitlab.com/help/ci/variables/README#custom-environment-variables):
+- [Fork the Skeleton repository on GitHub](https://github.com/gadelkareem/skeleton/fork)
+- Add the following CI/CD secrets in your repository settings:
     - PROD_CONFIG_SECRET_FILE (optional): Base64 encoded string of the `./src/backend/conf/app.prod.ini.secret` file. Use the [./src/backend/conf/app.dev.ini.secret.example](./src/backend/conf/app.dev.ini.secret.example) as an example.
     ```bash
     cat "$PROD_CONFIG_SECRET_FILE" | base64
     ```
-- [Run Gitlab pipeline](https://docs.gitlab.com/ee/ci/pipelines/#run-a-pipeline-manually).
+- Trigger the GitHub Actions workflow from the Actions tab.
 - Create a new Web Service on [Render](https://render.com/) and connect it to your repository.
 - Use the provided `render.yaml` to create the required services on Render.
-- For more information, check [.gitlab-ci.yml](.gitlab-ci.yml) to review how the production container is being generated in the pipelines.
+- For more information, check [.github/workflows/ci.yml](.github/workflows/ci.yml) to review how the production container is generated in the pipelines.
 - Optionally you can also push your final image to Docker Hub by adding your username and password as CI/CD environment variables:
     - DOCKER_HUB_USER: docker hub username
     - DOCKER_HUB_PASSWORD: docker hub password
