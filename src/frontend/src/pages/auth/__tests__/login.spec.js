@@ -16,7 +16,7 @@ describe('login.vue', () => {
       'page/title': jest.fn(),
       'loading/start': jest.fn(),
       'loading/finish': jest.fn(),
-      'auth/login': jest.fn(() => Promise.resolve())
+      'auth/login': jest.fn().mockResolvedValue()
     }
     store = new Vuex.Store({
       actions,
