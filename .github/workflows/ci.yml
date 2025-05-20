@@ -1,0 +1,124 @@
+name: CI
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+
+env:
+  BACKEND_DIR: "${{ github.workspace }}/src/backend"
+  FRONTEND_DIR: "${{ github.workspace }}/src/frontend"
+  BUILD_DIR: "${{ github.workspace }}/src/backend/build"
+  CACHE_DIR: "${{ github.workspace }}/cache"
+
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12.2-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd="pg_isready -U postgres" --health-interval=10s --health-timeout=5s --health-retries=5
+    env:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+      DATABASE_URL: postgres://skeleton_backend:dev_awTf9d2GceKRNzhkCb4H5B8nfmq@localhost/skeleton_backend?sslmode=disable
+      BEEGO_RUNMODE: test
+      CACHE_TYPE: memory
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: ./src/backend/go.mod
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - name: Install Postgres client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+      - name: Prepare directories
+        run: |
+          mkdir -p "$CACHE_DIR"
+          mkdir -p "$BUILD_DIR"
+      - name: Init database
+        run: PGHOST=localhost PGUSER=postgres PGPASSWORD=postgres bash ./docker/db/db.sh
+      - name: Build backend
+        working-directory: ${{ env.BACKEND_DIR }}
+        run: |
+          go mod tidy
+          go get ./...
+          CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags='-extldflags "-static"' -o skeleton
+          chmod +x skeleton && ./skeleton migrate up
+          go test -v ./... -count=1
+          mv skeleton "$BUILD_DIR/"
+          cp -r migrations "$BUILD_DIR/"
+          cp -r conf "$BUILD_DIR/"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: backend-build
+          path: ${{ env.BUILD_DIR }}
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    needs: build-backend
+    env:
+      API_URL: /api/v1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - name: Prepare directories
+        run: |
+          mkdir -p "$CACHE_DIR"
+          mkdir -p "$BUILD_DIR"
+      - name: Build frontend
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: |
+          yarn config set cache-folder "$CACHE_DIR"
+          yarn install
+          yarn test
+          yarn generate
+          mv src/dist "$BUILD_DIR/"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: ${{ env.BUILD_DIR }}
+
+  docker-push:
+    if: github.ref == 'refs/heads/master'
+    needs: [build-backend, build-frontend]
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_HUB: docker.io
+      DOCKER_HUB_IMAGE: skeleton
+      DOCKER_HUB_IMAGE_URL: ${{ env.DOCKER_HUB }}/${{ secrets.DOCKER_HUB_USER }}/${{ env.DOCKER_HUB_IMAGE }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare build directory
+        run: cp docker/Dockerfile.gitlab "$BUILD_DIR/Dockerfile"
+      - name: List build directory
+        run: ls -al "$BUILD_DIR"
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ env.BUILD_DIR }}
+          push: true
+          tags: |
+            ${{ env.DOCKER_HUB_IMAGE_URL }}:${{ github.sha }}
+            ${{ env.DOCKER_HUB_IMAGE_URL }}:latest
