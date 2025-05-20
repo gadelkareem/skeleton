@@ -130,6 +130,8 @@ func (p *Paginator) Slice() {
 	} else if p.Offset > p.Size {
 		p.Offset = p.Size
 	}
+	// Calculate the boundary for slicing. 'end' ensures that the slice does not exceed the array bounds,
+	// preventing off-by-one errors.
 	end := p.Offset + limit
 	if end > p.Size {
 		end = p.Size
