@@ -168,7 +168,7 @@ export default {
     */
     // cssSourceMap: false,
     loaders: {
-      vus: { cacheBusting: true },
+      vue: { cacheBusting: true },
       scss: { sourceMap: false }
     },
     extend (config, ctx) {
