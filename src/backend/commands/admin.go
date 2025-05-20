@@ -54,6 +54,7 @@ Usage: skeleton admin [options] ...
     Controls users
 
 Available options:
-    make-admin [username]  make a user an admin   
+    make-admin [username]  make a user an admin
+    activate-user [username]  activate a user account
 `)
 }

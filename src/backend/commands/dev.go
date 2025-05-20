@@ -94,5 +94,6 @@ Usage: skeleton dev [options] ...
 
 Available options:
     new-user  generate a user
+    del-user  delete a user
 `)
 }
