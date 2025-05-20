@@ -74,12 +74,15 @@ describe('login.vue', () => {
     await w.vm.$nextTick()
 
     expect(actions['auth/login']).toHaveBeenCalledTimes(1)
-    expect(actions['auth/login'].mock.calls[0][1]).toEqual({
-      username: 'user1',
-      password: md5('pass1'),
-      code: '',
-      rememberMe: false
-    })
+    expect(actions['auth/login']).toHaveBeenCalledWith(
+      expect.any(Object),
+      {
+        username: 'user1',
+        password: md5('pass1'),
+        code: '',
+        rememberMe: false
+      }
+    )
 
     w.destroy()
   })
