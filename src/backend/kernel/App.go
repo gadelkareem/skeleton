@@ -53,7 +53,7 @@ var (
 		"::1",
 	}
 	allowedHosts = []string{
-		"skeleton-gadelkareem.herokuapp.com",
+		"skeleton-gadelkareem.onrender.com",
 	}
 )
 

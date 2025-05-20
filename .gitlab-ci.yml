@@ -3,9 +3,7 @@
 stages:
   - build-backend
   - build-frontend
-  - create-heroku
   - push-docker
-  - push-heroku
 
 
 variables:
@@ -14,10 +12,6 @@ variables:
   FRONTEND_DIR: "${CI_PROJECT_DIR}/src/frontend"
   BUILD_DIR: "${CI_PROJECT_DIR}/src/backend/build"
   CACHE_DIR: "${CI_PROJECT_DIR}/cache"
-  HEROKU_FILE: "${CI_PROJECT_DIR}/.heroku"
-  HEROKU_APP: "skeleton-${CI_PROJECT_NAMESPACE}"
-  HEROKU_REGISTRY: registry.heroku.com
-  HEROKU_API_KEY: "${HEROKU_API_KEY}"
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -78,22 +72,6 @@ frontend:build:
       - $BUILD_DIR
     expire_in: 1 hour
 
-heruko:create:
-  stage: create-heroku
-  cache: {}
-  script:
-    - echo $(heroku auth:token) > $HEROKU_FILE
-    - >
-      heroku create $HEROKU_APP &&
-      heroku addons:create heroku-postgresql:hobby-dev --app $HEROKU_APP &&
-      heroku pg:psql --command='CREATE EXTENSION pg_trgm;' || echo "App already exists"
-    - heroku config:set SKELETON_HOST=$HEROKU_APP.herokuapp.com
-    - heroku config:set SKELETON_FRONTEND=https://$HEROKU_APP.herokuapp.com
-    - heroku config:set PROD_CONFIG_SECRET_FILE=$PROD_CONFIG_SECRET_FILE
-  needs: []
-  artifacts:
-    paths:
-      - $HEROKU_FILE
 
 docker:push:
   stage: push-docker
@@ -114,23 +92,10 @@ docker:push:
     - cp docker/Dockerfile.gitlab "$BUILD_DIR/Dockerfile"
     - cd $BUILD_DIR
     - ls -al
-    - docker login -u _ -p $(cat $HEROKU_FILE) $HEROKU_REGISTRY
-    - docker pull "${HEROKU_REGISTRY}/${HEROKU_APP}/web" || true
-    - docker build --cache-from "${HEROKU_REGISTRY}/${HEROKU_APP}/web"  --tag "${HEROKU_REGISTRY}/${HEROKU_APP}/web" .
-    - docker push "${HEROKU_REGISTRY}/${HEROKU_APP}/web"
-    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD $DOCKER_HUB || true
-    - docker tag "${HEROKU_REGISTRY}/${HEROKU_APP}/web" $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA || true
-    - docker tag "${HEROKU_REGISTRY}/${HEROKU_APP}/web" $DOCKER_HUB_IMAGE_URL:latest || true
-    - docker push $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA || true
-    - docker push $DOCKER_HUB_IMAGE_URL:latest || true
+    - docker build -t $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA .
+    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD $DOCKER_HUB
+    - docker push $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA
+    - docker tag $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA $DOCKER_HUB_IMAGE_URL:latest
+    - docker push $DOCKER_HUB_IMAGE_URL:latest
 
 
-heruko:push:
-  stage: push-heroku
-  only:
-    - master
-  cache: {}
-  script:
-    - cd $BUILD_DIR
-    - BEEGO_RUNMODE=prod CACHE_TYPE=memory DATABASE_URL=$(heroku config:get DATABASE_URL) ./skeleton migrate up
-    - heroku container:release web --app $HEROKU_APP
