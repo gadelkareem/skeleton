@@ -53,7 +53,7 @@ jobs:
         working-directory: ${{ env.BACKEND_DIR }}
         run: |
           go mod tidy
-          go get ./...
+          go mod download
           CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags='-extldflags "-static"' -o skeleton
           chmod +x skeleton && ./skeleton migrate up
           go test -v ./... -count=1
