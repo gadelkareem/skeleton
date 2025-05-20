@@ -1,0 +1,57 @@
+name: Tests Only
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12.2-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd="pg_isready -U postgres" --health-interval=10s --health-timeout=5s --health-retries=5
+    env:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+      DATABASE_URL: postgres://postgres:postgres@localhost/skeleton_backend?sslmode=disable
+      BEEGO_RUNMODE: test
+      CACHE_TYPE: memory
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: ./src/backend/go.mod
+      - name: Install Postgres client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+      - name: Init database
+        run: PGHOST=localhost PGUSER=postgres PGPASSWORD=postgres bash ./docker/db/db.sh
+      - name: Run backend tests
+        working-directory: ./src/backend
+        run: |
+          go mod tidy
+          go mod download
+          go test -v ./... -count=1
+
+  frontend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - name: Install dependencies and run tests
+        working-directory: ./src/frontend
+        run: |
+          yarn install
+          yarn test
