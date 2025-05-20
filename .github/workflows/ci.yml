@@ -113,7 +113,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Prepare build directory
-        run: cp docker/Dockerfile.gitlab "$BUILD_DIR/Dockerfile"
+        run: cp docker/Dockerfile.ci "$BUILD_DIR/Dockerfile"
       - name: List build directory
         run: ls -al "$BUILD_DIR"
       - name: Set up Docker Buildx
