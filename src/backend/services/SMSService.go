@@ -48,12 +48,20 @@ func (s *SMSService) Send(number string, msg string) (err error) {
 	d.Set("From", s.ownNumber)
 	d.Set("Body", msg)
 
-	r, _ := http.NewRequest("POST", fmt.Sprintf("https://api.twilio.com/2010-04-01/Accounts/%s/Messages.json", s.accountSID), strings.NewReader(d.Encode()))
+	var r *http.Request
+	r, err = http.NewRequest("POST", fmt.Sprintf("https://api.twilio.com/2010-04-01/Accounts/%s/Messages.json", s.accountSID), strings.NewReader(d.Encode()))
+	if err != nil {
+		return
+	}
 	r.SetBasicAuth(s.accountSID, s.authToken)
 	r.Header.Add("Accept", context.ApplicationJSON)
 	r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
-	resp, _ := s.c.Do(r)
+	var resp *http.Response
+	resp, err = s.c.Do(r)
+	if err != nil {
+		return
+	}
 	if resp.StatusCode > 300 {
 		var b []byte
 		b, err = ioutil.ReadAll(resp.Body)
