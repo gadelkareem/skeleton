@@ -1,6 +1,6 @@
 module backend
 
-go 1.23.0
+go 1.23
 
 require (
 	github.com/astaxie/beego v1.12.2
