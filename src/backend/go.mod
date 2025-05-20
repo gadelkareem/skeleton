@@ -1,6 +1,6 @@
 module backend
 
-go 1.23
+go 1.23.0
 
 require (
 	github.com/astaxie/beego v1.12.2
@@ -22,7 +22,7 @@ require (
 	github.com/stretchr/testify v1.6.1
 	github.com/stripe/stripe-go/v72 v72.68.0
 	github.com/ttacon/libphonenumber v1.1.0
-	golang.org/x/crypto v0.35.0
+	golang.org/x/crypto v0.36.0
 	golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43
 )
 
@@ -78,9 +78,9 @@ require (
 	github.com/vmihailenco/msgpack v4.0.1+incompatible // indirect
 	github.com/vmihailenco/msgpack/v4 v4.3.12 // indirect
 	github.com/vmihailenco/tagparser v0.1.1 // indirect
-	golang.org/x/net v0.25.0 // indirect
-	golang.org/x/sys v0.30.0 // indirect
-	golang.org/x/text v0.22.0 // indirect
+	golang.org/x/net v0.38.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
