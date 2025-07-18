@@ -23,7 +23,7 @@ require (
 	github.com/stripe/stripe-go/v72 v72.68.0
 	github.com/ttacon/libphonenumber v1.1.0
 	golang.org/x/crypto v0.35.0
-	golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43
+	golang.org/x/oauth2 v0.27.0
 )
 
 require (
