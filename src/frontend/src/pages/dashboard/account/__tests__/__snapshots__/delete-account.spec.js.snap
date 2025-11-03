@@ -25,7 +25,7 @@ exports[`delete-account.vue should match snapshot 1`] = `
       <!---->
     </div>
   </div>
-  <div role="dialog" class="v-dialog__container" style="z-index: 200;">
+  <div class="v-dialog__container" style="z-index: 200;">
     <!---->
   </div>
 </section>

@@ -13,7 +13,7 @@ exports[`index.vue should match snapshot 1`] = `
       </div>
     </mq-layout>
     <mq-layout mq="lgDown,xl">
-      <div class="v-snack notification v-snack--bottom v-snack--has-background" style="padding-bottom: 0px; padding-top: 0px;">
+      <div class="v-snack notification v-snack--bottom v-snack--has-background">
         <transition-stub name="v-snack-transition">
           <div class="v-snack__wrapper v-sheet theme--dark" style="display: none;">
             <div role="status" aria-live="polite" class="v-snack__content">

@@ -163,7 +163,7 @@ exports[`home.vue should match snapshot 1`] = `
           <!---->
         </div>
         <div class="v-card__text">
-          <div class="v-data-table v-data-table--has-bottom theme--light">
+          <div class="v-data-table v-data-table--has-bottom theme--light v-data-table--mobile">
             <div class="v-data-table__wrapper">
               <table>
                 <colgroup>
@@ -174,11 +174,7 @@ exports[`home.vue should match snapshot 1`] = `
                   <col class="">
                 </colgroup>
                 <thead class="v-data-table-header v-data-table-header-mobile">
-                  <tr>
-                    <th>
-                      <div class="v-data-table-header-mobile__wrapper"></div>
-                    </th>
-                  </tr>
+                  <tr></tr>
                 </thead>
                 <tbody>
                   <tr class="v-data-table__mobile-table-row">
