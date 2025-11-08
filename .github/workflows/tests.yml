@@ -72,5 +72,5 @@ jobs:
       - name: Install dependencies and run tests
         working-directory: ./src/frontend
         run: |
-          yarn install
+          yarn install --frozen-lockfile
           yarn test
