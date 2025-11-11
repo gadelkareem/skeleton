@@ -40,6 +40,7 @@ func TestSubscriptionController_UpdateSubscription(t *testing.T) {
 	assert.Equal(t, r2.PriceID, r3.PriceID)
 	assert.Equal(t, pm.ID, r3.PaymentMethodID)
 	assert.True(t, tests.C.PaymentService.CustomerHasSubscription(u.CustomerID, r3.ID))
+	tests.WaitForCustomerCache(u.CustomerID)
 	subs, _ := tests.C.PaymentService.ActiveSubscription(u.CustomerID)
 	assert.NotEmpty(t, subs)
 
