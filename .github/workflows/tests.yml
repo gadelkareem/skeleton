@@ -46,6 +46,12 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y postgresql-client
       - name: Init database
         run: PGHOST=localhost PGUSER=postgres PGPASSWORD=postgres bash ./docker/db/db.sh
+      - name: Build skeleton binary
+        working-directory: ./src/backend
+        run: go build -o skeleton
+      - name: Run database migrations
+        working-directory: ./src/backend
+        run: ./skeleton migrate up
       - name: Run backend tests with coverage
         working-directory: ./src/backend
         run: |
