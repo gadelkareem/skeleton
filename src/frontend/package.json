@@ -46,7 +46,7 @@
     "rtl-sass": "^1.5.0",
     "sass": "^1.24.3",
     "vue-chartist": "^2.2.1",
-    "vue-countup-directive": "^1.2.3",
+    "vue-countup-directive": "^1.2.4",
     "vue-fragment": "^1.5.1",
     "vue-jest": "^3.0.5",
     "vue-loader": "^15.9.1",

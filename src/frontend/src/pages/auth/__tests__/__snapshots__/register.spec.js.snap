@@ -24,7 +24,7 @@ exports[`register.vue should match snapshot 1`] = `
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
-                    <legend style="width: 0px;"><span>​</span></legend>
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                   </fieldset>
                   <div class="v-text-field__slot"><label for="input-9" class="v-label theme--light" style="left: 0px; position: absolute;">Username*</label><input id="input-9" type="text"></div>
                 </div>
@@ -41,7 +41,7 @@ exports[`register.vue should match snapshot 1`] = `
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
-                    <legend style="width: 0px;"><span>​</span></legend>
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                   </fieldset>
                   <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">Password*</label><input id="input-12" type="password"></div>
                 </div>
@@ -58,7 +58,7 @@ exports[`register.vue should match snapshot 1`] = `
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
-                    <legend style="width: 0px;"><span>​</span></legend>
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                   </fieldset>
                   <div class="v-text-field__slot"><label for="input-15" class="v-label theme--light" style="left: 0px; position: absolute;">Repeat Password*</label><input id="input-15" type="password"></div>
                 </div>
@@ -75,7 +75,7 @@ exports[`register.vue should match snapshot 1`] = `
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
-                    <legend style="width: 0px;"><span>​</span></legend>
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                   </fieldset>
                   <div class="v-text-field__slot"><label for="input-18" class="v-label theme--light" style="left: 0px; position: absolute;">Email*</label><input id="input-18" type="email"></div>
                 </div>

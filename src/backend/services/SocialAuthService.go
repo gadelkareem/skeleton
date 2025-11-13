@@ -86,8 +86,8 @@ func (s *SocialAuthService) Authenticate(r *models.SocialAuth) (*models.AuthToke
 			return s.jwt.SocialToken(existingUser)
 		}
 		return nil, internal.Errorf(http.StatusBadRequest,
-			fmt.Sprintf("The email %s already has an account with us."+
-				"|Please login using your login credintials or reset your password to continue.", m.Email))
+			"The email %s already has an account with us."+
+				"|Please login using your login credintials or reset your password to continue.", m.Email)
 	}
 	m.AvatarURL = u.Avatar
 	setFullName(m, u)

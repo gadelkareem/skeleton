@@ -32,25 +32,38 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: ./src/backend/go.mod
+          check-latest: true
       - name: Cache Go modules
         uses: actions/cache@v3
         with:
           path: |
             ~/.cache/go-build
             ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ hashFiles('src/backend/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
       - name: Install Postgres client
         run: sudo apt-get update && sudo apt-get install -y postgresql-client
       - name: Init database
         run: PGHOST=localhost PGUSER=postgres PGPASSWORD=postgres bash ./docker/db/db.sh
-      - name: Run backend tests
+      - name: Build skeleton binary
+        working-directory: ./src/backend
+        run: go build -o skeleton
+      - name: Run database migrations
+        working-directory: ./src/backend
+        run: ./skeleton migrate up
+      - name: Run backend tests with coverage
         working-directory: ./src/backend
         run: |
-          go mod tidy
           go mod download
-          go test -v ./... -count=1
+          go test -v -timeout=10m -coverprofile=coverage.out -covermode=atomic ./... -count=1
+
+      - name: Display backend coverage
+        working-directory: ./src/backend
+        run: |
+          go tool cover -func=coverage.out
+          echo "Total Coverage:"
+          go tool cover -func=coverage.out | grep total | awk '{print $3}'
 
   frontend-tests:
     runs-on: ubuntu-latest
@@ -64,12 +77,12 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.cache/yarn
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('src/frontend/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - name: Install dependencies and run tests
+      - name: Install dependencies and run tests with coverage
         working-directory: ./src/frontend
         run: |
-          yarn install
-          yarn test
+          yarn install --frozen-lockfile
+          yarn test --coverage --coverageReporters=text --coverageReporters=text-summary

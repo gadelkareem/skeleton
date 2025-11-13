@@ -1,6 +1,8 @@
 module backend
 
-go 1.23.0
+go 1.24.0
+
+toolchain go1.24.7
 
 require (
 	github.com/astaxie/beego v1.12.2
@@ -13,16 +15,16 @@ require (
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
 	github.com/go-pg/pg/v9 v9.2.0
 	github.com/google/jsonapi v0.0.0-20210306203318-b10ff4bf785b
-	github.com/jackc/pgx/v4 v4.8.1
-	github.com/lib/pq v1.8.0
+	github.com/jackc/pgx/v4 v4.18.3
+	github.com/lib/pq v1.10.2
 	github.com/matcornic/hermes/v2 v2.1.0
 	github.com/mitchellh/hashstructure v1.0.0
 	github.com/pquerna/otp v1.2.0
 	github.com/rubenv/sql-migrate v0.0.0-20200616145509-8d140a17f351
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.8.1
 	github.com/stripe/stripe-go/v72 v72.68.0
 	github.com/ttacon/libphonenumber v1.1.0
-	golang.org/x/crypto v0.35.0
+	golang.org/x/crypto v0.43.0
 	golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43
 )
 
@@ -47,13 +49,13 @@ require (
 	github.com/huandu/xstrings v1.2.0 // indirect
 	github.com/imdario/mergo v0.3.6 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
-	github.com/jackc/pgconn v1.6.4 // indirect
+	github.com/jackc/pgconn v1.14.3 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgproto3/v2 v2.3.3 // indirect
-	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
-	github.com/jackc/pgtype v1.4.2 // indirect
-	github.com/jackc/puddle v1.1.1 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
+	github.com/jackc/pgtype v1.14.4 // indirect
+	github.com/jackc/puddle v1.3.0 // indirect
 	github.com/jaytaylor/html2text v0.0.0-20180606194806-57d518f124b0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/magefile/mage v1.9.0 // indirect
@@ -78,9 +80,9 @@ require (
 	github.com/vmihailenco/msgpack v4.0.1+incompatible // indirect
 	github.com/vmihailenco/msgpack/v4 v4.3.12 // indirect
 	github.com/vmihailenco/tagparser v0.1.1 // indirect
-	golang.org/x/net v0.25.0 // indirect
-	golang.org/x/sys v0.30.0 // indirect
-	golang.org/x/text v0.22.0 // indirect
+	golang.org/x/net v0.45.0 // indirect
+	golang.org/x/sys v0.37.0 // indirect
+	golang.org/x/text v0.30.0 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
@@ -89,6 +91,6 @@ require (
 	gopkg.in/gorp.v1 v1.7.2 // indirect
 	gopkg.in/oleiade/reflections.v1 v1.0.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	mellium.im/sasl v0.3.1 // indirect
 )

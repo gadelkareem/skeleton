@@ -24,7 +24,7 @@ exports[`disable-mfa.vue should match snapshot 1`] = `
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
-                    <legend style="width: 0px;"><span>​</span></legend>
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                   </fieldset>
                   <div class="v-text-field__slot"><label for="input-9" class="v-label theme--light" style="right: 0px; position: absolute;">Username*</label><input id="input-9" type="text"></div>
                 </div>
@@ -41,7 +41,7 @@ exports[`disable-mfa.vue should match snapshot 1`] = `
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
-                    <legend style="width: 0px;"><span>​</span></legend>
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                   </fieldset>
                   <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="right: 0px; position: absolute;">Your Password*</label><input id="input-12" type="password"></div>
                 </div>

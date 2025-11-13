@@ -13,7 +13,7 @@ until psql -c "select 1" > /dev/null 2>&1; do
 done
 
 psql -v ON_ERROR_STOP=1  --dbname=template1  <<- EOSQL
-    CREATE DATABASE skeleton_backend WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
+    CREATE DATABASE skeleton_backend WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'C' LC_CTYPE = 'C';
 
     CREATE USER skeleton_backend WITH PASSWORD '$PG_PASSWORD';
     GRANT ALL PRIVILEGES ON DATABASE skeleton_backend TO skeleton_backend;

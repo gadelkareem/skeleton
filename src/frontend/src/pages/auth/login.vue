@@ -248,9 +248,9 @@ export default {
     redirect () {
       const to = this.$route.query.to
       if (typeof to !== 'undefined') {
-        this.$router.push({ path: to })
+        this.$router.push({ path: to }).catch(() => {})
       } else {
-        this.$router.push('/dashboard/home/')
+        this.$router.push('/dashboard/home/').catch(() => {})
       }
     },
     reset () {
