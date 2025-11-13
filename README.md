@@ -5,7 +5,7 @@
 </p>
 
 # [Skeleton](https://skeleton-gadelkareem.onrender.com/)
-[![CI](https://github.com/gadelkareem/skeleton/actions/workflows/ci.yml/badge.svg)](https://github.com/gadelkareem/skeleton/actions/workflows/ci.yml) <a href="https://github.com/gadelkareem/skeleton"><img src="https://github.githubassets.com/images/modules/logos_page/Octocat.png" width="25" height="25" alt="Github Mirror"></a> <a href="https://gitlab.com/gadelkareem/skeleton"><img src="https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png" width="30" height="30" alt="Github Mirror"></a>
+[![CI](https://github.com/gadelkareem/skeleton/actions/workflows/ci.yml/badge.svg)](https://github.com/gadelkareem/skeleton/actions/workflows/ci.yml) [![GitHub](https://img.shields.io/badge/GitHub-gadelkareem%2Fskeleton-blue?logo=github)](https://github.com/gadelkareem/skeleton) [![GitLab](https://img.shields.io/badge/GitLab-gadelkareem%2Fskeleton-orange?logo=gitlab)](https://gitlab.com/gadelkareem/skeleton)
 
 
 A complete Golang and Nuxt boilerplate for your project with Subscription management system, backend API, frontend, tests and CI/CD pipelines.
@@ -32,7 +32,7 @@ A complete Golang and Nuxt boilerplate for your project with Subscription manage
 - [Beautiful home page](./src/frontend/src/pages/index.vue) based on [Veluxi Starter](https://github.com/ilhammeidi/veluxi-starter).
 - [Complete CI/CD pipelines](https://github.com/gadelkareem/skeleton/actions) including tests using [GitHub Actions workflow](.github/workflows/ci.yml) file.
 - [Deploy to Render](#deploy-to-render) using few easy steps.
-- Automated development initialization using [Docker compose](./docker-compose.yml) and [init file](./init.sh).
+- Automated development initialization using [Docker compose](./docker-compose.yml) for containerized setup or native macOS setup scripts.
 - Application Cache using [Cachita](https://github.com/gadelkareem/cachita) with support for memory, Redis, database and file cache.
 - [Dependency injection](./src/backend/di/Container.go).
 - Backend API integration and unit tests.
@@ -41,18 +41,20 @@ A complete Golang and Nuxt boilerplate for your project with Subscription manage
 
 ## Development
 
-There are 2 methods to run Skeleton locally
+There are 2 methods to run Skeleton locally:
 
-- Install required libs locally on OSX:
+### Method 1: Native macOS Development
+Install required dependencies locally on macOS:
 ```bash
-./init.sh init
+./setup-mac.sh
 ```
-Then Run the frontend and backend servers:
+Then run the frontend and backend servers:
 ```bash
-./init.sh
+./start-dev.sh
 ```
--- OR --
-- Run the full stack on Docker:
+
+### Method 2: Docker Development
+Run the full stack on Docker (works on any OS):
 Note that `yarn install` might take some time.
 ```bash
 docker-compose up
