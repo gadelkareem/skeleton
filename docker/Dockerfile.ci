@@ -1,0 +1,29 @@
+FROM alpine:latest as build
+
+# Install ca-certificates for SSL
+RUN apk --no-cache add ca-certificates
+
+# Copy pre-built artifacts from CI pipeline
+COPY skeleton /app/skeleton
+COPY conf /app/conf
+COPY migrations /app/migrations
+COPY dist /app/dist
+
+# Make binary executable
+RUN chmod +x /app/skeleton
+
+
+FROM scratch
+
+# Copy SSL certificates
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+# Copy application files
+COPY --from=build /app /app
+
+WORKDIR /app
+
+# Expose port 80 (Render will handle external routing)
+EXPOSE 80
+
+ENTRYPOINT ["/app/skeleton"]

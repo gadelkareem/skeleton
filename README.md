@@ -73,19 +73,63 @@ docker exec -it skeleton_backend_1 /bin/bash -c "go test -v ./... -count=1 | sor
 
 
 ## Deploy to Render
-- [Fork the Skeleton repository on GitHub](https://github.com/gadelkareem/skeleton/fork)
-- Add the following CI/CD secrets in your repository settings:
-    - PROD_CONFIG_SECRET_FILE (optional): Base64 encoded string of the `./src/backend/conf/app.prod.ini.secret` file. Use the [./src/backend/conf/app.dev.ini.secret.example](./src/backend/conf/app.dev.ini.secret.example) as an example.
-    ```bash
-    cat "$PROD_CONFIG_SECRET_FILE" | base64
-    ```
-- Trigger the GitHub Actions workflow from the Actions tab.
-- Create a new Web Service on [Render](https://render.com/) and connect it to your repository.
-- Use the provided `render.yaml` to create the required services on Render.
-- For more information, check [.github/workflows/ci.yml](.github/workflows/ci.yml) to review how the production container is generated in the pipelines.
-- Optionally you can also push your final image to Docker Hub by adding your username and password as CI/CD environment variables:
-    - DOCKER_HUB_USER: docker hub username
-    - DOCKER_HUB_PASSWORD: docker hub password
+
+### Prerequisites
+1. [Fork the Skeleton repository on GitHub](https://github.com/gadelkareem/skeleton/fork)
+2. Create accounts for:
+   - [Render](https://render.com/) - for hosting
+   - [Mailgun](https://www.mailgun.com/) - for sending emails
+   - (Optional) Social auth providers: GitHub, Google, Facebook, LinkedIn
+   - (Optional) [Twilio](https://www.twilio.com/) - for SMS verification
+
+### Setup Steps
+
+#### 1. Configure Production Secrets
+Create your production secret file from the template:
+```bash
+cp src/backend/conf/app.prod.ini.secret.example src/backend/conf/app.prod.ini.secret
+```
+
+Edit `src/backend/conf/app.prod.ini.secret` and replace all placeholders:
+- Generate HMAC key: `openssl rand -hex 32`
+- Add your Mailgun SMTP credentials
+- Add social auth credentials (if using)
+- Add Twilio credentials (if using SMS)
+
+#### 2. Add GitHub Secrets
+Go to your repository Settings → Secrets and variables → Actions, and add:
+
+**Required:**
+- `PROD_CONFIG_SECRET_FILE`: Base64 encoded production secret file
+  ```bash
+  cat src/backend/conf/app.prod.ini.secret | base64 -w 0
+  ```
+
+**Optional (for Docker Hub):**
+- `DOCKER_HUB_USER`: Your Docker Hub username
+- `DOCKER_HUB_PASSWORD`: Your Docker Hub password
+
+#### 3. Deploy to Render
+- Create a new Web Service on [Render](https://render.com/) and connect it to your forked repository
+- Use the provided `render.yaml` to automatically create:
+  - PostgreSQL database (free tier)
+  - Redis cache (free tier)
+  - Web service with auto-deploy enabled
+- Trigger the GitHub Actions workflow from the Actions tab to build and push the Docker image
+- Render will automatically pull and deploy the image
+
+#### 4. Verify Deployment
+- Check your Render dashboard for the deployment status
+- Visit your deployed URL (e.g., https://your-app.onrender.com)
+- Check logs in Render dashboard if there are any issues
+
+### Architecture
+The CI/CD pipeline (see [.github/workflows/ci.yml](.github/workflows/ci.yml)):
+1. Builds and tests backend (Go)
+2. Builds and tests frontend (Nuxt.js)
+3. Combines both into a single Docker image
+4. Pushes to Docker Hub (optional)
+5. Render pulls and deploys the image
 
 # Services
 ## Mail service

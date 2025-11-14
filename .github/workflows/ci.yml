@@ -113,6 +113,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Prepare build directory
+        run: mkdir -p "$BUILD_DIR"
+      - name: Download backend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-build
+          path: ${{ env.BUILD_DIR }}
+      - name: Download frontend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: ${{ env.BUILD_DIR }}
+      - name: Setup production config
+        run: |
+          if [ -n "${{ secrets.PROD_CONFIG_SECRET_FILE }}" ]; then
+            echo "${{ secrets.PROD_CONFIG_SECRET_FILE }}" | base64 -d > "$BUILD_DIR/conf/app.prod.ini.secret"
+          else
+            echo "Warning: PROD_CONFIG_SECRET_FILE secret not set, using example"
+            cp src/backend/conf/app.prod.ini.secret.example "$BUILD_DIR/conf/app.prod.ini.secret"
+          fi
+      - name: Copy Dockerfile to build directory
         run: cp docker/Dockerfile.ci "$BUILD_DIR/Dockerfile"
       - name: List build directory
         run: ls -al "$BUILD_DIR"
