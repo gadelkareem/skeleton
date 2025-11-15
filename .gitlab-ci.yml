@@ -1,6 +1,7 @@
 
 
 stages:
+  - test
   - build-backend
   - build-frontend
   - push-docker
@@ -25,8 +26,89 @@ before_script:
 default:
   image: gadelkareem/golang-nodejs:latest
 
+# Quick test jobs that run on all branches and MRs
+backend:test:
+  stage: test
+  services:
+    - postgres:12.2-alpine
+  variables:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_HOST_AUTH_METHOD: trust
+    DATABASE_URL: postgres://skeleton_backend:dev_awTf9d2GceKRNzhkCb4H5B8nfmq@postgres/skeleton_backend?sslmode=disable
+    BEEGO_RUNMODE: test
+    CACHE_TYPE: memory
+    GOCACHE: "${CI_PROJECT_DIR}/src/backend/.go-cache"
+  script:
+    # Setup PostgreSQL database
+    - echo "Setting up PostgreSQL database..."
+    - PGHOST=postgres PGUSER=postgres PGPASSWORD=postgres bash ./docker/db/db.sh
+
+    # Build backend
+    - cd $BACKEND_DIR
+    - echo "Installing Go dependencies..."
+    - go mod download
+
+    # Build binary
+    - echo "Building backend binary..."
+    - go build -o skeleton
+    - chmod +x skeleton
+
+    # Run migrations
+    - echo "Running database migrations..."
+    - ./skeleton migrate up
+
+    # Run tests with coverage
+    - echo "Running backend tests with coverage..."
+    - go test -v ./... -count=1 -race -coverprofile=coverage.out
+  coverage: '/coverage: \d+.\d+% of statements/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: $BACKEND_DIR/coverage.out
+    expire_in: 7 days
+
+frontend:test:
+  stage: test
+  variables:
+    API_URL: /api/v1
+  script:
+    # Setup Yarn cache
+    - yarn config set cache-folder $CACHE_DIR
+
+    # Install and test frontend
+    - cd "$FRONTEND_DIR"
+    - echo "Installing frontend dependencies..."
+    - yarn install --frozen-lockfile
+
+    # Run tests with coverage
+    - echo "Running frontend tests with coverage..."
+    - yarn test --coverage
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: $FRONTEND_DIR/coverage/cobertura-coverage.xml
+    expire_in: 7 days
+
+lint:go:
+  stage: test
+  script:
+    - cd $BACKEND_DIR
+    - echo "Checking Go code formatting..."
+    - gofmt -l . | tee /tmp/gofmt.out
+    - test ! -s /tmp/gofmt.out || (echo "Please run 'gofmt -w .' on the above files" && exit 1)
+    - echo "Running go vet..."
+    - go vet ./...
+    - echo "✅ Lint checks passed!"
+  allow_failure: false
+
 backend:build:
   stage: build-backend
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
   services:
     - postgres:12.2-alpine
   variables:
@@ -73,6 +155,8 @@ backend:build:
 
 frontend:build:
   stage: build-frontend
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
   variables:
     API_URL: /api/v1
   script:

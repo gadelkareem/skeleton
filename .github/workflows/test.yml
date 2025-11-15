@@ -1,0 +1,182 @@
+name: Tests
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+env:
+  BACKEND_DIR: "${{ github.workspace }}/src/backend"
+  FRONTEND_DIR: "${{ github.workspace }}/src/frontend"
+
+jobs:
+  backend-tests:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12.2-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd="pg_isready -U postgres" --health-interval=10s --health-timeout=5s --health-retries=5
+    env:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+      DATABASE_URL: postgres://skeleton_backend:dev_awTf9d2GceKRNzhkCb4H5B8nfmq@localhost/skeleton_backend?sslmode=disable
+      BEEGO_RUNMODE: test
+      CACHE_TYPE: memory
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: ./src/backend/go.mod
+          cache: true
+          cache-dependency-path: ./src/backend/go.sum
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Setup database
+        run: |
+          echo "Setting up PostgreSQL database..."
+          PGHOST=localhost PGUSER=postgres PGPASSWORD=postgres bash ./docker/db/db.sh
+
+      - name: Install Go dependencies
+        working-directory: ${{ env.BACKEND_DIR }}
+        run: |
+          echo "Installing Go dependencies..."
+          go mod download
+
+      - name: Build backend
+        working-directory: ${{ env.BACKEND_DIR }}
+        run: |
+          echo "Building backend binary..."
+          go build -o skeleton
+          chmod +x skeleton
+
+      - name: Run migrations
+        working-directory: ${{ env.BACKEND_DIR }}
+        run: |
+          echo "Running database migrations..."
+          ./skeleton migrate up
+
+      - name: Run backend tests
+        working-directory: ${{ env.BACKEND_DIR }}
+        run: |
+          echo "Running backend tests..."
+          go test -v ./... -count=1 -race -coverprofile=coverage.out
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: ${{ env.BACKEND_DIR }}/coverage.out
+          retention-days: 7
+
+  frontend-tests:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+          cache: 'yarn'
+          cache-dependency-path: ${{ env.FRONTEND_DIR }}/yarn.lock
+
+      - name: Install dependencies
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: |
+          echo "Installing frontend dependencies..."
+          yarn install --frozen-lockfile
+
+      - name: Run frontend tests
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: |
+          echo "Running frontend tests..."
+          yarn test --coverage
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: ${{ env.FRONTEND_DIR }}/coverage
+          retention-days: 7
+
+  lint:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: ./src/backend/go.mod
+
+      - name: Run gofmt check
+        working-directory: ${{ env.BACKEND_DIR }}
+        run: |
+          echo "Checking Go code formatting..."
+          gofmt_output=$(gofmt -l .)
+          if [ -n "$gofmt_output" ]; then
+            echo "The following files need formatting:"
+            echo "$gofmt_output"
+            exit 1
+          fi
+          echo "All Go files are properly formatted!"
+
+      - name: Run go vet
+        working-directory: ${{ env.BACKEND_DIR }}
+        run: |
+          echo "Running go vet..."
+          go vet ./...
+
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [backend-tests, frontend-tests, lint]
+    if: always()
+    steps:
+      - name: Check test results
+        run: |
+          echo "### Test Results Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.backend-tests.result }}" == "success" ]; then
+            echo "✅ Backend tests passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Backend tests failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ needs.frontend-tests.result }}" == "success" ]; then
+            echo "✅ Frontend tests passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Frontend tests failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ needs.lint.result }}" == "success" ]; then
+            echo "✅ Lint checks passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Lint checks failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Fail if any test failed
+        if: |
+          needs.backend-tests.result != 'success' ||
+          needs.frontend-tests.result != 'success' ||
+          needs.lint.result != 'success'
+        run: exit 1

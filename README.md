@@ -5,7 +5,7 @@
 </p>
 
 # [Skeleton](https://skeleton-gadelkareem.onrender.com/)
-[![CI](https://github.com/gadelkareem/skeleton/actions/workflows/ci.yml/badge.svg)](https://github.com/gadelkareem/skeleton/actions/workflows/ci.yml) [![GitHub](https://img.shields.io/badge/GitHub-gadelkareem%2Fskeleton-blue?logo=github)](https://github.com/gadelkareem/skeleton) [![GitLab](https://img.shields.io/badge/GitLab-gadelkareem%2Fskeleton-orange?logo=gitlab)](https://gitlab.com/gadelkareem/skeleton)
+[![CI](https://github.com/gadelkareem/skeleton/actions/workflows/ci.yml/badge.svg)](https://github.com/gadelkareem/skeleton/actions/workflows/ci.yml) [![Tests](https://github.com/gadelkareem/skeleton/actions/workflows/test.yml/badge.svg)](https://github.com/gadelkareem/skeleton/actions/workflows/test.yml) [![GitHub](https://img.shields.io/badge/GitHub-gadelkareem%2Fskeleton-blue?logo=github)](https://github.com/gadelkareem/skeleton) [![GitLab](https://img.shields.io/badge/GitLab-gadelkareem%2Fskeleton-orange?logo=gitlab)](https://gitlab.com/gadelkareem/skeleton)
 
 
 A complete Golang and Nuxt boilerplate for your project with Subscription management system, backend API, frontend, tests and CI/CD pipelines.
@@ -176,41 +176,75 @@ Go to your repository Settings → CI/CD → Variables, and add:
 
 The project supports both **GitHub Actions** and **GitLab CI/CD** with synchronized workflows.
 
-#### Pipeline Stages
-Both CI systems follow the same three-stage pipeline:
+#### Workflow Types
 
+**1. Test Workflow** (all branches and PRs)
+- Runs on every push and pull request
+- Provides fast feedback for developers
+- Includes:
+  - Backend tests with race detection and coverage
+  - Frontend tests with coverage
+  - Go formatting and vet checks
+  - Test result summary
+
+**2. Build & Deploy Workflow** (master branch only)
+- Runs only on pushes to master branch
+- Creates production-ready artifacts
+- Builds and pushes Docker images
+- Triggers deployment to Render
+
+#### Test Pipeline (All Branches)
+
+**GitHub Actions: [.github/workflows/test.yml](.github/workflows/test.yml)**
+- **Backend Tests**: Go tests with PostgreSQL, race detection, coverage reports
+- **Frontend Tests**: Jest tests with coverage reports
+- **Lint**: gofmt and go vet checks
+- **Test Summary**: Aggregated results displayed in PR
+
+**GitLab CI: Stage `test`** in [.gitlab-ci.yml](.gitlab-ci.yml)
+- **backend:test**: Go tests with coverage
+- **frontend:test**: Jest tests with coverage
+- **lint:go**: Code formatting and vet checks
+
+#### Build Pipeline (Master Only)
+
+**GitHub Actions: [.github/workflows/ci.yml](.github/workflows/ci.yml)**
 1. **Build Backend**
-   - Sets up PostgreSQL database for tests
+   - Sets up PostgreSQL database
    - Installs Go dependencies
    - Builds static binary with `CGO_ENABLED=0`
-   - Runs database migrations
-   - Executes backend tests
+   - Runs database migrations and tests
    - Creates build artifacts (binary, migrations, config)
 
 2. **Build Frontend**
    - Installs Node.js dependencies
-   - Runs frontend tests (Jest)
+   - Runs frontend tests
    - Generates static files with Nuxt
    - Creates build artifacts (dist folder)
 
-3. **Push Docker Image** (master branch only)
+3. **Push Docker Image**
    - Downloads backend and frontend artifacts
    - Injects production configuration from secrets
    - Builds Docker image combining both artifacts
    - Pushes to Docker Hub with commit SHA and latest tags
    - Render automatically deploys the latest image
 
-#### Workflow Files
-- **GitHub Actions**: [.github/workflows/ci.yml](.github/workflows/ci.yml)
-- **GitLab CI**: [.gitlab-ci.yml](.gitlab-ci.yml)
+**GitLab CI: Stages `build-backend`, `build-frontend`, `push-docker`**
+- Same pipeline structure as GitHub Actions
+- Only runs on master branch
 
 #### Key Differences
 | Feature | GitHub Actions | GitLab CI |
 |---------|---------------|-----------|
+| Test Workflow | Separate test.yml file | Dedicated test stage |
 | Runner Image | Ubuntu with setup actions | Custom golang-nodejs image |
 | Dockerfile | `docker/Dockerfile.ci` | `docker/Dockerfile.gitlab` |
 | Caching | GitHub cache action | GitLab cache with paths |
-| Triggers | Push to master + PRs | Push to master only |
+| Coverage Reports | Uploaded as artifacts | Built-in coverage visualization |
+
+#### Status Badges
+- **GitHub CI**: [![CI](https://github.com/gadelkareem/skeleton/actions/workflows/ci.yml/badge.svg)](https://github.com/gadelkareem/skeleton/actions/workflows/ci.yml)
+- **GitHub Tests**: [![Tests](https://github.com/gadelkareem/skeleton/actions/workflows/test.yml/badge.svg)](https://github.com/gadelkareem/skeleton/actions/workflows/test.yml)
 
 Both workflows are kept in sync and produce identical Docker images.
 
