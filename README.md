@@ -133,7 +133,9 @@ Edit `src/backend/conf/app.prod.ini.secret` and replace all placeholders:
 - Add social auth credentials (if using)
 - Add Twilio credentials (if using SMS)
 
-#### 2. Add GitHub Secrets
+#### 2. Add CI/CD Secrets
+
+**For GitHub Actions:**
 Go to your repository Settings → Secrets and variables → Actions, and add:
 
 **Required:**
@@ -145,6 +147,16 @@ Go to your repository Settings → Secrets and variables → Actions, and add:
 **Optional (for Docker Hub):**
 - `DOCKER_HUB_USER`: Your Docker Hub username
 - `DOCKER_HUB_PASSWORD`: Your Docker Hub password
+
+**For GitLab CI:**
+Go to your repository Settings → CI/CD → Variables, and add:
+
+**Required:**
+- `PROD_CONFIG_SECRET_FILE`: Base64 encoded production secret file (same as GitHub)
+- `DOCKER_HUB_USER`: Your Docker Hub username
+- `DOCKER_HUB_PASSWORD`: Your Docker Hub password (mark as "Masked")
+
+**Note:** Both platforms use the same secret values for consistency.
 
 #### 3. Deploy to Render
 - Create a new Web Service on [Render](https://render.com/) and connect it to your forked repository
@@ -160,13 +172,47 @@ Go to your repository Settings → Secrets and variables → Actions, and add:
 - Visit your deployed URL (e.g., https://your-app.onrender.com)
 - Check logs in Render dashboard if there are any issues
 
-### Architecture
-The CI/CD pipeline (see [.github/workflows/ci.yml](.github/workflows/ci.yml)):
-1. Builds and tests backend (Go)
-2. Builds and tests frontend (Nuxt.js)
-3. Combines both into a single Docker image
-4. Pushes to Docker Hub (optional)
-5. Render pulls and deploys the image
+### CI/CD Architecture
+
+The project supports both **GitHub Actions** and **GitLab CI/CD** with synchronized workflows.
+
+#### Pipeline Stages
+Both CI systems follow the same three-stage pipeline:
+
+1. **Build Backend**
+   - Sets up PostgreSQL database for tests
+   - Installs Go dependencies
+   - Builds static binary with `CGO_ENABLED=0`
+   - Runs database migrations
+   - Executes backend tests
+   - Creates build artifacts (binary, migrations, config)
+
+2. **Build Frontend**
+   - Installs Node.js dependencies
+   - Runs frontend tests (Jest)
+   - Generates static files with Nuxt
+   - Creates build artifacts (dist folder)
+
+3. **Push Docker Image** (master branch only)
+   - Downloads backend and frontend artifacts
+   - Injects production configuration from secrets
+   - Builds Docker image combining both artifacts
+   - Pushes to Docker Hub with commit SHA and latest tags
+   - Render automatically deploys the latest image
+
+#### Workflow Files
+- **GitHub Actions**: [.github/workflows/ci.yml](.github/workflows/ci.yml)
+- **GitLab CI**: [.gitlab-ci.yml](.gitlab-ci.yml)
+
+#### Key Differences
+| Feature | GitHub Actions | GitLab CI |
+|---------|---------------|-----------|
+| Runner Image | Ubuntu with setup actions | Custom golang-nodejs image |
+| Dockerfile | `docker/Dockerfile.ci` | `docker/Dockerfile.gitlab` |
+| Caching | GitHub cache action | GitLab cache with paths |
+| Triggers | Push to master + PRs | Push to master only |
+
+Both workflows are kept in sync and produce identical Docker images.
 
 ### Troubleshooting Render Deployment
 

@@ -5,7 +5,6 @@ stages:
   - build-frontend
   - push-docker
 
-
 variables:
   GIT_STRATEGY: fetch
   BACKEND_DIR: "${CI_PROJECT_DIR}/src/backend"
@@ -17,10 +16,12 @@ cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - cache/
+    - src/backend/.go-cache/
 
 before_script:
   - mkdir -p $CACHE_DIR
   - mkdir -p $BUILD_DIR
+
 default:
   image: gadelkareem/golang-nodejs:latest
 
@@ -35,17 +36,32 @@ backend:build:
     DATABASE_URL: postgres://skeleton_backend:dev_awTf9d2GceKRNzhkCb4H5B8nfmq@postgres/skeleton_backend?sslmode=disable
     BEEGO_RUNMODE: test
     CACHE_TYPE: memory
+    GOCACHE: "${CI_PROJECT_DIR}/src/backend/.go-cache"
   script:
-    - export GOPATH="$CACHE_DIR"
-    # init postgres
+    # Setup PostgreSQL database
+    - echo "Setting up PostgreSQL database..."
     - PGHOST=postgres PGUSER=postgres PGPASSWORD=postgres bash ./docker/db/db.sh
+
+    # Build backend
     - cd $BACKEND_DIR
+    - echo "Installing Go dependencies..."
     - go mod tidy
-    - go get ./...
-    - CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o skeleton
-    # migration for tests
-    - chmod +x skeleton && ./skeleton migrate up
+    - go mod download
+
+    # Build static binary
+    - echo "Building backend binary..."
+    - CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags='-extldflags "-static"' -o skeleton
+
+    # Run migrations
+    - chmod +x skeleton
+    - echo "Running database migrations..."
+    - ./skeleton migrate up
+
+    # Run tests
+    - echo "Running backend tests..."
     - go test -v ./... -count=1
+
+    # Copy artifacts to build directory
     - mv skeleton "$BUILD_DIR/"
     - cp -r migrations "$BUILD_DIR/"
     - cp -r conf "$BUILD_DIR/"
@@ -60,11 +76,23 @@ frontend:build:
   variables:
     API_URL: /api/v1
   script:
+    # Setup Yarn cache
     - yarn config set cache-folder $CACHE_DIR
+
+    # Build frontend
     - cd "$FRONTEND_DIR"
-    - yarn install
+    - echo "Installing frontend dependencies..."
+    - yarn install --frozen-lockfile
+
+    # Run tests
+    - echo "Running frontend tests..."
     - yarn test
+
+    # Generate static files
+    - echo "Generating static frontend files..."
     - yarn generate
+
+    # Copy artifacts to build directory
     - mv src/dist "$BUILD_DIR/"
   needs: []
   artifacts:
@@ -72,15 +100,14 @@ frontend:build:
       - $BUILD_DIR
     expire_in: 1 hour
 
-
 docker:push:
   stage: push-docker
-  only:
-    - master
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
   cache: {}
-  image: docker:19.03.11
+  image: docker:20.10
   services:
-    - docker:19.03.11-dind
+    - docker:20.10-dind
   variables:
     # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
     DOCKER_HOST: tcp://docker:2376
@@ -88,14 +115,42 @@ docker:push:
     DOCKER_HUB: docker.io
     DOCKER_HUB_IMAGE: skeleton
     DOCKER_HUB_IMAGE_URL: "${DOCKER_HUB}/${DOCKER_HUB_USER}/${DOCKER_HUB_IMAGE}"
+  before_script:
+    - echo "Preparing Docker build..."
   script:
+    # Setup production config if secret is provided
+    - |
+      if [ -n "$PROD_CONFIG_SECRET_FILE" ]; then
+        echo "Injecting production configuration..."
+        echo "$PROD_CONFIG_SECRET_FILE" | base64 -d > "$BUILD_DIR/conf/app.prod.ini.secret"
+      else
+        echo "Warning: PROD_CONFIG_SECRET_FILE not set, using example"
+        cp src/backend/conf/app.prod.ini.secret.example "$BUILD_DIR/conf/app.prod.ini.secret"
+      fi
+
+    # Copy Dockerfile
     - cp docker/Dockerfile.gitlab "$BUILD_DIR/Dockerfile"
     - cd $BUILD_DIR
+    - echo "Build directory contents:"
     - ls -al
+
+    # Build Docker image
+    - echo "Building Docker image..."
     - docker build -t $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA .
+
+    # Login to Docker Hub
+    - echo "Logging into Docker Hub..."
     - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD $DOCKER_HUB
+
+    # Push images
+    - echo "Pushing Docker image with tag: $CI_COMMIT_SHA"
     - docker push $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA
+    - echo "Tagging and pushing as latest..."
     - docker tag $DOCKER_HUB_IMAGE_URL:$CI_COMMIT_SHA $DOCKER_HUB_IMAGE_URL:latest
     - docker push $DOCKER_HUB_IMAGE_URL:latest
+    - echo "Docker push complete!"
+  needs:
+    - backend:build
+    - frontend:build
 
 

@@ -8,3 +8,23 @@ nohup.out
 1
 src/frontend/coverage
 build
+
+# CI/CD cache directories
+cache/
+.go-cache/
+src/backend/.go-cache/
+
+# Development logs
+logs/
+*.log
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db

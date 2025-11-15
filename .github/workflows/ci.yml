@@ -56,16 +56,28 @@ jobs:
         run: |
           mkdir -p "$CACHE_DIR"
           mkdir -p "$BUILD_DIR"
-      - name: Init database
-        run: PGHOST=localhost PGUSER=postgres PGPASSWORD=postgres bash ./docker/db/db.sh
+      - name: Setup PostgreSQL database
+        run: |
+          echo "Setting up PostgreSQL database..."
+          PGHOST=localhost PGUSER=postgres PGPASSWORD=postgres bash ./docker/db/db.sh
       - name: Build backend
         working-directory: ${{ env.BACKEND_DIR }}
         run: |
+          echo "Installing Go dependencies..."
           go mod tidy
           go mod download
+
+          echo "Building backend binary..."
           CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags='-extldflags "-static"' -o skeleton
-          chmod +x skeleton && ./skeleton migrate up
+          chmod +x skeleton
+
+          echo "Running database migrations..."
+          ./skeleton migrate up
+
+          echo "Running backend tests..."
           go test -v ./... -count=1
+
+          echo "Copying artifacts to build directory..."
           mv skeleton "$BUILD_DIR/"
           cp -r migrations "$BUILD_DIR/"
           cp -r conf "$BUILD_DIR/"
@@ -92,10 +104,19 @@ jobs:
       - name: Build frontend
         working-directory: ${{ env.FRONTEND_DIR }}
         run: |
+          echo "Setting up Yarn cache..."
           yarn config set cache-folder "$CACHE_DIR"
-          yarn install
+
+          echo "Installing frontend dependencies..."
+          yarn install --frozen-lockfile
+
+          echo "Running frontend tests..."
           yarn test
+
+          echo "Generating static frontend files..."
           yarn generate
+
+          echo "Copying artifacts to build directory..."
           mv src/dist "$BUILD_DIR/"
       - uses: actions/upload-artifact@v4
         with:
@@ -113,7 +134,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Prepare build directory
-        run: mkdir -p "$BUILD_DIR"
+        run: |
+          echo "Preparing build directory..."
+          mkdir -p "$BUILD_DIR"
       - name: Download backend artifact
         uses: actions/download-artifact@v4
         with:
@@ -127,15 +150,20 @@ jobs:
       - name: Setup production config
         run: |
           if [ -n "${{ secrets.PROD_CONFIG_SECRET_FILE }}" ]; then
+            echo "Injecting production configuration..."
             echo "${{ secrets.PROD_CONFIG_SECRET_FILE }}" | base64 -d > "$BUILD_DIR/conf/app.prod.ini.secret"
           else
             echo "Warning: PROD_CONFIG_SECRET_FILE secret not set, using example"
             cp src/backend/conf/app.prod.ini.secret.example "$BUILD_DIR/conf/app.prod.ini.secret"
           fi
       - name: Copy Dockerfile to build directory
-        run: cp docker/Dockerfile.ci "$BUILD_DIR/Dockerfile"
+        run: |
+          echo "Copying Dockerfile.ci to build directory..."
+          cp docker/Dockerfile.ci "$BUILD_DIR/Dockerfile"
       - name: List build directory
-        run: ls -al "$BUILD_DIR"
+        run: |
+          echo "Build directory contents:"
+          ls -al "$BUILD_DIR"
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Login to Docker Hub
@@ -143,7 +171,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-      - name: Build and push
+      - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: ${{ env.BUILD_DIR }}
@@ -151,3 +179,9 @@ jobs:
           tags: |
             ${{ env.DOCKER_HUB_IMAGE_URL }}:${{ github.sha }}
             ${{ env.DOCKER_HUB_IMAGE_URL }}:latest
+      - name: Docker push complete
+        run: |
+          echo "Docker push complete!"
+          echo "Pushed tags:"
+          echo "  - ${{ env.DOCKER_HUB_IMAGE_URL }}:${{ github.sha }}"
+          echo "  - ${{ env.DOCKER_HUB_IMAGE_URL }}:latest"
